@@ -1,0 +1,302 @@
+[
+  {
+    "rank": 1,
+    "city": "Minneapolis",
+    "county": "Hennepin",
+    "population_2025": 430324
+  },
+  {
+    "rank": 2,
+    "city": "Saint Paul",
+    "county": "Ramsey",
+    "population_2025": 306684
+  },
+  {
+    "rank": 3,
+    "city": "Rochester",
+    "county": "Olmsted",
+    "population_2025": 124292
+  },
+  {
+    "rank": 4,
+    "city": "Bloomington",
+    "county": "Hennepin",
+    "population_2025": 89034
+  },
+  {
+    "rank": 5,
+    "city": "Duluth",
+    "county": "St. Louis",
+    "population_2025": 88330
+  },
+  {
+    "rank": 6,
+    "city": "Brooklyn Park",
+    "county": "Hennepin",
+    "population_2025": 83543
+  },
+  {
+    "rank": 7,
+    "city": "Woodbury",
+    "county": "Washington",
+    "population_2025": 81558
+  },
+  {
+    "rank": 8,
+    "city": "Lakeville",
+    "county": "Dakota",
+    "population_2025": 79270
+  },
+  {
+    "rank": 9,
+    "city": "Plymouth",
+    "county": "Hennepin",
+    "population_2025": 78942
+  },
+  {
+    "rank": 10,
+    "city": "Blaine",
+    "county": "Anoka",
+    "population_2025": 76603
+  },
+  {
+    "rank": 11,
+    "city": "Maple Grove",
+    "county": "Hennepin",
+    "population_2025": 73893
+  },
+  {
+    "rank": 12,
+    "city": "St. Cloud",
+    "county": "Stearns",
+    "population_2025": 72647
+  },
+  {
+    "rank": 13,
+    "city": "Eagan",
+    "county": "Dakota",
+    "population_2025": 67109
+  },
+  {
+    "rank": 14,
+    "city": "Burnsville",
+    "county": "Dakota",
+    "population_2025": 65244
+  },
+  {
+    "rank": 15,
+    "city": "Coon Rapids",
+    "county": "Anoka",
+    "population_2025": 64193
+  },
+  {
+    "rank": 16,
+    "city": "Eden Prairie",
+    "county": "Hennepin",
+    "population_2025": 63075
+  },
+  {
+    "rank": 17,
+    "city": "Apple Valley",
+    "county": "Dakota",
+    "population_2025": 55248
+  },
+  {
+    "rank": 18,
+    "city": "Edina",
+    "county": "Hennepin",
+    "population_2025": 54356
+  },
+  {
+    "rank": 19,
+    "city": "Minnetonka",
+    "county": "Hennepin",
+    "population_2025": 53969
+  },
+  {
+    "rank": 20,
+    "city": "St. Louis Park",
+    "county": "Hennepin",
+    "population_2025": 50027
+  },
+  {
+    "rank": 21,
+    "city": "Shakopee",
+    "county": "Scott",
+    "population_2025": 49366
+  },
+  {
+    "rank": 22,
+    "city": "Moorhead",
+    "county": "Clay",
+    "population_2025": 46533
+  },
+  {
+    "rank": 23,
+    "city": "Mankato",
+    "county": "Blue Earth",
+    "population_2025": 46529
+  },
+  {
+    "rank": 24,
+    "city": "Cottage Grove",
+    "county": "Washington",
+    "population_2025": 43604
+  },
+  {
+    "rank": 25,
+    "city": "Maplewood",
+    "county": "Ramsey",
+    "population_2025": 40717
+  },
+  {
+    "rank": 26,
+    "city": "Inver Grove Heights",
+    "county": "Dakota",
+    "population_2025": 36873
+  },
+  {
+    "rank": 27,
+    "city": "Richfield",
+    "county": "Hennepin",
+    "population_2025": 36593
+  },
+  {
+    "rank": 28,
+    "city": "Roseville",
+    "county": "Ramsey",
+    "population_2025": 35663
+  },
+  {
+    "rank": 29,
+    "city": "Andover",
+    "county": "Anoka",
+    "population_2025": 33874
+  },
+  {
+    "rank": 30,
+    "city": "Savage",
+    "county": "Scott",
+    "population_2025": 32970
+  },
+  {
+    "rank": 31,
+    "city": "Rosemount",
+    "county": "Dakota",
+    "population_2025": 31881
+  },
+  {
+    "rank": 32,
+    "city": "Brooklyn Center",
+    "county": "Hennepin",
+    "population_2025": 31846
+  },
+  {
+    "rank": 33,
+    "city": "Fridley",
+    "county": "Anoka",
+    "population_2025": 30829
+  },
+  {
+    "rank": 34,
+    "city": "Oakdale",
+    "county": "Washington",
+    "population_2025": 30588
+  },
+  {
+    "rank": 35,
+    "city": "Chaska",
+    "county": "Carver",
+    "population_2025": 30513
+  },
+  {
+    "rank": 36,
+    "city": "Ramsey",
+    "county": "Anoka",
+    "population_2025": 29624
+  },
+  {
+    "rank": 37,
+    "city": "Prior Lake",
+    "county": "Scott",
+    "population_2025": 28140
+  },
+  {
+    "rank": 38,
+    "city": "Elk River",
+    "county": "Sherburne",
+    "population_2025": 27896
+  },
+  {
+    "rank": 39,
+    "city": "Shoreview",
+    "county": "Ramsey",
+    "population_2025": 26906
+  },
+  {
+    "rank": 40,
+    "city": "Austin",
+    "county": "Mower",
+    "population_2025": 26689
+  },
+  {
+    "rank": 41,
+    "city": "Owatonna",
+    "county": "Steele",
+    "population_2025": 26633
+  },
+  {
+    "rank": 42,
+    "city": "Winona",
+    "county": "Winona",
+    "population_2025": 26530
+  },
+  {
+    "rank": 43,
+    "city": "Chanhassen",
+    "county": "Carver",
+    "population_2025": 25748
+  },
+  {
+    "rank": 44,
+    "city": "Farmington",
+    "county": "Dakota",
+    "population_2025": 25425
+  },
+  {
+    "rank": 45,
+    "city": "Faribault",
+    "county": "Rice",
+    "population_2025": 25040
+  },
+  {
+    "rank": 46,
+    "city": "Otsego",
+    "county": "Wright",
+    "population_2025": 24525
+  },
+  {
+    "rank": 47,
+    "city": "White Bear Lake",
+    "county": "Ramsey",
+    "population_2025": 23392
+  },
+  {
+    "rank": 48,
+    "city": "Lino Lakes",
+    "county": "Anoka",
+    "population_2025": 23220
+  },
+  {
+    "rank": 49,
+    "city": "Champlin",
+    "county": "Hennepin",
+    "population_2025": 23125
+  },
+  {
+    "rank": 50,
+    "city": "Hastings",
+    "county": "Dakota",
+    "population_2025": 22563
+  }
+]

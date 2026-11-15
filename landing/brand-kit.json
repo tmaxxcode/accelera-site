@@ -1,0 +1,48 @@
+{
+  "name": "Accelera",
+  "site": "https://accelera.example.com",
+  "logo": {
+    "path": "./accelera-logo.png",
+    "use_in_video": true
+  },
+  "colors": {
+    "background": "#FFFFFF",
+    "foreground": "#1A1A2E",
+    "primary": "#2B67BD",
+    "accent": "#00A859",
+    "muted": "#6B7280",
+    "card": "#F8FAFC",
+    "success": "#059669",
+    "amber": "#D97706",
+    "error": "#DC2626"
+  },
+  "type": {
+    "family": "'Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', sans-serif",
+    "weight_display": 700,
+    "weight_body": 500,
+    "letter_spacing_display": "-0.02em"
+  },
+  "voice": {
+    "register": "plain, concrete, no hype, no em-dashes, no emoji, owner-operator credible",
+    "person": "first-person plural (we / your)",
+    "do": [
+      "concrete numbers with sources",
+      "owner language: 'book a job', 'missed calls', 'average ticket', 'on the roof', 'after hours', 'wife/partner'",
+      "active voice only: 'We build' not 'Your site will be built'",
+      "specific numbers not modifiers: '28.1%' not 'nearly 30%'",
+      "grade 5-7 reading level for landing pages",
+      "one idea per sentence, max 20 words",
+      "CTA next to guarantee: '30-day money-back' adjacent to every primary button"
+    ],
+    "dont": [
+      "no em-dashes, no parentheticals, no emoji",
+      "no passive voice",
+      "no jargon: SEO, SERP, conversion, funnel, onboarding, dashboard, portal, SaaS, platform, implementation",
+      "no hype words: leverage, unlock, revolutionary, next-gen, game-changing",
+      "no vendor marketing claims: '62% unanswered', '$126K lost per year'",
+      "nothing fabricated: no fake reviews, logos, or clients"
+    ]
+  },
+  "source": "logo: /Users/TylerMaxwell/Downloads/Accelera Long Logo.png; voice: PLAN.md + MESSAGE-MAP.md",
+  "captured_at": "2026-11-12"
+}
