@@ -15,6 +15,12 @@ const trades = [
   { id: 'auto', label: 'Auto repair', ticket: 650, calls: 150 },
   { id: 'contracting', label: 'Contracting', ticket: 3500, calls: 30 },
 ];
+interface Props {
+  /* Which trade's example numbers load first. */
+  trade?: 'plumbing' | 'roofing' | 'auto' | 'contracting';
+}
+const { trade = 'plumbing' } = Astro.props;
+const start = trades.find((t) => t.id === trade) ?? trades[0];
 const missedDefault = 27;
 const bookRate = 0.46;
 ---
@@ -30,9 +36,9 @@ const bookRate = 0.46;
         <legend class="calc__legend">Your trade</legend>
         <div class="seg" role="radiogroup" aria-label="Your trade">
           {
-            trades.map((t, i) => (
+            trades.map((t) => (
               <label class="seg__opt">
-                <input type="radio" name="calc-trade" value={t.id} checked={i === 0} />
+                <input type="radio" name="calc-trade" value={t.id} checked={t.id === start.id} />
                 <span>{t.label}</span>
               </label>
             ))
@@ -45,13 +51,13 @@ const bookRate = 0.46;
           <span class="field__label">Average job</span>
           <span class="field__wrap field__wrap--money">
             <span aria-hidden="true">$</span>
-            <input type="number" inputmode="numeric" min="0" max="100000" step="10" name="ticket" value={trades[0].ticket} />
+            <input type="number" inputmode="numeric" min="0" max="100000" step="10" name="ticket" value={start.ticket} />
           </span>
         </label>
         <label class="field">
           <span class="field__label">New-customer calls a month</span>
           <span class="field__wrap">
-            <input type="number" inputmode="numeric" min="0" max="5000" step="1" name="calls" value={trades[0].calls} />
+            <input type="number" inputmode="numeric" min="0" max="5000" step="1" name="calls" value={start.calls} />
           </span>
         </label>
         <label class="field field--wide">

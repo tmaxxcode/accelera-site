@@ -4,6 +4,24 @@
   All data is invented and labeled as an example. Neutral on who answers (AL-1 open).
 */
 import Icon from '../ui/Icon.astro';
+
+export interface CallExample {
+  quote: string;
+  job: string;
+  sms: string;
+  /* The read-back step. Defaults to the job address. */
+  check?: { title: string; meta: string };
+}
+interface Props {
+  call?: CallExample;
+}
+const {
+  call = {
+    quote: 'Water is coming through my kitchen ceiling.',
+    job: 'Leak repair, Tue 7:30 a.m.',
+    sms: 'New job booked: leak repair, St. Paul, Tue 7:30 a.m. Address confirmed.',
+  },
+} = Astro.props;
 ---
 <figure class="call" data-call aria-label="Example: an after-hours call that ends in a booked job">
   <div class="call__top">
@@ -22,28 +40,28 @@ import Icon from '../ui/Icon.astro';
     <li class="row" style="--i: 1">
       <span class="row__icon"><Icon name="message" size={18} /></span>
       <div>
-        <p class="row__quote">"Water is coming through my kitchen ceiling."</p>
+        <p class="row__quote">"{call.quote}"</p>
       </div>
     </li>
     <li class="row" style="--i: 2">
       <span class="row__icon"><Icon name="pin" size={18} /></span>
       <div>
-        <p class="row__title">Address read back</p>
-        <p class="row__meta">Caller confirms it is right</p>
+        <p class="row__title">{call.check?.title ?? 'Address read back'}</p>
+        <p class="row__meta">{call.check?.meta ?? 'Caller confirms it is right'}</p>
       </div>
     </li>
     <li class="row row--booked" style="--i: 3">
       <span class="row__icon row__icon--ok"><Icon name="check" size={18} /></span>
       <div>
         <p class="row__title">Job booked</p>
-        <p class="row__meta num">Leak repair, Tue 7:30 a.m.</p>
+        <p class="row__meta num">{call.job}</p>
       </div>
     </li>
   </ol>
 
   <div class="call__sms" style="--i: 4">
     <p class="call__sms-from">Text to you, 2:19 a.m.</p>
-    <p class="call__sms-body">New job booked: leak repair, St. Paul, Tue 7:30 a.m. Address confirmed.</p>
+    <p class="call__sms-body">{call.sms}</p>
   </div>
   <figcaption class="visually-hidden">An example call, not a real customer.</figcaption>
 </figure>

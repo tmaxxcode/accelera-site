@@ -5,7 +5,7 @@
 */
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
-import CallCard from './CallCard.astro';
+import CallCard, { type CallExample } from './CallCard.astro';
 import Term from '../ui/Term.astro';
 import { contact, terms } from '../../config/offer';
 
@@ -13,8 +13,9 @@ interface Props {
   headline: string;
   sub: string;
   cta?: string;
+  call?: CallExample;
 }
-const { headline, sub, cta = 'Get my free audit' } = Astro.props;
+const { headline, sub, cta = 'Get my free audit', call } = Astro.props;
 ---
 <section class="hero screen" id="hero" aria-labelledby="hero-h">
   <div class="container hero__in">
@@ -34,7 +35,7 @@ const { headline, sub, cta = 'Get my free audit' } = Astro.props;
       </ul>
     </div>
     <div class="hero__demo hide-narrow">
-      <CallCard />
+      <CallCard call={call} />
     </div>
     <div class="hero__foot hide-narrow">
       <slot name="foot" />

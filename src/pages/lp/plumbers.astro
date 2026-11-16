@@ -1,0 +1,15 @@
+---
+/* /lp/plumbers — plumbing ad set. LONG layout. noindex. Stats: 99 Calls plumbing subset + Invoca. */
+import LongLanding from '../../components/lp/LongLanding.astro';
+import { stats } from '../../config/stats';
+---
+<LongLanding
+  title="Book the 2 a.m. burst pipe | Accelera for Twin Cities plumbers"
+  description="Website, online booking and after-hours call answering for Twin Cities plumbers."
+  variant="plumbers"
+  headline="A pipe bursts at 2 a.m. The job still gets booked."
+  sub="We give Twin Cities plumbers a website, online booking and after-hours call answering. One local team sets it all up."
+  proof={[stats.plumbersMissed, stats.voicemail, stats.bookOnCall]}
+  trade="plumbing"
+  jobs={['Leak or burst pipe', 'Clogged drain', 'Water heater', 'Estimate for a project']}
+/>

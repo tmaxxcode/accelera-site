@@ -120,3 +120,5 @@ The Invoca rows above are partly wrong. What the sources actually say:
 The blog does NOT contain 46% or "60M+ calls". Do not credit either to it. The landing pages (src/config/stats.ts) were corrected the same day.
 
 Follow-up (aos-verifier, 2026-11-15): the 27% figure is labelled "Invoca Platform Data, 2022" in the blog's own chart (2024 is the blog's publish date). Primary page for the 2025 report: https://www.invoca.com/reports/the-invoca-call-conversion-industry-benchmarks-report-2025 (gated; public text does not show 46%).
+
+Follow-up (L thread, 2026-11-16): 99 Calls page rechecked (https://99calls.com/blog/contractor-call-answer-rate-benchmarks, published 2026-09-17): 36,498 home-service calls, 2025-09-01 to 2026-08-31. Answered live: plumbing 58.00% (n=1,794), roofing 28.10% (n=3,604), mobile mechanics 47.90% (n=3,072). There is no figure for auto repair shops; do not use the mobile-mechanic figure for shops. The "under 3% leave voicemail" line in the Invoca blog cites "platform data" with no year or sample.

@@ -1,0 +1,47 @@
+---
+/*
+  The long landing page, assembled. Pages under src/pages/lp/ pass only what changes per ad set:
+  the headline, the subhead, the sourced proof stats, the example call, the calculator's starting trade
+  and the booking demo's job list. Everything else (offer, terms, form) stays shared.
+*/
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import Hero from './Hero.astro';
+import ProofBar from './ProofBar.astro';
+import Calculator from './Calculator.astro';
+import OfferStack from './OfferStack.astro';
+import BookingDemo from './BookingDemo.astro';
+import HowAndFaq from './HowAndFaq.astro';
+import CallCard, { type CallExample } from './CallCard.astro';
+import AuditForm from './AuditForm.astro';
+import StickyCta from './StickyCta.astro';
+import LpFooter from './LpFooter.astro';
+import { stats, type Stat } from '../../config/stats';
+
+interface Props {
+  title: string;
+  description: string;
+  variant: string;
+  headline: string;
+  sub: string;
+  proof: Stat[];
+  call?: CallExample;
+  trade?: 'plumbing' | 'roofing' | 'auto' | 'contracting';
+  jobs?: string[];
+}
+const { title, description, variant, headline, sub, proof, call, trade, jobs } = Astro.props;
+// The calculator always cites the 27% and 46% figures; the FAQ cites the voicemail figure.
+const sources = [...proof, stats.unanswered, stats.bookOnCall, stats.voicemail];
+---
+<LandingLayout title={title} description={description} variant={variant}>
+  <Hero headline={headline} sub={sub} call={call}>
+    <ProofBar slot="foot" items={proof} embedded />
+  </Hero>
+  <ProofBar items={proof} class="hide-wide"><CallCard call={call} /></ProofBar>
+  <Calculator trade={trade} />
+  <OfferStack />
+  <BookingDemo jobs={jobs} />
+  <HowAndFaq />
+  <AuditForm />
+  <LpFooter sources={sources} />
+  <StickyCta slot="after" />
+</LandingLayout>

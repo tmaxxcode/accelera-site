@@ -1,0 +1,23 @@
+---
+/* /lp/auto-repair — auto repair ad set. LONG layout. noindex.
+   No sourced answer-rate stat exists for auto repair shops (99 Calls only covers mobile mechanics), so the
+   proof uses the general Invoca home-service figures. */
+import LongLanding from '../../components/lp/LongLanding.astro';
+import { stats } from '../../config/stats';
+---
+<LongLanding
+  title="Book repairs after you close | Accelera for Twin Cities auto shops"
+  description="Website, online booking and after-hours call answering for Twin Cities auto repair shops."
+  variant="auto-repair"
+  headline="Cars break down after you close. The repair still gets booked."
+  sub="We give Twin Cities auto repair shops a website, online booking and after-hours call answering. One local team sets it all up."
+  proof={[stats.unanswered, stats.voicemail, stats.bookOnCall]}
+  call={{
+    quote: 'My check-engine light is on and the brakes are grinding.',
+    check: { title: 'Car and phone read back', meta: 'Caller confirms they are right' },
+    job: 'Brake check, Tue 7:30 a.m.',
+    sms: 'New job booked: brake check, 2014 Civic, Tue 7:30 a.m. Phone number confirmed.',
+  }}
+  trade="auto"
+  jobs={['Brakes', 'Check-engine light', 'Oil change', 'Something else']}
+/>

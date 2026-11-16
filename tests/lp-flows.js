@@ -1,7 +1,7 @@
 // Landing page flow check. Run through the Playwright MCP:
 //   browser_run_code_unsafe { filename: "<repo>/tests/lp-flows.js" }
 // against `npx astro preview --port 4321 --host 127.0.0.1` (after `npm run build`).
-// Checks every flow on /lp/trades and /lp/trades-quick at 390, 1024 and 1440 wide.
+// Checks every flow on every /lp/ page at 390, 1024 and 1440 wide.
 async (page) => {
   const BASE = 'http://127.0.0.1:4321';
   const widths = [
@@ -12,7 +12,7 @@ async (page) => {
   const results = [];
   const fail = (r, msg) => r.fails.push(msg);
 
-  for (const path of ['/lp/trades/', '/lp/trades-quick/']) {
+  for (const path of ['/lp/trades/', '/lp/trades-quick/', '/lp/plumbers/', '/lp/roofers/', '/lp/auto-repair/']) {
     for (const [w, h] of widths) {
       const r = { page: path, width: w, fails: [], passed: 0 };
       const errors = [];
@@ -63,7 +63,7 @@ async (page) => {
       ok(page.url().endsWith('#audit'), 'hero CTA did not go to #audit');
       ok((await events()).includes('book_call'), 'book_call not tracked on CTA');
 
-      if (path === '/lp/trades/') {
+      if (!path.includes('quick')) {
         // Calculator
         await page.locator('#calculator').scrollIntoViewIfNeeded();
         await page.locator('.seg__opt', { hasText: 'Roofing' }).click();
@@ -77,14 +77,15 @@ async (page) => {
 
         // Booking demo
         await page.locator('#demo').scrollIntoViewIfNeeded();
-        await page.locator('.opt', { hasText: 'Roof leak' }).click();
+        const firstJob = (await page.locator('.opt span').first().textContent()).trim();
+        await page.locator('.opt').first().click();
         await page.locator('.slot:not(.slot--taken)').first().click();
         await page.locator('[data-confirm]').click();
         ok(await page.locator('[data-err]').isVisible(), 'demo address error not shown');
         await page.fill('#demo-addr', '123 Example St, St. Paul');
         await page.locator('[data-confirm]').click();
         ok(await page.locator('.pane--done').isVisible(), 'demo did not reach done');
-        ok((await page.locator('[data-summary]').textContent()).includes('Roof leak'), 'demo summary missing job');
+        ok((await page.locator('[data-summary]').textContent()).includes(firstJob), 'demo summary missing job');
         ok((await events()).includes('demo_complete'), 'demo_complete not tracked');
         await page.locator('[data-reset]').click();
         ok(await page.locator('[data-pane="0"]').isVisible(), 'demo reset failed');

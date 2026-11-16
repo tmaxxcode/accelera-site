@@ -1,0 +1,20 @@
+---
+/* /lp/roofers — roofing ad set. LONG layout. noindex. Stats: 99 Calls roofing subset + Invoca. */
+import LongLanding from '../../components/lp/LongLanding.astro';
+import { stats } from '../../config/stats';
+---
+<LongLanding
+  title="Book the storm calls | Accelera for Twin Cities roofers"
+  description="Website, online booking and after-hours call answering for Twin Cities roofers."
+  variant="roofers"
+  headline="The storm hits at night. The roof job still gets booked."
+  sub="We give Twin Cities roofers a website, online booking and after-hours call answering. One local team sets it all up."
+  proof={[stats.roofers, stats.voicemail, stats.bookOnCall]}
+  call={{
+    quote: 'The storm tore shingles off. Water is getting in.',
+    job: 'Roof leak check, Wed 8:00 a.m.',
+    sms: 'New job booked: roof leak check, Maplewood, Wed 8:00 a.m. Address confirmed.',
+  }}
+  trade="roofing"
+  jobs={['Roof leak', 'Storm or hail damage', 'Ice dam', 'Estimate for a new roof']}
+/>

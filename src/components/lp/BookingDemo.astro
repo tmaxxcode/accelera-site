@@ -3,7 +3,11 @@
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 
-const jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'];
+interface Props {
+  /* The job choices a customer sees; match them to the page's trade. */
+  jobs?: string[];
+}
+const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'] } = Astro.props;
 ---
 <section class="demo-sec screen" id="demo" aria-labelledby="demo-h">
   <div class="container split">
