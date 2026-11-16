@@ -304,3 +304,11 @@ Brand palette from `brand-kit.json` + logo extraction:
 ---
 
 *This document extends Section 6 of `product-page-brief.md` and is the authoritative design spec for all landing page variants. Changes require a `decisions.md` entry and git commit.*
+## Decision log additions (L build, 2026-11-15)
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+| 2026-11-15 | Palette is navy #0A1929 / #1A2A47 + white + orange #FF6B00 (Tyler: "use the blue orange Accelera colors"). Supersedes the blue/green mapping in section 2. Orange buttons carry navy text. Placeholders/demo/example labels use a separate violet family | Tyler's call; white on #FF6B00 is 2.9:1 and fails WCAG |
+| 2026-11-15 | Hero visual is an example after-hours call card (ring, address read back, job booked, text to owner) instead of a Three.js glow. No Three.js on the landing pages | Shows the product doing its job; zero 3D weight keeps mobile LCP under 1 s |
+| 2026-11-15 | No impeccable concept roll was run (seed: none). The first surface was not pinned by Tyler; it follows this document plus the call-card change above | Recorded so a later redesign knows the hero concept was the builder's choice, not Tyler's |
+| 2026-11-15 | Sections are one screen each on a 12-column grid; the eyebrow line and the colored FAQ left border were dropped | Taste gate layout rules and the impeccable craft floor (eyebrows banned, colored side borders refused) |

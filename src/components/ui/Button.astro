@@ -1,0 +1,99 @@
+---
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  variant?: 'primary' | 'outline' | 'ghost';
+  size?: 'md' | 'lg';
+  block?: boolean;
+  track?: string;
+  trackLabel?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, type = 'button', variant = 'primary', size = 'lg', block = false, track, trackLabel, class: cls, ...rest } = Astro.props;
+const classes = ['btn', `btn--${variant}`, `btn--${size}`, { 'btn--block': block }, cls];
+---
+{
+  href ? (
+    <a href={href} class:list={classes} data-track={track} data-track-label={trackLabel} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class:list={classes} data-track={track} data-track-label={trackLabel} {...rest}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    padding: 0 1.25rem;
+    border: 1.5px solid transparent;
+    border-radius: var(--r-md);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.15;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform var(--t-fast) var(--ease-out),
+      box-shadow var(--t-fast) var(--ease-out),
+      background-color var(--t-fast) var(--ease-out),
+      border-color var(--t-fast) var(--ease-out),
+      color var(--t-fast) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn--lg {
+    min-height: 52px;
+    padding: 0 1.5rem;
+    font-size: 1.0625rem;
+  }
+  .btn--block {
+    display: flex;
+    width: 100%;
+  }
+  .btn--primary {
+    background: var(--c-cta);
+    color: var(--c-cta-ink);
+  }
+  .btn--primary:hover {
+    background: var(--c-cta-hover);
+    color: var(--c-cta-ink);
+  }
+  .btn--outline {
+    background: #fff;
+    border-color: var(--c-primary);
+    color: var(--c-primary);
+  }
+  .btn--outline:hover {
+    background: var(--c-primary-tint);
+    color: var(--c-primary-ink);
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--c-primary);
+    padding-inline: 0.5rem;
+  }
+  @media (hover: hover) {
+    .btn--primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-cta);
+    }
+  }
+  .btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+  .btn[disabled],
+  .btn[aria-disabled='true'] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+</style>

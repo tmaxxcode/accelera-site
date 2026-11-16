@@ -7,16 +7,17 @@ export default {
     extend: {
       colors: {
         accelera: {
+          // Mirrors src/styles/tokens.css (navy + orange, 2026-11-15).
           bg: '#FFFFFF',
-          fg: '#1A1A2E',
-          primary: '#2B67BD',
-          accent: '#00A859',
-          muted: '#6B7280',
-          card: '#F8FAFC',
-          success: '#059669',
-          amber: '#D97706',
+          fg: '#0A1929',
+          primary: '#1A2A47',
+          cta: '#FF6B00',
+          accent: '#FF6B00',
+          'accent-ink': '#B84A00',
+          muted: '#5B6270',
+          card: '#F7F8FA',
           error: '#DC2626',
-          border: '#E5E7EB',
+          border: '#E3E6EC',
         },
       },
       fontFamily: {

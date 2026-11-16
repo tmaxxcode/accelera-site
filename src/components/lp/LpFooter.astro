@@ -1,0 +1,72 @@
+---
+/* Minimal footer: who we are, where, and every source cited on the page. No navigation. */
+import type { Stat } from '../../config/stats';
+interface Props {
+  sources: Stat[];
+}
+const { sources } = Astro.props;
+const seen = new Set<string>();
+const unique = sources.filter((s) => {
+  const k = s.source + s.url;
+  if (seen.has(k)) return false;
+  seen.add(k);
+  return true;
+});
+---
+<footer class="foot">
+  <div class="container foot__in">
+    <p class="foot__who">Accelera. Websites, booking and after-hours answering for Twin Cities trades.</p>
+    <div class="foot__src">
+      <p class="foot__src-h">Sources for the numbers on this page</p>
+      <ul role="list">
+        {
+          unique.map((s) => (
+            <li>
+              {s.url ? (
+                <a href={s.url} rel="noopener" target="_blank">
+                  {s.source}
+                </a>
+              ) : (
+                s.source
+              )}
+              , {s.sample}. Checked {s.retrieved}.
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    padding-block: var(--s-6) calc(var(--s-6) + 80px);
+    background: var(--c-night);
+    font-size: var(--fs-small);
+    color: #c3cbd9;
+  }
+  .foot__in {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .foot__src-h {
+    margin-top: var(--s-3);
+    color: #fff;
+    font-weight: 600;
+  }
+  .foot__src ul {
+    display: grid;
+    gap: var(--s-2);
+    margin: var(--s-2) 0 0;
+    padding-left: 1.1rem;
+  }
+  .foot__src a,
+  .foot__src a:hover {
+    color: inherit;
+  }
+  @media (min-width: 768px) {
+    .foot {
+      padding-bottom: var(--s-6);
+    }
+  }
+</style>

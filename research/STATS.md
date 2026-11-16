@@ -95,6 +95,7 @@
 ## Summary: Ready-to-Use Verified Stats
 
 **For landing page proof bar (highest confidence):**
+> CORRECTED 2026-11-15: see "Correction, 2026-11-15" at the end of this file. 46% and "60M+ calls" are NOT on the Invoca blog; 27% is Invoca platform data from 2022.
 1. **Invoca:** 27% of home-service calls unanswered; <3% leave voicemail; 46% phone lead conversion (60M+ calls)
 2. **99 Calls:** Roofers answer only 28.1% of calls live; plumbers 58% (36,498 contractor calls)
 3. **Unbounce:** 5th–7th grade copy converts 11.1% vs 5.3% (41,000 pages); median services LP converts 6.1%
@@ -104,3 +105,18 @@
 - Accelera internal: 44 top-rated Twin Cities contractors with no website; 7/8 audited prospects advertise booking but have no scheduler
 
 **Mark as UNVERIFIED until traced:** ZoomInfo/Unbounce word count claim, Portent load speed claim, any stat without primary URL + date + sample size.
+---
+
+## Correction, 2026-11-15 (L Landing page thread, Claude Code desktop; found by aos-verifier, rechecked by fetching the pages)
+
+The Invoca rows above are partly wrong. What the sources actually say:
+
+| Stat | What supports it | Sample | Status |
+|---|---|---|---|
+| 27% of calls to home-services businesses not answered | Invoca blog, 2024-05-23: https://www.invoca.com/blog/how-much-missed-sales-calls-cost-home-services-businesses | Not published ("our research", "platform data") | VERIFIED value, sample unknown |
+| Under 3% of callers pushed to voicemail leave a message | Same Invoca blog, "our platform data" | Not published | VERIFIED value, sample unknown |
+| 46% phone-lead conversion, home services | Invoca Call Conversion Industry Benchmarks Report 2025, reported by Plumbing & Mechanical 2025-06-10: https://www.pmmag.com/articles/106597-home-services-call-performance-report-46-lead-conversion-rate-segment-benchmarks (all industries: 37%) | 60M+ calls across all industries; home-services subset size not stated | SECONDARY: Invoca's report URL (invoca.com/report/the-invoca-call-conversion-benchmarks-report-home-services-2025) returned 404 on 2026-11-15 |
+
+The blog does NOT contain 46% or "60M+ calls". Do not credit either to it. The landing pages (src/config/stats.ts) were corrected the same day.
+
+Follow-up (aos-verifier, 2026-11-15): the 27% figure is labelled "Invoca Platform Data, 2022" in the blog's own chart (2024 is the blog's publish date). Primary page for the 2025 report: https://www.invoca.com/reports/the-invoca-call-conversion-industry-benchmarks-report-2025 (gated; public text does not show 46%).

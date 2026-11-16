@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# design/QA tool runtime output
+.taste-skill/
+.impeccable/review/

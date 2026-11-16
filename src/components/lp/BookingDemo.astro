@@ -1,0 +1,460 @@
+---
+/* Interactive booking demo. Local state only: it sends nothing and stores nothing. */
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+
+const jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'];
+---
+<section class="demo-sec screen" id="demo" aria-labelledby="demo-h">
+  <div class="container split">
+    <div class="demo-sec__head split__a">
+      <h2 id="demo-h">Try it. This is what your customers would see.</h2>
+      <p class="demo-sec__lead">Customers pick a job, a time and an address. They never have to make an account.</p>
+    </div>
+
+    <div class="demo split__b" data-demo>
+      <div class="demo__bar">
+        <ol class="demo__steps" role="list" aria-label="Booking steps">
+          <li data-pill="0" aria-current="step">Job</li>
+          <li data-pill="1">Time</li>
+          <li data-pill="2">Address</li>
+          <li data-pill="3">Done</li>
+        </ol>
+        <span class="demo__badge">Demo</span>
+      </div>
+
+      <div class="demo__stage">
+        <fieldset class="pane" data-pane="0">
+          <legend class="pane__q">What do you need?</legend>
+          <div class="pane__opts">
+            {
+              jobs.map((j) => (
+                <label class="opt">
+                  <input type="radio" name="demo-job" value={j} />
+                  <span>{j}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <fieldset class="pane" data-pane="1" hidden>
+          <legend class="pane__q">Pick a time</legend>
+          <div class="slots" data-slots></div>
+          <button type="button" class="pane__back" data-back>Back</button>
+        </fieldset>
+
+        <div class="pane" data-pane="2" hidden>
+          <label class="pane__q" for="demo-addr">Where is the job?</label>
+          <div class="addr">
+            <Icon name="pin" size={20} />
+            <input id="demo-addr" type="text" autocomplete="off" placeholder="Street address and city" />
+          </div>
+          <p class="pane__err" data-err hidden>Add a street address so the crew can find you.</p>
+          <div class="pane__row">
+            <button type="button" class="pane__back" data-back>Back</button>
+            <Button type="button" data-confirm>Book this job</Button>
+          </div>
+        </div>
+
+        <div class="pane pane--done" data-pane="3" hidden tabindex="-1">
+          <span class="done__icon"><Icon name="check" size={28} /></span>
+          <p class="done__h">Job booked</p>
+          <p class="done__sum" data-summary></p>
+          <p class="done__text"><Icon name="message" size={16} /> A text confirmation goes to the customer and to you.</p>
+          <p class="done__note">This is a demo. Nothing was sent or saved.</p>
+          <button type="button" class="pane__back" data-reset>Try it again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { track } from '../../scripts/track';
+
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach((root) => {
+    const panes = [...root.querySelectorAll<HTMLElement>('[data-pane]')];
+    const pills = [...root.querySelectorAll<HTMLElement>('[data-pill]')];
+    const slots = root.querySelector<HTMLElement>('[data-slots]')!;
+    const addr = root.querySelector<HTMLInputElement>('#demo-addr')!;
+    const err = root.querySelector<HTMLElement>('[data-err]')!;
+    const summary = root.querySelector<HTMLElement>('[data-summary]')!;
+    const state = { job: '', time: '' };
+
+    // Next 5 weekdays, 3 slots each. Some slots shown as taken so it looks like a real calendar.
+    const dayFmt = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const times = ['7:30 a.m.', '11:00 a.m.', '2:30 p.m.'];
+    const days: Date[] = [];
+    const d = new Date();
+    while (days.length < 5) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0 && d.getDay() !== 6) days.push(new Date(d));
+    }
+    slots.innerHTML = days
+      .map((day, di) => {
+        const label = dayFmt.format(day);
+        const btns = times
+          .map((t, ti) => {
+            const taken = (di + ti) % 4 === 1;
+            return `<label class="slot${taken ? ' slot--taken' : ''}"><input type="radio" name="demo-time" value="${label}, ${t}" ${taken ? 'disabled' : ''}/><span>${t}</span></label>`;
+          })
+          .join('');
+        return `<div class="slots__day"><p class="slots__label">${label}</p><div class="slots__row">${btns}</div></div>`;
+      })
+      .join('');
+
+    function go(i: number) {
+      panes.forEach((p, pi) => (p.hidden = pi !== i));
+      pills.forEach((p, pi) => {
+        p.toggleAttribute('data-done', pi < i);
+        if (pi === i) p.setAttribute('aria-current', 'step');
+        else p.removeAttribute('aria-current');
+      });
+      const pane = panes[i];
+      pane.classList.remove('is-in');
+      void pane.offsetWidth;
+      pane.classList.add('is-in');
+      if (i === 2) addr.focus({ preventScroll: true });
+      if (i === 3) pane.focus({ preventScroll: true });
+    }
+
+    root.querySelectorAll<HTMLInputElement>('input[name=demo-job]').forEach((r) =>
+      r.addEventListener('change', () => {
+        state.job = r.value;
+        go(1);
+      }),
+    );
+    slots.addEventListener('change', (e) => {
+      const r = e.target as HTMLInputElement;
+      if (r.name !== 'demo-time') return;
+      state.time = r.value;
+      go(2);
+    });
+    root.querySelectorAll('[data-back]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const cur = panes.findIndex((p) => !p.hidden);
+        go(Math.max(0, cur - 1));
+      }),
+    );
+    root.querySelector('[data-confirm]')!.addEventListener('click', () => {
+      const v = addr.value.trim();
+      if (v.length < 6 || !/\d/.test(v)) {
+        err.hidden = false;
+        addr.setAttribute('aria-invalid', 'true');
+        addr.focus();
+        return;
+      }
+      err.hidden = true;
+      addr.removeAttribute('aria-invalid');
+      summary.textContent = `${state.job}. ${state.time}. ${v}.`;
+      go(3);
+      track('demo_complete', { job: state.job });
+    });
+    addr.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') (root.querySelector('[data-confirm]') as HTMLButtonElement).click();
+    });
+    root.querySelector('[data-reset]')!.addEventListener('click', () => {
+      root.querySelectorAll<HTMLInputElement>('input[type=radio]').forEach((r) => (r.checked = false));
+      addr.value = '';
+      state.job = state.time = '';
+      go(0);
+    });
+  });
+</script>
+
+<style>
+    .demo-sec__head h2 {
+    max-width: 22ch;
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .demo-sec__lead {
+    margin-top: var(--s-3);
+    font-size: 1.125rem;
+    color: var(--c-ink-2);
+  }
+    .demo {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: var(--c-card);
+    box-shadow: var(--shadow-1);
+    overflow: hidden;
+  }
+  .demo__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border-bottom: 1px solid var(--c-line);
+    background: #fff;
+  }
+  .demo__steps {
+    display: flex;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--c-muted);
+  }
+  .demo__steps li {
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--r-pill);
+    transition:
+      background-color var(--t-med) var(--ease-out),
+      color var(--t-med) var(--ease-out);
+  }
+  .demo__steps li[aria-current='step'] {
+    background: var(--c-primary);
+    color: #fff;
+  }
+  .demo__steps li[data-done] {
+    color: var(--c-accent-ink);
+  }
+  .demo__badge {
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    background: var(--c-flag);
+    color: #fff;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .demo__stage {
+    min-height: 440px;
+    padding: clamp(1rem, 0.6rem + 2vw, 2rem);
+  }
+  .pane {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .pane.is-in {
+    animation: pane-in var(--t-med) var(--ease-out);
+  }
+  .pane:focus {
+    outline: none;
+  }
+  .pane__q {
+    display: block;
+    margin-bottom: var(--s-4);
+    padding: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .pane__opts {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .opt,
+  .slot {
+    position: relative;
+  }
+  .opt input,
+  .slot input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .opt span {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 0 var(--s-4);
+    border: 1.5px solid var(--c-line);
+    border-radius: var(--r-md);
+    background: #fff;
+    font-weight: 600;
+    transition:
+      border-color var(--t-fast) var(--ease-out),
+      background-color var(--t-fast) var(--ease-out);
+  }
+  .opt:hover span,
+  .slot:not(.slot--taken):hover span {
+    border-color: var(--c-primary);
+  }
+  .opt input:focus-visible + span,
+  .slot input:focus-visible + span {
+    outline: 3px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+  .opt input:checked + span,
+  .slot input:checked + span {
+    border-color: var(--c-primary);
+    background: var(--c-primary-tint);
+  }
+  :global(.slots) {
+    display: grid;
+    gap: var(--s-3);
+  }
+  :global(.slots__label) {
+    margin-bottom: var(--s-1);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--c-ink-2);
+  }
+  :global(.slots__row) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-2);
+  }
+  :global(.slot) {
+    position: relative;
+  }
+  :global(.slot input) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  :global(.slot span) {
+    display: grid;
+    place-items: center;
+    min-height: var(--tap);
+    border: 1.5px solid var(--c-line);
+    border-radius: var(--r-sm);
+    background: #fff;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    transition: border-color var(--t-fast) var(--ease-out);
+  }
+  :global(.slot:not(.slot--taken):hover span) {
+    border-color: var(--c-primary);
+  }
+  :global(.slot input:focus-visible + span) {
+    outline: 3px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+  :global(.slot--taken span) {
+    background: transparent;
+    color: #9aa1ad;
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+  :global(.slot--taken input) {
+    cursor: not-allowed;
+  }
+  .addr {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 52px;
+    padding: 0 var(--s-4);
+    border: 1.5px solid #cfd5de;
+    border-radius: var(--r-md);
+    background: #fff;
+    color: var(--c-muted);
+  }
+  .addr:focus-within {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-tint);
+  }
+  .addr input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 1rem;
+    color: var(--c-ink);
+  }
+  .addr input::placeholder {
+    color: #79808c;
+  }
+  .addr:has(input[aria-invalid='true']) {
+    border-color: var(--c-error);
+  }
+  .pane__err {
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--c-error);
+  }
+  .pane__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+  }
+  .pane__back {
+    min-height: var(--tap);
+    margin-top: var(--s-3);
+    padding: 0 var(--s-2);
+    border: 0;
+    background: none;
+    color: var(--c-primary);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .pane__row .pane__back {
+    margin-top: 0;
+  }
+  .pane--done {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-2);
+  }
+  .pane--done[hidden] {
+    display: none;
+  }
+  .done__icon {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    color: var(--c-cta-ink);
+    animation: pop 500ms var(--ease-out) both;
+  }
+  .done__h {
+    margin-top: var(--s-2);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .done__sum {
+    font-size: 1.0625rem;
+  }
+  .done__text {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    color: var(--c-accent-ink);
+    font-weight: 600;
+  }
+  .done__note {
+    font-size: var(--fs-small);
+    color: var(--c-muted);
+  }
+  @keyframes pane-in {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+</style>

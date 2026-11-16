@@ -1,0 +1,333 @@
+---
+/*
+  Missed-call calculator. Client-side only.
+  Formula: calls a month x share missed x 46% (Invoca: phone leads that book on the call) x average ticket.
+  Ticket and call counts are EXAMPLE defaults (ASSUMPTION), labeled on the page. Missed share defaults to
+  Invoca's 27%. The owner overwrites all of them.
+*/
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { stats } from '../../config/stats';
+
+const trades = [
+  { id: 'plumbing', label: 'Plumbing', ticket: 450, calls: 120 },
+  { id: 'roofing', label: 'Roofing', ticket: 1500, calls: 60 },
+  { id: 'auto', label: 'Auto repair', ticket: 650, calls: 150 },
+  { id: 'contracting', label: 'Contracting', ticket: 3500, calls: 30 },
+];
+const missedDefault = 27;
+const bookRate = 0.46;
+---
+<section class="calc-sec screen" id="calculator" aria-labelledby="calc-h">
+  <div class="container split">
+    <div class="calc-sec__intro split__a">
+      <h2 id="calc-h">What do missed calls cost you?</h2>
+      <p class="calc-sec__lead">Put in your own numbers. The math is simple and it is all on this page.</p>
+    </div>
+
+    <div class="calc split__b" data-calc data-book-rate={bookRate} data-trades={JSON.stringify(trades)}>
+      <fieldset class="calc__trades">
+        <legend class="calc__legend">Your trade</legend>
+        <div class="seg" role="radiogroup" aria-label="Your trade">
+          {
+            trades.map((t, i) => (
+              <label class="seg__opt">
+                <input type="radio" name="calc-trade" value={t.id} checked={i === 0} />
+                <span>{t.label}</span>
+              </label>
+            ))
+          }
+        </div>
+      </fieldset>
+
+      <div class="calc__fields">
+        <label class="field">
+          <span class="field__label">Average job</span>
+          <span class="field__wrap field__wrap--money">
+            <span aria-hidden="true">$</span>
+            <input type="number" inputmode="numeric" min="0" max="100000" step="10" name="ticket" value={trades[0].ticket} />
+          </span>
+        </label>
+        <label class="field">
+          <span class="field__label">New-customer calls a month</span>
+          <span class="field__wrap">
+            <input type="number" inputmode="numeric" min="0" max="5000" step="1" name="calls" value={trades[0].calls} />
+          </span>
+        </label>
+        <label class="field field--wide">
+          <span class="field__label">Calls you miss <output name="missedOut" class="num">{missedDefault}%</output></span>
+          <input type="range" min="0" max="80" step="1" name="missed" value={missedDefault} aria-label="Share of calls you miss, in percent" />
+        </label>
+      </div>
+
+      <p class="calc__note">
+        Starting numbers are examples, not your data. The 27% missed rate is from{' '}
+        <a href={stats.unanswered.url} rel="noopener" target="_blank">Invoca</a>. The 46% booking rate is the home-services
+        figure in{' '}
+        <a href={stats.bookOnCall.url} rel="noopener" target="_blank">Invoca's 2025 study of 60M+ calls</a>.
+      </p>
+
+      <div class="calc__result" aria-live="polite">
+        <p class="calc__result-label">Jobs you may be missing each month</p>
+        <p class="calc__result-num num" data-out>$0</p>
+        <p class="calc__result-math num" data-math></p>
+      </div>
+
+      <Button href="#audit" block track="book_call" trackLabel="calculator" data-calc-cta>
+        Check my real numbers <Icon name="arrow" size={18} />
+      </Button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { track } from '../../scripts/track';
+
+  const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll<HTMLElement>('[data-calc]').forEach((root) => {
+    const trades = JSON.parse(root.dataset.trades || '[]') as { id: string; ticket: number; calls: number }[];
+    const bookRate = Number(root.dataset.bookRate);
+    const ticket = root.querySelector<HTMLInputElement>('input[name=ticket]')!;
+    const calls = root.querySelector<HTMLInputElement>('input[name=calls]')!;
+    const missed = root.querySelector<HTMLInputElement>('input[name=missed]')!;
+    const missedOut = root.querySelector<HTMLOutputElement>('output[name=missedOut]')!;
+    const out = root.querySelector<HTMLElement>('[data-out]')!;
+    const math = root.querySelector<HTMLElement>('[data-math]')!;
+    let shown = 0;
+    let raf = 0;
+    let used = false;
+
+    const clamp = (n: number, lo: number, hi: number) => (Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : 0);
+
+    function animateTo(target: number) {
+      cancelAnimationFrame(raf);
+      if (reduce) {
+        shown = target;
+        out.textContent = fmt.format(target);
+        return;
+      }
+      const from = shown;
+      const t0 = performance.now();
+      const dur = 500;
+      const step = (now: number) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const e = 1 - Math.pow(1 - p, 4);
+        shown = from + (target - from) * e;
+        out.textContent = fmt.format(Math.round(shown));
+        if (p < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    }
+
+    function update() {
+      const t = clamp(Number(ticket.value), 0, 100000);
+      const c = clamp(Number(calls.value), 0, 5000);
+      const m = clamp(Number(missed.value), 0, 100);
+      missedOut.textContent = `${m}%`;
+      const missedCalls = c * (m / 100);
+      const lost = missedCalls * bookRate * t;
+      animateTo(lost);
+      math.textContent = `${Math.round(missedCalls)} missed calls × 46% that would book × ${fmt.format(t)}`;
+      try {
+        sessionStorage.setItem('acc_calc', String(Math.round(lost)));
+      } catch {}
+    }
+
+    function markUsed() {
+      if (used) return;
+      used = true;
+      track('calculator_used');
+    }
+
+    root.querySelectorAll<HTMLInputElement>('input[name=calc-trade]').forEach((r) =>
+      r.addEventListener('change', () => {
+        const tr = trades.find((x) => x.id === r.value);
+        if (tr) {
+          ticket.value = String(tr.ticket);
+          calls.value = String(tr.calls);
+        }
+        markUsed();
+        update();
+      }),
+    );
+    [ticket, calls, missed].forEach((el) =>
+      el.addEventListener('input', () => {
+        markUsed();
+        update();
+      }),
+    );
+    update();
+  });
+</script>
+
+<style>
+    .calc-sec__intro h2 {
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .calc-sec__lead {
+    max-width: 30rem;
+    margin-top: var(--s-3);
+    font-size: 1.125rem;
+    color: var(--c-ink-2);
+  }
+  .calc {
+    display: grid;
+    gap: var(--s-5);
+    padding: clamp(1rem, 0.5rem + 2vw, 2rem);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: var(--c-card);
+    box-shadow: var(--shadow-1);
+  }
+  .calc__trades {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .calc__legend {
+    margin-bottom: var(--s-2);
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .seg {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--r-md);
+    background: #eef1f5;
+  }
+  .seg__opt {
+    position: relative;
+  }
+  .seg__opt input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .seg__opt span {
+    display: grid;
+    place-items: center;
+    min-height: var(--tap);
+    padding: 0 0.5rem;
+    border-radius: 9px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--c-ink-2);
+    text-align: center;
+    transition:
+      background-color var(--t-fast) var(--ease-out),
+      color var(--t-fast) var(--ease-out),
+      box-shadow var(--t-fast) var(--ease-out);
+  }
+  .seg__opt input:checked + span {
+    background: var(--c-primary);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(10, 25, 41, 0.25);
+  }
+  .seg__opt input:focus-visible + span {
+    outline: 3px solid var(--c-primary);
+    outline-offset: 2px;
+  }
+  .calc__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-4);
+  }
+  .field {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .field--wide {
+    grid-column: 1 / -1;
+  }
+  .field__label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-2);
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .field__label output {
+    color: var(--c-primary);
+    font-weight: 700;
+  }
+  .field__wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 48px;
+    padding: 0 0.75rem;
+    border: 1.5px solid #cfd5de;
+    border-radius: var(--r-md);
+    background: #fff;
+    transition: border-color var(--t-fast) var(--ease-out);
+  }
+  .field__wrap:focus-within {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-tint);
+  }
+  .field__wrap--money > span {
+    color: var(--c-muted);
+    font-weight: 600;
+  }
+  .field__wrap input {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  input[type='range'] {
+    width: 100%;
+    height: var(--tap);
+    margin: 0;
+    accent-color: var(--c-accent);
+    cursor: pointer;
+  }
+  .calc__note {
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+  }
+  .calc__note a {
+    color: inherit;
+  }
+  .calc__result {
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-line);
+  }
+  .calc__result-label {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--c-ink-2);
+  }
+  .calc__result-num {
+    margin-top: var(--s-1);
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: var(--track-display);
+    color: var(--c-accent-ink);
+  }
+  .calc__result-math {
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--c-muted);
+  }
+  @media (min-width: 600px) {
+    .seg {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+</style>

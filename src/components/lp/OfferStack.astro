@@ -1,0 +1,169 @@
+---
+import Term from '../ui/Term.astro';
+import Icon from '../ui/Icon.astro';
+import { prices, terms } from '../../config/offer';
+
+const parts = [
+  {
+    name: 'A website that gets found',
+    price: prices.site,
+    points: [
+      'Built to show up when people search your trade and your city',
+      'Your phone number one tap away on every page',
+      'You see the live site and approve it before launch',
+    ],
+    extra: prices.payment,
+  },
+  {
+    name: 'Online booking',
+    price: prices.booking,
+    points: [
+      'Customers pick a job, a time and an address',
+      'No account or password for them',
+      'You get a text for every booked job',
+    ],
+    extra: terms.guarantee,
+  },
+  {
+    name: 'After-hours answering',
+    price: prices.answering,
+    points: [
+      'Calls get answered nights, weekends and holidays',
+      'The address gets read back and confirmed',
+      'The job lands on your calendar and you get a text',
+    ],
+    extra: terms.guarantee,
+  },
+];
+---
+<section class="offer screen" id="offer" aria-labelledby="offer-h">
+  <div class="container">
+    <div class="offer__head">
+      <h2 id="offer-h">One local team. Three parts. Take what you need.</h2>
+      <p class="offer__lead">Start with the website. Add booking or after-hours answering when you want them.</p>
+    </div>
+
+    <ul class="offer__grid" role="list">
+      {
+        parts.map((p) => (
+          <li class="part">
+            <h3 class="part__name">{p.name}</h3>
+            <p class="part__price">
+              <Term term={p.price} as="strong" />
+            </p>
+            <ul class="part__points" role="list">
+              {p.points.map((pt) => (
+                <li>
+                  <Icon name="check" size={18} />
+                  <span>{pt}</span>
+                </li>
+              ))}
+            </ul>
+            <p class="part__extra">
+              <Term term={p.extra} />
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="offer__foot">
+      <Term term={terms.delivery} suffix="." /> <Term term={terms.ownership} suffix="." /> {terms.approveFirst.value}.
+    </p>
+  </div>
+</section>
+
+<style>
+  .offer {
+    background: var(--c-card);
+    border-block: 1px solid var(--c-line);
+  }
+  .offer__head h2 {
+    max-width: 20ch;
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .offer__lead {
+    max-width: 34rem;
+    margin-top: var(--s-3);
+    font-size: 1.125rem;
+    color: var(--c-ink-2);
+  }
+  .offer__grid {
+    display: grid;
+    gap: var(--s-4);
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .part {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: #fff;
+    transition:
+      border-color 200ms var(--ease-out),
+      box-shadow 200ms var(--ease-out);
+  }
+  .part:hover {
+    border-color: var(--c-primary);
+    box-shadow: var(--shadow-2);
+  }
+  .part__name {
+    font-size: var(--fs-h3);
+    letter-spacing: -0.01em;
+  }
+  .part__price {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    color: var(--c-primary);
+  }
+  .part__points {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    flex: 1;
+  }
+  .part__points li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: var(--s-3);
+    align-items: start;
+    line-height: 1.45;
+  }
+  .part__points svg {
+    margin-top: 2px;
+    color: var(--c-accent-ink);
+  }
+  .part__extra {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-line);
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+  }
+  .offer__foot {
+    margin-top: var(--s-5);
+    font-size: var(--fs-small);
+    line-height: 2;
+    color: var(--c-ink-2);
+  }
+  @media (min-width: 768px) {
+    .offer__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .offer__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .part {
+      grid-column: span 4;
+    }
+  }
+</style>

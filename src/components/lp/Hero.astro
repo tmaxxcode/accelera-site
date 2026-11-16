@@ -1,0 +1,126 @@
+---
+/*
+  Hero: one screen. Wide screens show the copy, the example call and the proof strip (slot "foot").
+  Narrow screens show the copy alone; the page repeats the call and proof in the next section (.hide-wide).
+*/
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import CallCard from './CallCard.astro';
+import Term from '../ui/Term.astro';
+import { contact, terms } from '../../config/offer';
+
+interface Props {
+  headline: string;
+  sub: string;
+  cta?: string;
+}
+const { headline, sub, cta = 'Get my free audit' } = Astro.props;
+---
+<section class="hero screen" id="hero" aria-labelledby="hero-h">
+  <div class="container hero__in">
+    <div class="hero__copy">
+      <h1 id="hero-h" class="hero__h">{headline}</h1>
+      <p class="hero__sub">{sub}</p>
+      <div class="hero__ctas">
+        <Button href="#audit" track="book_call" trackLabel="hero">{cta} <Icon name="arrow" size={18} /></Button>
+        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="hero">
+          <Icon name="phone" size={18} /> Call Tyler
+        </Button>
+      </div>
+      <ul class="hero__trust" role="list">
+        <li><Icon name="check" size={16} /> {terms.approveFirst.value}</li>
+        <li><Icon name="check" size={16} /> <Term term={terms.noRetainer} /></li>
+        <li><Icon name="check" size={16} /> Twin Cities only</li>
+      </ul>
+    </div>
+    <div class="hero__demo hide-narrow">
+      <CallCard />
+    </div>
+    <div class="hero__foot hide-narrow">
+      <slot name="foot" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--s-6);
+    background:
+      radial-gradient(55% 45% at 85% 25%, rgba(255, 107, 0, 0.07), transparent 70%),
+      radial-gradient(70% 60% at 100% 0%, var(--c-primary-tint), transparent 70%),
+      var(--c-bg);
+  }
+  .hero__in {
+    display: grid;
+    gap: var(--s-6);
+    align-items: center;
+  }
+  .hero__h {
+    max-width: 16ch;
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+  }
+  .hero__sub {
+    max-width: 36rem;
+    margin-top: var(--s-4);
+    font-size: var(--fs-sub);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--c-ink-2);
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+  }
+  .hero__trust {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+  }
+  .hero__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .hero__trust svg {
+    color: var(--c-accent-ink);
+  }
+  @media (max-width: 1023px) {
+    /* Content high on phones and tablets: the CTA matters more than centring. */
+    .hero {
+      justify-content: flex-start;
+      min-height: 0;
+    }
+  }
+  @media (max-width: 599px) {
+    .hero__ctas :global(.btn) {
+      flex: 1 1 100%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero__in {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      row-gap: var(--s-6);
+    }
+    .hero__copy {
+      grid-column: 1 / span 7;
+    }
+    .hero__demo {
+      grid-column: 8 / span 5;
+    }
+    .hero__demo :global(.call) {
+      max-width: none;
+    }
+    .hero__foot {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

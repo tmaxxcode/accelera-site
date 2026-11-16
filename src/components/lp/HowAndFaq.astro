@@ -1,0 +1,25 @@
+---
+/* One navy screen: how it works (left) and the owner questions (right). */
+import Steps from './Steps.astro';
+import Faq from './Faq.astro';
+---
+<section class="how screen" id="how" aria-label="How it works and common questions">
+  <div class="container split how__in">
+    <Steps embedded class="split__a" />
+    <Faq embedded class="split__b" />
+  </div>
+</section>
+
+<style>
+  .how {
+    background: var(--c-night);
+    color: #fff;
+  }
+  .how :global(h2) {
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .how__in {
+    row-gap: var(--s-8);
+  }
+</style>

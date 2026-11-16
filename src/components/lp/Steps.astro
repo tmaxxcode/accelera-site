@@ -1,0 +1,130 @@
+---
+import Term from '../ui/Term.astro';
+import { terms } from '../../config/offer';
+/* embedded: a column inside another section (vertical list, inherits the band's colors). */
+interface Props {
+  embedded?: boolean;
+  class?: string;
+}
+const { embedded = false, class: cls } = Astro.props;
+const Tag = embedded ? 'div' : 'section';
+---
+<Tag class:list={['steps', { 'steps--embedded': embedded, screen: !embedded }, cls]} id={embedded ? undefined : 'how'} aria-labelledby="steps-h">
+  <div class:list={{ container: !embedded }}>
+    <h2 id="steps-h">How it works. Your part takes about 15 minutes.</h2>
+    <ol class="steps__list" role="list">
+      <li class="step">
+        <span class="step__n num" aria-hidden="true">1</span>
+        <h3>A 15-minute call</h3>
+        <p>Tell Tyler your trade, your area and your average job. That is all we need from you.</p>
+      </li>
+      <li class="step">
+        <span class="step__n num" aria-hidden="true">2</span>
+        <h3>We build it</h3>
+        <p>We write the words, build the site and set up booking and call answering. <Term term={terms.delivery} suffix="." /></p>
+      </li>
+      <li class="step">
+        <span class="step__n num" aria-hidden="true">3</span>
+        <h3>You approve it</h3>
+        <p>Check the live site on your phone. Ask for changes. Nothing goes live until you say yes.</p>
+      </li>
+      <li class="step">
+        <span class="step__n num" aria-hidden="true">4</span>
+        <h3>Jobs come in</h3>
+        <p>Booked jobs show up as texts. There is no new app to learn.</p>
+      </li>
+    </ol>
+  </div>
+</Tag>
+
+<style>
+  .steps:not(.steps--embedded) {
+    background: var(--c-night);
+    color: #fff;
+  }
+  .steps h2 {
+    max-width: 22ch;
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .steps__list {
+    position: relative;
+    display: grid;
+    gap: var(--s-6);
+    margin: var(--s-7) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    column-gap: var(--s-4);
+    row-gap: var(--s-1);
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 56px;
+    bottom: calc(-1 * var(--s-6) + 8px);
+    width: 2px;
+    background: rgba(255, 255, 255, 0.16);
+  }
+  .step:last-child::before {
+    display: none;
+  }
+  .step__n {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    color: var(--c-cta-ink);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .step h3 {
+    align-self: end;
+    font-size: var(--fs-h3);
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    max-width: 34ch;
+    color: #c3cbd9;
+    line-height: 1.55;
+  }
+  .steps :global(.term--pending) {
+    outline-color: #c4b5fd;
+  }
+  .steps--embedded .steps__list {
+    margin-top: var(--s-6);
+    gap: var(--s-5);
+  }
+  .steps--embedded .step::before {
+    bottom: calc(-1 * var(--s-5) + 8px);
+  }
+  @media (min-width: 1024px) {
+    .steps:not(.steps--embedded) .steps__list {
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--s-6);
+    }
+    .steps:not(.steps--embedded) .step {
+      grid-template-columns: 1fr;
+      row-gap: var(--s-3);
+    }
+    .steps:not(.steps--embedded) .step__n {
+      grid-row: auto;
+    }
+    .steps:not(.steps--embedded) .step::before {
+      left: 56px;
+      right: calc(-1 * var(--s-6) + 8px);
+      top: 23px;
+      bottom: auto;
+      width: auto;
+      height: 2px;
+    }
+  }
+</style>

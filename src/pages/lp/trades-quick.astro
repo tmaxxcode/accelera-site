@@ -1,0 +1,32 @@
+---
+/*
+  /lp/trades-quick — SHORT variant, all-trades angle. Under 100 words above the fold. noindex.
+  A/B pair: /lp/trades (long).
+*/
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import Hero from '../../components/lp/Hero.astro';
+import ProofBar from '../../components/lp/ProofBar.astro';
+import AuditForm from '../../components/lp/AuditForm.astro';
+import CallCard from '../../components/lp/CallCard.astro';
+import StickyCta from '../../components/lp/StickyCta.astro';
+import LpFooter from '../../components/lp/LpFooter.astro';
+import { stats } from '../../config/stats';
+
+const proof = [stats.unanswered, stats.voicemail, stats.bookOnCall];
+---
+<LandingLayout
+  title="Never miss the 2 a.m. job | Accelera, Twin Cities"
+  description="Website, online booking and after-hours call answering for Twin Cities trades."
+  variant="trades-short"
+>
+  <Hero
+    headline="The phone rings at 2 a.m. The job still gets booked."
+    sub="A website, online booking and after-hours call answering for Twin Cities trades. One local team."
+  >
+    <ProofBar slot="foot" items={proof} embedded />
+  </Hero>
+  <ProofBar items={proof} class="hide-wide"><CallCard /></ProofBar>
+  <AuditForm />
+  <LpFooter sources={proof} />
+  <StickyCta slot="after" />
+</LandingLayout>

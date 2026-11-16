@@ -1,0 +1,179 @@
+---
+/* The four owner objections from research/MESSAGE-MAP.md. Answers use only sourced stats and approved terms. */
+import Icon from '../ui/Icon.astro';
+import Term from '../ui/Term.astro';
+import { stats } from '../../config/stats';
+import { terms } from '../../config/offer';
+/* embedded: a column inside another section. */
+interface Props {
+  embedded?: boolean;
+  class?: string;
+}
+const { embedded = false, class: cls } = Astro.props;
+const Tag = embedded ? 'div' : 'section';
+---
+<Tag class:list={['faq', { 'faq--embedded': embedded, screen: !embedded }, cls]} id="faq" aria-labelledby="faq-h">
+  <div class:list={['faq__in', { container: !embedded }]}>
+    <h2 id="faq-h">Fair questions</h2>
+    <div class="faq__list">
+      <details class="q" name="faq" data-faq="seo-agencies">
+        <summary>
+          I already paid an agency for search rankings. I got nothing.
+          <Icon name="chevron" size={20} class="q__chev" />
+        </summary>
+        <div class="q__a">
+          <div>
+            <p>
+              We hear that a lot. You pay for a finished site that you can see and check.{' '}
+              {terms.approveFirst.value}. <Term term={terms.noRetainer} suffix="." />
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <details class="q" name="faq" data-faq="monthly-cost">
+        <summary>
+          Is after-hours answering worth a monthly bill?
+          <Icon name="chevron" size={20} class="q__chev" />
+        </summary>
+        <div class="q__a">
+          <div>
+            <p>
+              Run your own numbers in the calculator above. Then compare what you miss each month to the monthly price.
+              <Term term={terms.guarantee} />.
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <details class="q" name="faq" data-faq="spouse-takes-calls">
+        <summary>
+          My spouse already takes the calls.
+          <Icon name="chevron" size={20} class="q__chev" />
+        </summary>
+        <div class="q__a">
+          <div>
+            <p>
+              Keep them on it. They know your customers. We cover the hours they are off: nights, weekends and holidays.{' '}
+              {stats.voicemail.value} of callers who reach voicemail leave a message ({stats.voicemail.source}).
+            </p>
+          </div>
+        </div>
+      </details>
+
+      <details class="q" name="faq" data-faq="too-busy">
+        <summary>
+          I am too busy for this.
+          <Icon name="chevron" size={20} class="q__chev" />
+        </summary>
+        <div class="q__a">
+          <div>
+            <p>
+              Your part is one 15-minute call and one look at the finished site. We do the rest. There is no app or
+              login to learn. You stay on the job.
+            </p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+</Tag>
+
+<style>
+  .faq:not(.faq--embedded) {
+    background: var(--c-card);
+    border-block: 1px solid var(--c-line);
+  }
+  .faq__in {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .faq h2 {
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .faq__list {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 760px;
+  }
+  .q {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-md);
+    background: #fff;
+    transition:
+      border-color var(--t-med) var(--ease-out),
+      box-shadow var(--t-med) var(--ease-out);
+  }
+  .q[open] {
+    border-color: #bcd0ee;
+    box-shadow: var(--shadow-1);
+  }
+  .q summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    min-height: 56px;
+    padding: var(--s-4) var(--s-5);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+    list-style: none;
+    cursor: pointer;
+  }
+  .q summary::-webkit-details-marker {
+    display: none;
+  }
+  .q summary:focus-visible {
+    outline-offset: -3px;
+    border-radius: var(--r-md);
+  }
+  .q :global(.q__chev) {
+    flex: none;
+    color: var(--c-primary);
+    transition: transform var(--t-med) var(--ease-out);
+  }
+  .q[open] :global(.q__chev) {
+    transform: rotate(180deg);
+  }
+  .q__a {
+    display: grid;
+    grid-template-rows: 1fr;
+  }
+  .q__a > div {
+    overflow: hidden;
+  }
+  .q__a p {
+    max-width: 62ch;
+    padding: 0 var(--s-5) var(--s-5);
+    color: var(--c-ink-2);
+  }
+  @supports (interpolate-size: allow-keywords) {
+    .q {
+      interpolate-size: allow-keywords;
+    }
+    .q::details-content {
+      height: 0;
+      overflow: clip;
+      transition:
+        height var(--t-med) var(--ease-out),
+        content-visibility var(--t-med) allow-discrete;
+    }
+    .q[open]::details-content {
+      height: auto;
+    }
+  }
+  .faq--embedded .faq__in {
+    gap: var(--s-6);
+  }
+  .faq--embedded .q {
+    color: var(--c-ink);
+  }
+  @media (min-width: 1024px) {
+    .faq:not(.faq--embedded) .faq__in {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: var(--s-8);
+    }
+  }
+</style>

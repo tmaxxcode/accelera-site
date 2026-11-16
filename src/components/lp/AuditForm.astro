@@ -1,0 +1,308 @@
+---
+/*
+  The page's one action: request a free missed-call and booking audit. Three fields.
+  Not connected: contact.formEndpoint is empty, so submit shows a placeholder notice and sends nothing.
+  When a backend exists, set formEndpoint (and approved: true) in src/config/offer.ts.
+  Founder note: Tyler's own story from his original docs (confirmed for use 2026-11-15). Photo is a placeholder.
+*/
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import Term from '../ui/Term.astro';
+import { contact, terms } from '../../config/offer';
+
+interface Props {
+  showStory?: boolean;
+}
+const { showStory = true } = Astro.props;
+const endpoint = contact.formEndpoint.value;
+---
+<section class="close screen" id="audit" aria-labelledby="audit-h">
+  <div class="container split">
+    {
+      showStory && (
+        <div class="story split__a">
+          <div class="story__photo" role="img" aria-label="Photo of Tyler coming soon">
+            <span class="story__initials">TM</span>
+            <span class="story__ph">Photo placeholder</span>
+          </div>
+          <blockquote class="story__quote">
+            <p>
+              My dad is an electrician. One week he lost three jobs. Nobody got back to those people until morning, and by then
+              they had hired someone else.
+            </p>
+            <p>I started Accelera so that does not happen to you.</p>
+          </blockquote>
+          <p class="story__sig">Tyler Maxwell, founder. Twin Cities.</p>
+        </div>
+      )
+    }
+
+    <div class="form-card split__b">
+      <h2 id="audit-h">Get a free missed-call and booking audit</h2>
+      <p class="form-card__lead">
+        Tyler checks your site, your booking and your phone setup. You get a short list of what to fix, even if you never
+        hire us.
+      </p>
+
+      <form class="form" data-audit-form action={endpoint || undefined} method="post" novalidate>
+        <label class="f">
+          <span class="f__label">Your name</span>
+          <input name="name" type="text" autocomplete="name" required maxlength="80" />
+          <span class="f__err" hidden>Add your name.</span>
+        </label>
+        <label class="f">
+          <span class="f__label">Mobile number</span>
+          <input name="phone" type="tel" inputmode="tel" autocomplete="tel" required maxlength="20" />
+          <span class="f__err" hidden>Add a number with area code.</span>
+        </label>
+        <label class="f">
+          <span class="f__label">Business name or website</span>
+          <input name="business" type="text" autocomplete="organization" required maxlength="120" />
+          <span class="f__err" hidden>Add your business name or website.</span>
+        </label>
+        <input type="hidden" name="utm_source" data-utm="utm_source" />
+        <input type="hidden" name="utm_medium" data-utm="utm_medium" />
+        <input type="hidden" name="utm_campaign" data-utm="utm_campaign" />
+        <input type="hidden" name="utm_content" data-utm="utm_content" />
+        <input type="hidden" name="utm_term" data-utm="utm_term" />
+        <input type="hidden" name="gclid" data-utm="gclid" />
+        <input type="hidden" name="fbclid" data-utm="fbclid" />
+        <input type="hidden" name="landing_page" data-utm="landing_page" />
+        <input type="hidden" name="calculator_value" />
+
+        <Button type="submit" block>Get my free audit <Icon name="arrow" size={18} /></Button>
+        <p class="form__fine">
+          {terms.approveFirst.value}. <Term term={terms.noRetainer} suffix="." /> <Term term={terms.guarantee} suffix="." />
+        </p>
+        <p class="form__fine">
+          No spam. Tyler reads every request himself. <a href={contact.privacyUrl.value}>Privacy</a>{' '}
+          {!contact.privacyUrl.approved && <span class="form__ph">(privacy page placeholder)</span>}
+        </p>
+      </form>
+
+      <div class="form-done" data-done hidden tabindex="-1">
+        <span class="form-done__icon"><Icon name="check" size={26} /></span>
+        <p class="form-done__h" data-done-h>Thanks. Your request is in.</p>
+        <p data-done-msg>Tyler will reach out about your audit.</p>
+      </div>
+
+      <p class="form-card__or">
+        Rather talk now? <a href={contact.phoneHref.value} data-track="call_click" data-track-label="form">Call Tyler at <Term term={contact.phoneDisplay} nowrap /></a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { track, fillUtmFields } from '../../scripts/track';
+
+  document.querySelectorAll<HTMLFormElement>('[data-audit-form]').forEach((form) => {
+    const done = form.parentElement!.querySelector<HTMLElement>('[data-done]')!;
+    const msg = done.querySelector<HTMLElement>('[data-done-msg]')!;
+    const checks: Record<string, (v: string) => boolean> = {
+      name: (v) => v.trim().length >= 2,
+      phone: (v) => v.replace(/\D/g, '').length >= 10,
+      business: (v) => v.trim().length >= 2,
+    };
+
+    function validate(input: HTMLInputElement): boolean {
+      const ok = checks[input.name] ? checks[input.name](input.value) : true;
+      const err = input.parentElement!.querySelector<HTMLElement>('.f__err');
+      input.toggleAttribute('aria-invalid', !ok);
+      if (err) err.hidden = ok;
+      return ok;
+    }
+
+    // Clear an error as soon as the field is fixed. Validating on blur would shift the
+    // submit button mid-click and swallow the click.
+    form.querySelectorAll<HTMLInputElement>('input[required]').forEach((i) =>
+      i.addEventListener('input', () => i.hasAttribute('aria-invalid') && validate(i)),
+    );
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const inputs = [...form.querySelectorAll<HTMLInputElement>('input[required]')];
+      const bad = inputs.filter((i) => !validate(i));
+      if (bad.length) {
+        bad[0].focus();
+        return;
+      }
+      fillUtmFields(form);
+      let calc = '';
+      try {
+        calc = sessionStorage.getItem('acc_calc') || '';
+      } catch {}
+      (form.elements.namedItem('calculator_value') as HTMLInputElement).value = calc;
+
+      track('book_call', { label: 'audit_form_submit', calculator_value: calc || undefined });
+
+      const endpoint = form.getAttribute('action');
+      if (endpoint) {
+        const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        try {
+          const res = await fetch(endpoint, { method: 'POST', body: new FormData(form) });
+          if (!res.ok) throw new Error(String(res.status));
+        } catch {
+          btn.disabled = false;
+          btn.textContent = 'Try again';
+          return;
+        }
+      } else {
+        done.querySelector<HTMLElement>('[data-done-h]')!.textContent = 'Placeholder: nothing was sent';
+        msg.textContent = 'This form is not connected yet. When it is, this is where the thank-you shows.';
+      }
+      form.hidden = true;
+      done.hidden = false;
+      done.focus();
+    });
+  });
+</script>
+
+<style>
+    .story {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 34rem;
+  }
+  .story__photo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    border: 3px solid var(--c-primary);
+    background: var(--c-primary-tint);
+    outline: 1.5px dashed var(--c-flag);
+    outline-offset: 4px;
+  }
+  .story__initials {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--c-primary);
+  }
+  .story__ph {
+    position: absolute;
+    bottom: -0.9rem;
+    left: 50%;
+    translate: -50% 0;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    background: var(--c-flag-tint);
+    color: var(--c-flag);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .story__quote {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-3) 0 0;
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  .story__sig {
+    font-weight: 600;
+    color: var(--c-primary);
+  }
+  .form-card {
+    padding: clamp(1.25rem, 0.8rem + 2vw, 2.25rem);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: #fff;
+    box-shadow: var(--shadow-2);
+  }
+  .form-card h2 {
+    font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+    line-height: 1.2;
+  }
+  .form-card__lead {
+    margin-top: var(--s-3);
+    color: var(--c-ink-2);
+  }
+  .form {
+    display: grid;
+    gap: var(--s-4);
+    margin-top: var(--s-5);
+  }
+  .f {
+    display: grid;
+    gap: var(--s-2);
+  }
+  .f__label {
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .f input {
+    min-height: 52px;
+    padding: 0 var(--s-4);
+    border: 1.5px solid #cfd5de;
+    border-radius: var(--r-md);
+    background: #fff;
+    font-size: 1rem;
+    transition:
+      border-color var(--t-fast) var(--ease-out),
+      box-shadow var(--t-fast) var(--ease-out);
+  }
+  .f input:focus {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-tint);
+    outline: none;
+  }
+  .f input[aria-invalid] {
+    border-color: var(--c-error);
+  }
+  .f__err {
+    font-size: var(--fs-small);
+    color: var(--c-error);
+  }
+  .form__fine {
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+    line-height: 1.7;
+  }
+  .form__ph {
+    color: var(--c-flag);
+    font-weight: 600;
+  }
+  .form-done {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-2);
+    margin-top: var(--s-5);
+  }
+  .form-done[hidden] {
+    display: none;
+  }
+  .form-done:focus {
+    outline: none;
+  }
+  .form-done__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    color: var(--c-cta-ink);
+  }
+  .form-done__h {
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  .form-card__or {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-line);
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+    line-height: 1.8;
+  }
+
+</style>

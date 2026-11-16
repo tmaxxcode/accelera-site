@@ -1,0 +1,89 @@
+---
+/* Mobile-only bottom bar. Appears once the hero leaves the screen; hides while the audit form is on screen. */
+import Icon from '../ui/Icon.astro';
+import { contact } from '../../config/offer';
+---
+<div class="sticky" data-sticky aria-hidden="true">
+  <a class="sticky__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="sticky" tabindex="-1" aria-label="Call Tyler">
+    <Icon name="phone" size={20} />
+  </a>
+  <a class="sticky__cta" href="#audit" data-track="book_call" data-track-label="sticky" tabindex="-1">Get my free audit</a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-sticky]');
+  const hero = document.getElementById('hero');
+  const audit = document.getElementById('audit');
+  if (bar && hero) {
+    let heroOut = false;
+    let auditIn = false;
+    const set = () => {
+      const show = heroOut && !auditIn;
+      bar.classList.toggle('is-on', show);
+      bar.setAttribute('aria-hidden', String(!show));
+      bar.querySelectorAll('a').forEach((a) => a.setAttribute('tabindex', show ? '0' : '-1'));
+    };
+    new IntersectionObserver(([e]) => {
+      heroOut = !e.isIntersecting;
+      set();
+    }).observe(hero);
+    if (audit)
+      new IntersectionObserver(
+        ([e]) => {
+          auditIn = e.isIntersecting;
+          set();
+        },
+        { threshold: 0.15 },
+      ).observe(audit);
+  }
+</script>
+
+<style>
+  .sticky {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 100;
+    display: flex;
+    gap: var(--s-2);
+    padding: var(--s-3) var(--gutter) calc(var(--s-3) + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--c-line);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 -4px 20px rgba(26, 26, 46, 0.08);
+    transform: translateY(110%);
+    transition: transform 300ms var(--ease-out);
+  }
+  .sticky.is-on {
+    transform: none;
+  }
+  .sticky__call {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border: 1.5px solid var(--c-primary);
+    border-radius: var(--r-md);
+    color: var(--c-primary);
+  }
+  .sticky__cta {
+    display: grid;
+    place-items: center;
+    flex: 1;
+    min-height: 52px;
+    border-radius: var(--r-md);
+    background: var(--c-cta);
+    color: var(--c-cta-ink);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sticky__cta:hover {
+    color: var(--c-cta-ink);
+    background: var(--c-cta-hover);
+  }
+  @media (min-width: 768px) {
+    .sticky {
+      display: none;
+    }
+  }
+</style>

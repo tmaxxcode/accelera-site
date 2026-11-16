@@ -1,0 +1,107 @@
+---
+/*
+  Sourced proof stats. Two modes:
+  - embedded: a strip inside the hero (wide screens).
+  - default: its own one-screen section; the slot holds the example call on narrow screens.
+*/
+import type { Stat } from '../../config/stats';
+interface Props {
+  items: Stat[];
+  title?: string;
+  embedded?: boolean;
+  class?: string;
+}
+const { items, title = 'What happens to calls nobody answers', embedded = false, class: cls } = Astro.props;
+const Tag = embedded ? 'div' : 'section';
+---
+<Tag class:list={['proof', { 'proof--embedded': embedded, screen: !embedded }, cls]} aria-label={embedded ? title : undefined}>
+  <div class:list={{ container: !embedded }}>
+    {!embedded && <h2 class="proof__h">{title}</h2>}
+    {!embedded && <div class="proof__visual"><slot /></div>}
+    <ul class="proof__list" role="list">
+      {
+        items.map((s) => (
+          <li class="proof__item">
+            <p class="proof__num num">{s.value}</p>
+            <p class="proof__label">{s.label}</p>
+            <p class="proof__src">
+              Source:{' '}
+              {s.url ? (
+                <a href={s.url} rel="noopener" target="_blank">
+                  {s.source}
+                </a>
+              ) : (
+                s.source
+              )}
+              , {s.sample}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Tag>
+
+<style>
+  .proof:not(.proof--embedded) {
+    border-top: 1px solid var(--c-line);
+  }
+  .proof--embedded {
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-line);
+  }
+  .proof__h {
+    margin-bottom: var(--s-5);
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .proof__visual {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--s-6);
+  }
+  .proof__visual:empty {
+    display: none;
+  }
+  .proof__list {
+    display: grid;
+    gap: var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .proof__num {
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: var(--track-display);
+    color: var(--c-primary);
+  }
+  .proof--embedded .proof__num {
+    font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  }
+  .proof__label {
+    max-width: 30ch;
+    margin-top: var(--s-2);
+    font-size: 1.0625rem;
+    line-height: 1.45;
+  }
+  .proof__src {
+    margin-top: var(--s-1);
+    font-size: var(--fs-small);
+    color: var(--c-muted);
+  }
+  .proof__src a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  @media (min-width: 768px) {
+    .proof__list {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .proof__item {
+      grid-column: span 4;
+    }
+  }
+</style>

@@ -1,0 +1,90 @@
+/*
+  Accelera design tokens. Shared by the landing pages (/lp/*) and the full website (P4).
+  Source of truth for values: landing/brand-kit.json (palette updated 2026-11-15 to navy + orange).
+*/
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-wght.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* Color: brand. Navy + white + orange (Tyler 2026-11-15; values from his original brand docs).
+     60-30-10: navy and white carry the page, orange marks the main action and a few highlights. */
+  --c-bg: #ffffff;
+  --c-ink: #0a1929; /* navy: text, dark bands */
+  --c-ink-2: #3a4b6b;
+  --c-muted: #5b6270;
+  --c-primary: #1a2a47; /* navy blue: links, focus, selected states, step marks */
+  --c-primary-ink: #0a1929;
+  --c-primary-tint: #e9edf4;
+  --c-cta: #ff6b00; /* orange: primary buttons only (navy text on it, 6.2:1) */
+  --c-cta-hover: #f05f00;
+  --c-cta-ink: #0a1929;
+  --c-accent: #ff6b00; /* orange fills: icons on dark, badges */
+  --c-accent-ink: #b84a00; /* orange text/icons on white, 5.2:1 */
+  --c-accent-tint: #fff1e6;
+  --c-card: #f7f8fa;
+  --c-line: #e3e6ec;
+  --c-error: #dc2626;
+  --c-night: #0a1929; /* the after-hours phone card, header, footer */
+  --c-night-2: #1a2a47;
+  /* "Not real yet" marker family: placeholders, demo and example labels. Deliberately not a brand color. */
+  --c-flag: #6d28d9;
+  --c-flag-tint: #f3eefe;
+
+  /* Type */
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fs-display: clamp(2.25rem, 1.6rem + 2.9vw, 3.5rem);
+  --fs-h2: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  --fs-h3: 1.25rem;
+  --fs-sub: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-stat: clamp(2rem, 1.6rem + 1.8vw, 3rem);
+  --lh-tight: 1.1;
+  --lh-snug: 1.25;
+  --lh-body: 1.6;
+  --track-display: -0.02em;
+
+  /* Space (8px rhythm) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-section: clamp(4rem, 3rem + 5vw, 7rem);
+  --container: 1248px; /* content 1200px: 120px page margin at 1440 */
+  --gutter: clamp(1rem, 0.6rem + 2vw, 1.5rem);
+
+  /* Shape and depth */
+  --r-sm: 6px;
+  --r-md: 12px;
+  --r-lg: 20px;
+  --r-pill: 999px;
+  --shadow-1: 0 1px 3px rgba(26, 26, 46, 0.08);
+  --shadow-2: 0 8px 24px rgba(26, 26, 46, 0.08);
+  --shadow-3: 0 24px 60px -12px rgba(18, 24, 38, 0.35);
+  --shadow-cta: 0 6px 16px -4px rgba(255, 107, 0, 0.45);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 150ms;
+  --t-med: 250ms;
+  --t-slow: 400ms;
+
+  /* Hit area */
+  --tap: 44px;
+
+  /* Layout */
+  --nav-h: 64px; /* the static top bar */
+}

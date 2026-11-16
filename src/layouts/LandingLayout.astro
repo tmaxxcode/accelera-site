@@ -1,0 +1,124 @@
+---
+/*
+  Layout for paid/social landing pages (/lp/*): noindex, no site navigation, one action.
+  The full website (P4) should build its own SiteLayout on the same tokens.css + base.css.
+*/
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { assertReleasable, contact } from '../config/offer';
+import Term from '../components/ui/Term.astro';
+import Icon from '../components/ui/Icon.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  variant: string;
+}
+const { title, description, variant } = Astro.props;
+assertReleasable();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#0a1929" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <!-- GA4 / Microsoft Clarity / Meta pixel: not loaded. No IDs exist yet (waiting on Tyler). See src/scripts/track.ts. -->
+  </head>
+  <body data-variant={variant}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="lp-header nav">
+      <div class="container lp-header__in">
+        <img
+          class="lp-header__logo"
+          src="/brand/accelera-logo.png"
+          alt="Accelera"
+          width="162"
+          height="36"
+          decoding="async"
+        />
+        <a class="lp-header__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="header">
+          <Icon name="phone" size={18} />
+          <span class="lp-header__call-text"><Term term={contact.phoneDisplay} nowrap /></span>
+          <span class="lp-header__call-short">Call</span>
+        </a>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <slot name="after" />
+    <script>
+      import { bindTracking, fillUtmFields } from '../scripts/track';
+      bindTracking();
+      fillUtmFields();
+    </script>
+  </body>
+</html>
+
+<style>
+  .lp-header {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--c-night);
+    color: #fff;
+  }
+  .lp-header__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    height: var(--nav-h);
+  }
+  .lp-header__logo {
+    width: 144px;
+    height: auto;
+    filter: invert(1);
+  }
+  .lp-header__call {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--tap);
+    padding: 0 0.25rem;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .lp-header__call:hover {
+    color: #ffa766;
+  }
+  .lp-header__call svg {
+    color: var(--c-accent);
+  }
+  .lp-header__call :global(.term--pending) {
+    outline-color: #c4b5fd;
+  }
+  .lp-header__call-short {
+    display: none;
+  }
+  @media (max-width: 479px) {
+    .lp-header__logo {
+      width: 120px;
+    }
+    .lp-header__call-text {
+      display: none;
+    }
+    .lp-header__call-short {
+      display: inline;
+    }
+  }
+  @media (min-width: 1024px) {
+    .lp-header__logo {
+      width: 162px;
+    }
+  }
+</style>
