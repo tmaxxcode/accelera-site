@@ -1,0 +1,36 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import FaqList from '../components/site/FaqList.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import { breadcrumbSchema, faqSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'FAQ', path: '/faq/' }];
+const general = [
+  { q: 'What does Accelera do?', a: 'We build websites, add online booking and set up after-hours call answering for plumbers, roofers, auto repair shops and contractors in the Twin Cities.' },
+  { q: 'Where do you work?', a: 'Only in the seven-county Twin Cities metro: Hennepin, Ramsey, Dakota, Anoka, Washington, Scott and Carver counties.' },
+  { q: 'What is the free audit?', a: 'Tyler checks your website, your booking and how your calls are handled. You get a short list of what to fix, even if you never hire us.' },
+  { q: 'Do I have to buy everything?', a: 'No. Start with the website. Add booking or after-hours answering when you want them.' },
+];
+const owners = [
+  { q: 'I already paid an agency for search rankings and got nothing. Why is this different?', a: 'You pay for a finished site you can see and check, and nothing goes live until you approve it. No one can promise a ranking, and we will not.' },
+  { q: 'My spouse already takes the calls. Why would I need this?', a: 'Keep them on it. We cover the hours they are off: nights, weekends and holidays. Under 3% of callers who reach voicemail leave a message, according to Invoca.' },
+  { q: 'I am too busy for a project like this.', a: 'Your part is one 15-minute call and one look at the finished site. We do the rest. There is no app or login to learn.' },
+  { q: 'How do I know your numbers are real?', a: 'Every number on this site links to its source. Where we checked something ourselves, we say so and say how many businesses we checked.' },
+];
+---
+<SiteLayout
+  title="FAQ | Accelera, Twin Cities"
+  description="Straight answers about Accelera's websites, online booking and after-hours answering for Twin Cities trades."
+  schema={[breadcrumbSchema(Astro.site!, crumbs), faqSchema([...general, ...owners])]}
+>
+  <PageHero title="Straight answers" lead="The questions owners ask us most, answered in plain words." crumbs={crumbs} />
+  <Section id="general" title="The basics" layout="split">
+    <FaqList items={general} name="general" />
+  </Section>
+  <Section id="owners" title="What owners push back on" layout="split" tone="card">
+    <FaqList items={owners} name="owners" />
+  </Section>
+  <AuditForm />
+</SiteLayout>

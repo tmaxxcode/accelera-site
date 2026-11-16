@@ -6,10 +6,11 @@ import Icon from '../ui/Icon.astro';
 interface Props {
   /* The job choices a customer sees; match them to the page's trade. */
   jobs?: string[];
+  screen?: boolean;
 }
-const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'] } = Astro.props;
+const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'], screen = true } = Astro.props;
 ---
-<section class="demo-sec screen" id="demo" aria-labelledby="demo-h">
+<section class:list={['demo-sec', screen ? 'screen' : 'flow']} id="demo" aria-labelledby="demo-h">
   <div class="container split">
     <div class="demo-sec__head split__a">
       <h2 id="demo-h">Try it. This is what your customers would see.</h2>

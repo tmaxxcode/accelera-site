@@ -1,0 +1,123 @@
+---
+/*
+  Hero for inner website pages: breadcrumb, h1, lead, the audit CTA and a call link.
+  An optional visual goes in the default slot (right column on wide screens).
+*/
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { contact } from '../../config/offer';
+
+interface Props {
+  title: string;
+  lead: string;
+  crumbs?: { name: string; path: string }[];
+  cta?: string;
+}
+const { title, lead, crumbs = [], cta = 'Get a free audit' } = Astro.props;
+const hasVisual = Astro.slots.has('default');
+---
+<section id="hero" class:list={['page-hero', { 'page-hero--visual': hasVisual }]} aria-labelledby="page-h">
+  <div class="container page-hero__in">
+    <div class="page-hero__copy">
+      {
+        crumbs.length > 0 && (
+          <nav class="crumbs" aria-label="Breadcrumb">
+            <ol role="list">
+              {crumbs.map((c, i) => (
+                <li>
+                  {i < crumbs.length - 1 ? <a href={c.path}>{c.name}</a> : <span aria-current="page">{c.name}</span>}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+      <h1 id="page-h">{title}</h1>
+      <p class="page-hero__lead">{lead}</p>
+      <div class="page-hero__ctas">
+        <Button href="#audit" track="book_call" trackLabel="page-hero">{cta} <Icon name="arrow" size={18} /></Button>
+        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="page-hero">
+          <Icon name="phone" size={18} /> Call Tyler
+        </Button>
+      </div>
+    </div>
+    {hasVisual && <div class="page-hero__visual"><slot /></div>}
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 5rem);
+    background:
+      radial-gradient(55% 60% at 90% 10%, rgba(255, 107, 0, 0.07), transparent 70%),
+      radial-gradient(70% 70% at 100% 0%, var(--c-primary-tint), transparent 70%),
+      var(--c-bg);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .page-hero__in {
+    display: grid;
+    gap: var(--s-6);
+    align-items: center;
+  }
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin: 0 0 var(--s-4);
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+  }
+  .crumbs li + li::before {
+    content: '/';
+    margin-right: 0.25rem;
+    color: #9aa3b2;
+  }
+  .crumbs a {
+    color: var(--c-ink-2);
+  }
+  h1 {
+    max-width: 20ch;
+    font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem);
+    line-height: 1.1;
+  }
+  .page-hero__lead {
+    max-width: 38rem;
+    margin-top: var(--s-4);
+    font-size: var(--fs-sub);
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--c-ink-2);
+  }
+  .page-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+  }
+  .page-hero__visual {
+    display: flex;
+    justify-content: center;
+  }
+  @media (max-width: 599px) {
+    .page-hero__ctas :global(.btn) {
+      flex: 1 1 100%;
+    }
+  }
+  @media (min-width: 1024px) {
+    .page-hero--visual .page-hero__in {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .page-hero--visual .page-hero__copy {
+      grid-column: 1 / span 7;
+    }
+    .page-hero--visual .page-hero__visual {
+      grid-column: 8 / span 5;
+    }
+    .page-hero__visual :global(.call) {
+      max-width: none;
+    }
+  }
+</style>

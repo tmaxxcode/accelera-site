@@ -1,0 +1,41 @@
+---
+import TradePage from '../components/site/TradePage.astro';
+import { stats } from '../config/stats';
+---
+<TradePage
+  path="/roofers/"
+  name="Roofers"
+  title="Roofing Websites and After-Hours Answering, Twin Cities | Accelera"
+  description="Websites, online booking and after-hours call answering for roofing businesses in the Twin Cities metro of Minnesota."
+  h1="Websites, booking and after-hours answering for Twin Cities roofers"
+  lead="Storms do not keep business hours. Get found when homeowners search, let them book an inspection online, and catch the calls that come at night."
+  problemsTitle="Where roofing jobs slip away"
+  problems={[
+    'One storm can bring more calls in a night than you can answer.',
+    'A homeowner with a leak calls the next roofer if nobody picks up.',
+    'Ice dams and hail damage need a quick first look.',
+    'An inspection request sent through a form can sit until Monday.',
+  ]}
+  proof={[stats.roofers, stats.voicemail, stats.bookOnCall]}
+  call={{
+    quote: 'The storm tore shingles off. Water is getting in.',
+    job: 'Roof leak check, Wed 8:00 a.m.',
+    sms: 'New job booked: roof leak check, Maplewood, Wed 8:00 a.m. Address confirmed.',
+  }}
+  trade="roofing"
+  jobs={['Roof leak', 'Storm or hail damage', 'Ice dam', 'Estimate for a new roof']}
+  faq={[
+    {
+      q: 'Can homeowners book an inspection online?',
+      a: 'Yes. They pick the job, a time and the address. You get a text with the details.',
+    },
+    {
+      q: 'Can my site show my Minnesota license?',
+      a: 'Yes. If you hold a Minnesota contractor license, we can show the number so homeowners can check it themselves.',
+    },
+    {
+      q: 'Do you work with roofers outside the Twin Cities?',
+      a: 'No. We only work in the seven-county Twin Cities metro.',
+    },
+  ]}
+/>

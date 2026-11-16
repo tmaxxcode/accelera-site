@@ -1,0 +1,60 @@
+---
+/* One trade page: unique copy, stats, example call, calculator trade and demo jobs come from the page. */
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PageHero from './PageHero.astro';
+import Section from './Section.astro';
+import Checklist from './Checklist.astro';
+import FaqList from './FaqList.astro';
+import LinkCards from './LinkCards.astro';
+import CallCard, { type CallExample } from '../lp/CallCard.astro';
+import ProofBar from '../lp/ProofBar.astro';
+import Calculator from '../lp/Calculator.astro';
+import BookingDemo from '../lp/BookingDemo.astro';
+import AuditForm from '../lp/AuditForm.astro';
+import { pages } from '../../config/site';
+import type { Stat } from '../../config/stats';
+import { breadcrumbSchema, faqSchema } from '../../config/schema';
+
+interface Props {
+  path: string;
+  name: string;
+  title: string;
+  description: string;
+  h1: string;
+  lead: string;
+  problemsTitle: string;
+  problems: string[];
+  proof: Stat[];
+  call?: CallExample;
+  trade: 'plumbing' | 'roofing' | 'auto' | 'contracting';
+  jobs: string[];
+  faq: { q: string; a: string }[];
+}
+const p = Astro.props;
+const crumbs = [{ name: 'Home', path: '/' }, { name: p.name, path: p.path }];
+const site = Astro.site!;
+---
+<SiteLayout title={p.title} description={p.description} schema={[breadcrumbSchema(site, crumbs), faqSchema(p.faq)]}>
+  <PageHero title={p.h1} lead={p.lead} crumbs={crumbs}>
+    <CallCard call={p.call} />
+  </PageHero>
+
+  <Section id="problems" title={p.problemsTitle} layout="split">
+    <Checklist items={p.problems} />
+  </Section>
+
+  <ProofBar items={p.proof} screen={false} />
+
+  <Section id="services" title="What we set up for you" tone="card">
+    <LinkCards items={pages.filter((x) => x.group === 'service')} />
+  </Section>
+
+  <Calculator trade={p.trade} screen={false} />
+  <BookingDemo jobs={p.jobs} screen={false} />
+
+  <Section id="questions" title="Questions owners ask" layout="split">
+    <FaqList items={p.faq} name={p.trade} />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>

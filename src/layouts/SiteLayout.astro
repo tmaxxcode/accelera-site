@@ -1,0 +1,500 @@
+---
+/*
+  Layout for the public website: indexable, canonical, nav + footer, JSON-LD.
+  Landing pages keep LandingLayout (noindex, no nav).
+*/
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { assertReleasable, contact } from '../config/offer';
+import { nav, pages, serviceArea } from '../config/site';
+import { orgSchema } from '../config/schema';
+import Term from '../components/ui/Term.astro';
+import Icon from '../components/ui/Icon.astro';
+import StickyCta from '../components/lp/StickyCta.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /* Extra JSON-LD objects for this page (Service, FAQPage, BreadcrumbList). */
+  schema?: object[];
+}
+const { title, description, schema = [] } = Astro.props;
+assertReleasable();
+const site = Astro.site ?? new URL('https://accelera.example.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const here = Astro.url.pathname;
+const isHome = here === '/';
+const jsonld = [...(isHome ? [orgSchema(site)] : []), ...schema];
+const groups = [
+  { label: 'Services', items: pages.filter((p) => p.group === 'service') },
+  { label: 'Who we help', items: pages.filter((p) => p.group === 'trade') },
+  { label: 'Company', items: pages.filter((p) => p.group === 'company' || p.group === 'tool') },
+];
+const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(path));
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0a1929" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Accelera" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL('/brand/accelera-logo.png', site).href} />
+    <meta name="twitter:card" content="summary" />
+    {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
+    <!-- GA4 / Clarity: not loaded. No IDs yet (MASTER L-2). Events already go to dataLayer via src/scripts/track.ts. -->
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header nav">
+      <div class="container site-header__in">
+        <a href="/" class="site-header__home" aria-label="Accelera home">
+          <img src="/brand/accelera-logo.png" alt="Accelera" width="162" height="36" decoding="async" />
+        </a>
+
+        <nav class="site-nav" aria-label="Main">
+          <ul role="list">
+            {
+              nav.map((item) =>
+                item.children ? (
+                  <li class="site-nav__group">
+                    <a href={item.path} aria-current={item.children.some((c) => active(c.path)) ? 'true' : undefined}>
+                      {item.label} <Icon name="chevron" size={14} />
+                    </a>
+                    <ul class="site-nav__menu" role="list">
+                      {item.children.map((c) => (
+                        <li>
+                          <a href={c.path} aria-current={active(c.path) ? 'page' : undefined}>
+                            <strong>{c.title}</strong>
+                            <span>{c.summary}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ) : (
+                  <li>
+                    <a href={item.path} aria-current={active(item.path) ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                ),
+              )
+            }
+          </ul>
+        </nav>
+
+        <div class="site-header__actions">
+          <a class="site-header__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="header" aria-label="Call Tyler">
+            <Icon name="phone" size={18} />
+          </a>
+          <a class="site-header__cta" href="#audit" data-track="book_call" data-track-label="header">Free audit</a>
+          <details class="site-menu">
+            <summary aria-label="Menu"><span></span><span></span><span></span></summary>
+            <div class="site-menu__panel">
+              {
+                groups.map((g) => (
+                  <div class="site-menu__group">
+                    <p class="site-menu__label">{g.label}</p>
+                    <ul role="list">
+                      {g.items.map((p) => (
+                        <li>
+                          <a href={p.path} aria-current={active(p.path) ? 'page' : undefined}>
+                            {p.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              }
+            </div>
+          </details>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="container site-foot__in">
+        <div class="site-foot__brand">
+          <img src="/brand/accelera-logo.png" alt="Accelera" width="162" height="36" loading="lazy" decoding="async" />
+          <p>Websites, online booking and after-hours answering for Twin Cities trades.</p>
+          <p class="site-foot__area">Serving {serviceArea.slice(0, -1).join(', ')} and {serviceArea.at(-1)} counties. Twin Cities only.</p>
+          <p class="site-foot__contact">
+            <a href={contact.phoneHref.value} data-track="call_click" data-track-label="footer"><Term term={contact.phoneDisplay} nowrap /></a>
+            <a href={`mailto:${contact.email.value}`}><Term term={contact.email} nowrap /></a>
+          </p>
+        </div>
+        {
+          groups.map((g) => (
+            <div class="site-foot__col">
+              <p class="site-foot__label">{g.label}</p>
+              <ul role="list">
+                {g.items.map((p) => (
+                  <li>
+                    <a href={p.path}>{p.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+      <div class="container site-foot__base">
+        <p>© {new Date().getFullYear()} Accelera. Every number on this site links to its source.</p>
+      </div>
+    </footer>
+
+    <StickyCta />
+    <script>
+      import { bindTracking, fillUtmFields } from '../scripts/track';
+      bindTracking();
+      fillUtmFields();
+      // Close the phone menu after a same-page jump.
+      document.querySelectorAll('.site-menu a').forEach((a) =>
+        a.addEventListener('click', () => a.closest('details')?.removeAttribute('open')),
+      );
+    </script>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--c-night);
+    color: #fff;
+  }
+  .site-header__in {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    height: var(--nav-h);
+  }
+  .site-header__home {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    flex: none;
+  }
+  .site-header__home img {
+    width: 132px;
+    height: auto;
+    filter: invert(1);
+  }
+  .site-nav {
+    display: none;
+    margin-left: auto;
+  }
+  .site-nav > ul {
+    display: flex;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-nav > ul > li {
+    position: relative;
+  }
+  .site-nav > ul > li > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: var(--tap);
+    padding: 0 0.75rem;
+    border-radius: var(--r-sm);
+    color: #d6dcea;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .site-nav > ul > li > a:hover,
+  .site-nav > ul > li > a[aria-current] {
+    color: #fff;
+  }
+  .site-nav > ul > li > a[aria-current] {
+    box-shadow: inset 0 -2px 0 var(--c-accent);
+    border-radius: 0;
+  }
+  .site-nav__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    display: grid;
+    gap: 2px;
+    width: 320px;
+    margin: 0;
+    padding: var(--s-2);
+    list-style: none;
+    border-radius: var(--r-md);
+    background: #fff;
+    box-shadow: var(--shadow-2);
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 -4px;
+    transition:
+      opacity var(--t-fast) var(--ease-out),
+      translate var(--t-fast) var(--ease-out),
+      visibility 0s linear var(--t-fast);
+  }
+  .site-nav__group:hover .site-nav__menu,
+  .site-nav__group:focus-within .site-nav__menu {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+    transition-delay: 0s;
+  }
+  .site-nav__menu a {
+    display: grid;
+    gap: 2px;
+    padding: var(--s-3);
+    border-radius: var(--r-sm);
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+  .site-nav__menu a:hover,
+  .site-nav__menu a[aria-current] {
+    background: var(--c-primary-tint);
+  }
+  .site-nav__menu strong {
+    font-size: 0.9375rem;
+  }
+  .site-nav__menu span {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--c-ink-2);
+    line-height: 1.4;
+  }
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-left: auto;
+  }
+  .site-header__call {
+    display: grid;
+    place-items: center;
+    width: var(--tap);
+    height: var(--tap);
+    border-radius: var(--r-md);
+    color: var(--c-accent);
+  }
+  .site-header__call:hover {
+    color: #ffa766;
+  }
+  .site-header__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    padding: 0 1rem;
+    border-radius: var(--r-md);
+    background: var(--c-cta);
+    color: var(--c-cta-ink);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-header__cta:hover {
+    background: var(--c-cta-hover);
+    color: var(--c-cta-ink);
+  }
+  .site-menu > summary {
+    display: grid;
+    place-content: center;
+    gap: 4px;
+    width: var(--tap);
+    height: var(--tap);
+    list-style: none;
+    cursor: pointer;
+  }
+  .site-menu > summary::-webkit-details-marker {
+    display: none;
+  }
+  .site-menu > summary span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+    transition:
+      transform var(--t-med) var(--ease-out),
+      opacity var(--t-med) var(--ease-out);
+  }
+  .site-menu[open] > summary span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .site-menu[open] > summary span:nth-child(2) {
+    opacity: 0;
+  }
+  .site-menu[open] > summary span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  .site-menu__panel {
+    position: fixed;
+    inset: var(--nav-h) 0 auto 0;
+    max-height: calc(100svh - var(--nav-h));
+    overflow-y: auto;
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-5) var(--gutter) var(--s-7);
+    background: var(--c-night);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .site-menu__label {
+    margin-bottom: var(--s-2);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: #9fb0cc;
+  }
+  .site-menu ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-menu ul a {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap);
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .site-menu ul a[aria-current] {
+    color: #ffa766;
+  }
+  @media (max-width: 359px) {
+    .site-header__call {
+      display: none;
+    }
+  }
+  @media (max-width: 479px) {
+    .site-header__in {
+      gap: var(--s-2);
+    }
+    .site-header__home img {
+      width: 112px;
+    }
+    .site-header__actions {
+      gap: 0;
+    }
+    .site-header__cta {
+      padding: 0 0.75rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-nav {
+      display: block;
+    }
+    .site-menu {
+      display: none;
+    }
+    .site-header__actions {
+      margin-left: var(--s-3);
+    }
+    .site-header__home img {
+      width: 150px;
+    }
+  }
+
+  .site-foot {
+    padding-block: var(--s-7) var(--s-5);
+    background: var(--c-night);
+    color: #c3cbd9;
+    font-size: var(--fs-small);
+  }
+  .site-foot__in {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .site-foot__brand {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 30rem;
+  }
+  .site-foot__brand img {
+    width: 140px;
+    height: auto;
+    filter: invert(1);
+  }
+  .site-foot__contact a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+  .site-foot__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+  }
+  .site-foot a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .site-foot a:hover {
+    color: #ffa766;
+  }
+  .site-foot :global(.term--pending) {
+    outline-color: #c4b5fd;
+  }
+  .site-foot__label {
+    margin-bottom: var(--s-2);
+    color: #fff;
+    font-weight: 700;
+  }
+  .site-foot__col ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .site-foot__col a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+  }
+  .site-foot__base {
+    margin-top: var(--s-6);
+    padding-top: var(--s-4);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  @media (min-width: 768px) {
+    .site-foot__in {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+    }
+    .site-foot__brand {
+      grid-column: 1 / span 12;
+    }
+    .site-foot__col {
+      grid-column: span 4;
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-foot__brand {
+      grid-column: 1 / span 5;
+    }
+    .site-foot__col {
+      grid-column: span 2;
+    }
+    .site-foot__col:nth-child(2) {
+      grid-column: 7 / span 2;
+    }
+  }
+</style>

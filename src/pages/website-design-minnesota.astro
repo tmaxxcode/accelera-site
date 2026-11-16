@@ -1,0 +1,96 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import Checklist from '../components/site/Checklist.astro';
+import FaqList from '../components/site/FaqList.astro';
+import LinkCards from '../components/site/LinkCards.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import { pages } from '../config/site';
+import { terms, prices } from '../config/offer';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../config/schema';
+
+const path = '/website-design-minnesota/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Website design', path }];
+const faq = [
+  {
+    q: 'Will my site show up on Google?',
+    a: 'We build every page around your trade and the towns you serve, which is what search engines and people look for. No one can promise a ranking, and we will not.',
+  },
+  {
+    q: 'Do I need a new site if I already have one?',
+    a: 'Not always. The free audit checks your current site, your booking and your phone setup. If your site already works, we will tell you.',
+  },
+  {
+    q: 'Who writes the words on the site?',
+    a: 'We do. On a 15-minute call we learn your trade, your area and the jobs you want more of. Then we write in the plain words your customers use.',
+  },
+  {
+    q: 'Can I make changes before it goes live?',
+    a: 'Yes. You see the live site on your phone, ask for changes, and nothing goes live until you say yes.',
+  },
+];
+const site = Astro.site!;
+---
+<SiteLayout
+  title="Website Design for Minnesota Trades | Accelera"
+  description="Website design for Twin Cities plumbers, roofers, auto shops and contractors. Built to be found for your trade and your towns, with your phone number one tap away."
+  schema={[
+    serviceSchema(site, 'Website design for trades', 'Websites for plumbers, roofers, auto repair shops and contractors in the Twin Cities metro.', path),
+    breadcrumbSchema(site, crumbs),
+    faqSchema(faq),
+  ]}
+>
+  <PageHero
+    title="Website design for Minnesota plumbers, roofers and auto shops"
+    lead="We build a site that shows up when people search your trade and your town, and makes calling or booking you easy. Twin Cities only."
+    crumbs={crumbs}
+  />
+
+  <Section id="why" title="What a trade website has to do" layout="split">
+    <div class="prose">
+      <p>When a pipe bursts or a roof leaks, people search for help close by. They call one of the first few names they see.</p>
+      <p>
+        Your site has two jobs. Be one of those names for the work you want. Then make the next step easy: one tap to call, or a
+        time they can book.
+      </p>
+      <p>Pretty pictures do not do either of those things on their own. Clear words about your trade and your towns do.</p>
+    </div>
+  </Section>
+
+  <Section id="includes" title="What your site includes" tone="card">
+    <Checklist
+      items={[
+        'A page for each kind of job you want more of',
+        'Your trade and your towns in plain words',
+        'Your phone number one tap away on every page',
+        'Built to load fast on a phone',
+        'Online booking built in, if you add it',
+        'You check the live site and approve it before launch',
+      ]}
+    />
+    <p class="note">
+      Price: <Term term={prices.site} />. <Term term={terms.noRetainer} suffix="." />
+      <a href="/pricing/">See pricing</a>
+    </p>
+  </Section>
+
+  <Section id="questions" title="Questions owners ask" layout="split">
+    <FaqList items={faq} name="web" />
+  </Section>
+
+  <Section id="more" title="Add the other two parts when you want them" tone="card">
+    <LinkCards items={pages.filter((p) => p.group === 'service' && p.path !== path)} cols={2} />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>
+
+<style>
+  .note {
+    margin-top: var(--s-5);
+    line-height: 2;
+    color: var(--c-ink-2);
+  }
+</style>

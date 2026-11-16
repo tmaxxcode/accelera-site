@@ -18,13 +18,15 @@ const trades = [
 interface Props {
   /* Which trade's example numbers load first. */
   trade?: 'plumbing' | 'roofing' | 'auto' | 'contracting';
+  /* Landing pages size each section to one screen; website pages pass screen={false}. */
+  screen?: boolean;
 }
-const { trade = 'plumbing' } = Astro.props;
+const { trade = 'plumbing', screen = true } = Astro.props;
 const start = trades.find((t) => t.id === trade) ?? trades[0];
 const missedDefault = 27;
 const bookRate = 0.46;
 ---
-<section class="calc-sec screen" id="calculator" aria-labelledby="calc-h">
+<section class:list={['calc-sec', screen ? 'screen' : 'flow']} id="calculator" aria-labelledby="calc-h">
   <div class="container split">
     <div class="calc-sec__intro split__a">
       <h2 id="calc-h">What do missed calls cost you?</h2>

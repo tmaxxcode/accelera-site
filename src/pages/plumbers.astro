@@ -1,0 +1,36 @@
+---
+import TradePage from '../components/site/TradePage.astro';
+import { stats } from '../config/stats';
+---
+<TradePage
+  path="/plumbers/"
+  name="Plumbers"
+  title="Plumber Websites and After-Hours Answering, Twin Cities | Accelera"
+  description="Websites, online booking and after-hours call answering for plumbing businesses in the Twin Cities metro of Minnesota."
+  h1="Websites, booking and after-hours answering for Twin Cities plumbers"
+  lead="Get found for the plumbing jobs you want, let customers book online, and stop losing the 2 a.m. burst-pipe calls."
+  problemsTitle="Where plumbing jobs slip away"
+  problems={[
+    'Burst pipes and backups do not wait for business hours. The caller picks whoever answers.',
+    'Whoever answers your phone in the day cannot also take the 2 a.m. call.',
+    'A contact form sent at midnight gets an answer the next day. By then the job is gone.',
+    'People search for a plumber near them and call one of the first few names.',
+  ]}
+  proof={[stats.plumbersMissed, stats.voicemail, stats.bookOnCall]}
+  trade="plumbing"
+  jobs={['Leak or burst pipe', 'Clogged drain', 'Water heater', 'Estimate for a project']}
+  faq={[
+    {
+      q: 'Do you only work with plumbers in the Twin Cities?',
+      a: 'Yes. We work with plumbing businesses in the seven-county Twin Cities metro and nowhere else.',
+    },
+    {
+      q: 'Can my site say I offer emergency service?',
+      a: 'Yes, if you offer it. The site says what you do, where you do it and when, in plain words.',
+    },
+    {
+      q: 'What if I already answer my phone around the clock?',
+      a: 'Then you may not need after-hours answering. The free audit looks at how your calls are handled now, and we only suggest what fills a real gap.',
+    },
+  ]}
+/>

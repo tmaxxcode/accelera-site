@@ -1,0 +1,43 @@
+---
+/* No sourced answer-rate stat exists for auto repair shops (99 Calls covers only mobile mechanics). */
+import TradePage from '../components/site/TradePage.astro';
+import { stats } from '../config/stats';
+---
+<TradePage
+  path="/auto-repair/"
+  name="Auto repair"
+  title="Auto Repair Shop Websites and Online Booking, Twin Cities | Accelera"
+  description="Websites, online booking and after-hours call answering for auto repair shops in the Twin Cities metro of Minnesota."
+  h1="Websites and online booking for Twin Cities auto repair shops"
+  lead="Show up when drivers search for a shop nearby. Let them book a repair after you close, and catch the calls you miss while you work."
+  problemsTitle="Where repair jobs slip away"
+  problems={[
+    'You cannot answer the phone with your hands under a car.',
+    'Drivers look for a shop after work, when you are closed.',
+    '"Call to schedule" sends people to the next shop that lets them book online.',
+    'A "Book an appointment" button that opens a plain contact form makes people wait.',
+  ]}
+  proof={[stats.unanswered, stats.voicemail, stats.bookOnCall]}
+  call={{
+    quote: 'My check-engine light is on and the brakes are grinding.',
+    check: { title: 'Car and phone read back', meta: 'Caller confirms they are right' },
+    job: 'Brake check, Tue 7:30 a.m.',
+    sms: 'New job booked: brake check, 2014 Civic, Tue 7:30 a.m. Phone number confirmed.',
+  }}
+  trade="auto"
+  jobs={['Brakes', 'Check-engine light', 'Oil change', 'Something else']}
+  faq={[
+    {
+      q: 'Can customers book a specific repair?',
+      a: 'Yes. They pick the job, like brakes or an oil change, and then a time. You get a text.',
+    },
+    {
+      q: 'We already have a booking button. Do we need this?',
+      a: 'Maybe not. The free audit checks whether your button really books a time or just opens a form.',
+    },
+    {
+      q: 'Do you work with shops outside the Twin Cities?',
+      a: 'No. We only work in the seven-county Twin Cities metro.',
+    },
+  ]}
+/>

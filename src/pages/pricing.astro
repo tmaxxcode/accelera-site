@@ -1,0 +1,67 @@
+---
+/* Every price and term here comes from src/config/offer.ts and shows a Placeholder tag until Tyler approves it. */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import FaqList from '../components/site/FaqList.astro';
+import OfferStack from '../components/lp/OfferStack.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import Icon from '../components/ui/Icon.astro';
+import { prices, terms } from '../config/offer';
+import { breadcrumbSchema, faqSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing/' }];
+const faq = [
+  { q: 'Do I have to buy all three parts?', a: 'No. Start with the website. Add online booking or after-hours answering when you want them.' },
+  { q: 'Is the free audit really free?', a: 'Yes. Tyler checks your site, your booking and your phone setup and sends you a short list of what to fix. You do not have to hire us.' },
+  { q: 'Can I see the site before I pay the rest?', a: 'You see the live site and approve it before it goes live. The exact payment steps are on this page.' },
+];
+---
+<SiteLayout
+  title="Pricing | Accelera, Twin Cities"
+  description="What Accelera's website, online booking and after-hours answering cost, and how payment works."
+  schema={[breadcrumbSchema(Astro.site!, crumbs), faqSchema(faq)]}
+>
+  <PageHero title="Plain prices. No surprises." lead="Three parts, each with one price. Start with the website and add the others when you want them." crumbs={crumbs} />
+
+  <OfferStack />
+
+  <Section id="payment" title="How payment works" layout="split">
+    <ul class="terms" role="list">
+      <li><Icon name="check" size={18} /> <Term term={prices.payment} /></li>
+      <li><Icon name="check" size={18} /> <span>{terms.approveFirst.value}</span></li>
+      <li><Icon name="check" size={18} /> <Term term={terms.guarantee} /></li>
+      <li><Icon name="check" size={18} /> <Term term={terms.ownership} /></li>
+      <li><Icon name="check" size={18} /> <Term term={terms.noRetainer} /></li>
+    </ul>
+  </Section>
+
+  <Section id="questions" title="Questions about cost" layout="split" tone="card">
+    <FaqList items={faq} name="pricing" />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>
+
+<style>
+  .terms {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.0625rem;
+  }
+  .terms li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: var(--s-3);
+    align-items: start;
+    line-height: 1.6;
+  }
+  .terms :global(svg) {
+    margin-top: 4px;
+    color: var(--c-accent-ink);
+  }
+</style>

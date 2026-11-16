@@ -1,0 +1,30 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import Checklist from '../components/site/Checklist.astro';
+import Steps from '../components/lp/Steps.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import { breadcrumbSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'How it works', path: '/how-it-works/' }];
+---
+<SiteLayout
+  title="How It Works | Accelera, Twin Cities"
+  description="One 15-minute call, we build it, you approve it. How Accelera sets up your website, booking and after-hours answering."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero title="Your part takes about 15 minutes" lead="You tell us about your business. We do the building. Nothing goes live until you say yes." crumbs={crumbs} />
+
+  <Steps />
+
+  <Section id="need" title="What we need from you" layout="split">
+    <Checklist items={['One 15-minute call', 'Your logo and job photos, if you have them', 'One look at the finished site on your phone', 'A yes, or a list of changes']} />
+  </Section>
+
+  <Section id="never" title="What you never have to do" layout="split" tone="card">
+    <Checklist items={['Write the words for your site', 'Learn a new app or log in to a dashboard', 'Sit through a long sales call', 'Guess what is working: every number we show you has a source']} />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>

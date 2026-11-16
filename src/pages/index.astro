@@ -1,16 +1,40 @@
 ---
----
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Hero from '../components/lp/Hero.astro';
+import ProofBar from '../components/lp/ProofBar.astro';
+import CallCard from '../components/lp/CallCard.astro';
+import Calculator from '../components/lp/Calculator.astro';
+import HowAndFaq from '../components/lp/HowAndFaq.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Section from '../components/site/Section.astro';
+import LinkCards from '../components/site/LinkCards.astro';
+import { pages } from '../config/site';
+import { stats } from '../config/stats';
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+const proof = [stats.unanswered, stats.voicemail, stats.bookOnCall];
+---
+<SiteLayout
+  title="Trade Websites, Booking and After-Hours Answering | Accelera"
+  description="Accelera builds websites, online booking and after-hours call answering for plumbers, roofers, auto repair shops and contractors in the Twin Cities metro."
+>
+  <Hero
+    headline="Websites that book jobs for Twin Cities trades."
+    sub="A website people find, online booking with no account, and after-hours call answering. One local team sets it up, and you approve it before it goes live."
+    cta="Get a free audit"
+  >
+    <ProofBar slot="foot" items={proof} embedded />
+  </Hero>
+  <ProofBar items={proof} class="hide-wide"><CallCard /></ProofBar>
+
+  <Section id="services" title="Three parts. Start with one." intro="Most owners start with the website. Add booking or after-hours answering when you want them." tone="card">
+    <LinkCards items={pages.filter((p) => p.group === 'service')} />
+  </Section>
+
+  <Section id="trades" title="Built for the trades that get calls at night">
+    <LinkCards items={pages.filter((p) => p.group === 'trade')} cols={4} />
+  </Section>
+
+  <Calculator />
+  <HowAndFaq />
+  <AuditForm />
+</SiteLayout>

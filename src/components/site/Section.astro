@@ -1,0 +1,69 @@
+---
+/*
+  A plain content section: heading (+ optional intro) and the slot.
+  layout="split" puts the heading in columns 1-5 and the content in 6-12 on wide screens.
+  tone: page white, card grey, or night (navy band).
+*/
+interface Props {
+  id?: string;
+  title: string;
+  intro?: string;
+  layout?: 'stack' | 'split';
+  tone?: 'white' | 'card' | 'night';
+}
+const { id, title, intro, layout = 'stack', tone = 'white' } = Astro.props;
+const hid = `${id ?? title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-h`;
+---
+<section id={id} class:list={['sec', `sec--${tone}`]} aria-labelledby={hid}>
+  <div class:list={['container', { split: layout === 'split' }]}>
+    <div class:list={['sec__head', { split__a: layout === 'split' }]}>
+      <h2 id={hid}>{title}</h2>
+      {intro && <p class="sec__intro">{intro}</p>}
+    </div>
+    <div class:list={['sec__body', { split__b: layout === 'split' }]}>
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .sec {
+    padding-block: var(--s-section);
+  }
+  .sec--card {
+    background: var(--c-card);
+    border-block: 1px solid var(--c-line);
+  }
+  .sec--night {
+    background: var(--c-night);
+    color: #fff;
+  }
+  .sec--night :global(.term--pending) {
+    outline-color: #c4b5fd;
+  }
+  h2 {
+    max-width: 22ch;
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
+  .sec__intro {
+    max-width: 36rem;
+    margin-top: var(--s-3);
+    font-size: 1.125rem;
+    color: var(--c-ink-2);
+  }
+  .sec--night .sec__intro {
+    color: #c3cbd9;
+  }
+  .container:not(.split) .sec__body {
+    margin-top: var(--s-6);
+  }
+  .sec__body :global(p + p) {
+    margin-top: var(--s-4);
+  }
+  .sec__body :global(> p),
+  .sec__body :global(.prose p) {
+    max-width: 65ch;
+    font-size: 1.0625rem;
+  }
+</style>

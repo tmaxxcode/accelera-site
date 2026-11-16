@@ -1,0 +1,53 @@
+---
+/* Founder facts come from Tyler's own docs (reference/business-docs). Photo is a placeholder until Tyler sends one. */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import Checklist from '../components/site/Checklist.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import { serviceArea } from '../config/site';
+import { breadcrumbSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'About', path: '/about/' }];
+---
+<SiteLayout
+  title="About Accelera | Twin Cities Websites for Trades"
+  description="Accelera is Tyler Maxwell's Twin Cities business. Websites, online booking and after-hours answering for local trades, and nothing outside the metro."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero
+    title="One local person who answers for the work"
+    lead="Accelera is Tyler Maxwell. He talks to every owner himself, and he only works in the Twin Cities."
+    crumbs={crumbs}
+  />
+
+  <Section id="why" title="Why Accelera exists" layout="split">
+    <div class="prose">
+      <p>
+        Tyler's dad is an electrician. One week he lost three jobs. Nobody got back to those people until morning, and by then
+        they had hired someone else.
+      </p>
+      <p>
+        Before Accelera, Tyler worked in sales, where the lesson was simple: the business that answers first usually wins. Accelera
+        exists so the answer comes from you, even at 2 a.m.
+      </p>
+    </div>
+  </Section>
+
+  <Section id="how" title="How Tyler works" layout="split" tone="card">
+    <Checklist
+      items={[
+        'He takes every call and sends every message himself',
+        'He only works with trades in the seven-county Twin Cities metro',
+        'Every number on this site links to where it came from',
+        'Nothing he builds goes live until you approve it',
+      ]}
+    />
+  </Section>
+
+  <Section id="area" title="Where we work" layout="split">
+    <p>{serviceArea.slice(0, -1).join(', ')} and {serviceArea.at(-1)} counties in Minnesota. That is the whole list.</p>
+  </Section>
+
+  <AuditForm />
+</SiteLayout>

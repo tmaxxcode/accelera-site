@@ -1,0 +1,72 @@
+---
+/*
+  Question list for website pages. Plain-text answers so the same items feed FAQPage JSON-LD
+  (pages pass faqSchema(items) to SiteLayout). Never put unapproved prices or terms in these answers.
+*/
+import Icon from '../ui/Icon.astro';
+interface Props {
+  items: { q: string; a: string }[];
+  name?: string;
+}
+const { items, name = 'faq' } = Astro.props;
+---
+<div class="faql">
+  {
+    items.map((i, n) => (
+      <details class="faql__q" name={name} data-faq={`${name}-${n + 1}`}>
+        <summary>
+          {i.q}
+          <Icon name="chevron" size={20} class="faql__chev" />
+        </summary>
+        <p>{i.a}</p>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faql {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 760px;
+  }
+  .faql__q {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-md);
+    background: #fff;
+    color: var(--c-ink);
+  }
+  .faql__q[open] {
+    border-color: #bcd0ee;
+    box-shadow: var(--shadow-1);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    min-height: 56px;
+    padding: var(--s-4) var(--s-5);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.4;
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary :global(.faql__chev) {
+    flex: none;
+    color: var(--c-primary);
+    transition: transform var(--t-med) var(--ease-out);
+  }
+  .faql__q[open] :global(.faql__chev) {
+    transform: rotate(180deg);
+  }
+  p {
+    max-width: 62ch;
+    padding: 0 var(--s-5) var(--s-5);
+    color: var(--c-ink-2);
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PageHero from '../../components/site/PageHero.astro';
+import Section from '../../components/site/Section.astro';
+import Calculator from '../../components/lp/Calculator.astro';
+import AuditForm from '../../components/lp/AuditForm.astro';
+import { stats } from '../../config/stats';
+import { breadcrumbSchema } from '../../config/schema';
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Missed-call calculator', path: '/tools/missed-call-calculator/' },
+];
+---
+<SiteLayout
+  title="Missed-Call Calculator for Trades | Accelera"
+  description="Estimate what missed calls may cost your plumbing, roofing, auto repair or contracting business each month. Free, with every number sourced."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero
+    title="What do missed calls cost your business?"
+    lead="Put in your own numbers. The math is short and every figure we use is linked to its source."
+    crumbs={crumbs}
+    cta="Check my real numbers"
+  />
+
+  <Calculator screen={false} />
+
+  <Section id="method" title="How the math works" layout="split" tone="card">
+    <div class="prose">
+      <p>Calls you get from new customers each month, times the share you miss, times the share that would have booked, times your average job.</p>
+      <p>
+        The missed share starts at 27%, the rate <a href={stats.unanswered.url} rel="noopener" target="_blank">Invoca</a> found for
+        home-service businesses. The booking share is 46%, the home-services figure in
+        <a href={stats.bookOnCall.url} rel="noopener" target="_blank">Invoca's 2025 study of 60M+ calls</a>.
+      </p>
+      <p>The starting job values and call counts are examples, not real data. Change them to yours. Your own numbers will tell you more than ours.</p>
+    </div>
+  </Section>
+
+  <AuditForm />
+</SiteLayout>

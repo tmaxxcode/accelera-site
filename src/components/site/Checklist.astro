@@ -1,0 +1,46 @@
+---
+/* A list of plain facts with check marks. Two columns on wide screens when long. */
+import Icon from '../ui/Icon.astro';
+interface Props {
+  items: string[];
+}
+const { items } = Astro.props;
+---
+<ul class:list={['check', { 'check--cols': items.length > 4 }]} role="list">
+  {
+    items.map((i) => (
+      <li>
+        <Icon name="check" size={18} />
+        <span>{i}</span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .check {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .check li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: var(--s-3);
+    align-items: start;
+    font-size: 1.0625rem;
+    line-height: 1.5;
+  }
+  .check :global(svg) {
+    margin-top: 3px;
+    color: var(--c-accent-ink);
+  }
+  @media (min-width: 768px) {
+    .check--cols {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--s-6);
+    }
+  }
+</style>

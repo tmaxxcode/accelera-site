@@ -107,6 +107,10 @@ footer :focus-visible {
   padding-block: var(--s-7);
 }
 
+.flow {
+  padding-block: var(--s-section);
+}
+
 .split {
   display: grid;
   gap: var(--s-6);

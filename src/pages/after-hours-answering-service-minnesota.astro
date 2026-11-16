@@ -1,0 +1,91 @@
+---
+/* Neutral on who answers (MASTER AL-1 open): no "live person" or "AI" claims anywhere on this page. */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import Checklist from '../components/site/Checklist.astro';
+import FaqList from '../components/site/FaqList.astro';
+import LinkCards from '../components/site/LinkCards.astro';
+import CallCard from '../components/lp/CallCard.astro';
+import ProofBar from '../components/lp/ProofBar.astro';
+import Calculator from '../components/lp/Calculator.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import { pages } from '../config/site';
+import { prices, terms } from '../config/offer';
+import { stats } from '../config/stats';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../config/schema';
+
+const path = '/after-hours-answering-service-minnesota/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'After-hours answering', path }];
+const faq = [
+  {
+    q: 'Does this replace the person who answers my phone now?',
+    a: 'No. They keep the hours they work now. We cover the rest: nights, weekends and holidays.',
+  },
+  {
+    q: 'What happens to the caller’s details?',
+    a: 'The address gets read back to the caller and confirmed. The job goes on your calendar, and you get a text.',
+  },
+  {
+    q: 'Why not just use voicemail?',
+    a: 'Under 3% of callers who reach voicemail leave a message, according to Invoca. The rest are gone before you can call back.',
+  },
+];
+const site = Astro.site!;
+---
+<SiteLayout
+  title="After-Hours Answering Service for Minnesota Trades | Accelera"
+  description="After-hours call answering for Twin Cities plumbers, roofers, auto shops and contractors. Calls get answered nights, weekends and holidays, and the job gets booked."
+  schema={[
+    serviceSchema(site, 'After-hours call answering for trades', 'Calls answered nights, weekends and holidays, with the job booked to the calendar and a text to the owner.', path),
+    breadcrumbSchema(site, crumbs),
+    faqSchema(faq),
+  ]}
+>
+  <PageHero
+    title="After-hours answering for Minnesota trades"
+    lead="Calls get answered nights, weekends and holidays. The address gets read back, the job lands on your calendar, and you get a text."
+    crumbs={crumbs}
+  >
+    <CallCard />
+  </PageHero>
+
+  <ProofBar items={[stats.unanswered, stats.voicemail, stats.bookOnCall]} screen={false} />
+
+  <Section id="daytime" title="You keep the daytime. We cover the rest." layout="split" tone="card">
+    <div class="prose">
+      <p>Whoever answers your phone today keeps doing it. They know your customers.</p>
+      <p>We cover the hours they are off. That is when burst pipes, storm leaks and no-start cars still call.</p>
+    </div>
+    <Checklist
+      items={['Nights, weekends and holidays', 'The address read back and confirmed', 'The job on your calendar', 'A text to you for every booked job']}
+    />
+    <p class="note">
+      Price: <Term term={prices.answering} />. <Term term={terms.guarantee} suffix="." /> <a href="/pricing/">See pricing</a>
+    </p>
+  </Section>
+
+  <Calculator screen={false} />
+
+  <Section id="questions" title="Questions owners ask" layout="split">
+    <FaqList items={faq} name="answering" />
+  </Section>
+
+  <Section id="more" title="Pairs well with" tone="card">
+    <LinkCards items={pages.filter((p) => p.group === 'service' && p.path !== path)} cols={2} />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>
+
+<style>
+  .note {
+    margin-top: var(--s-5);
+    line-height: 2;
+    color: var(--c-ink-2);
+  }
+  :global(#daytime .prose) {
+    margin-bottom: var(--s-5);
+  }
+</style>

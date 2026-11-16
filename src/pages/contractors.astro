@@ -1,0 +1,41 @@
+---
+import TradePage from '../components/site/TradePage.astro';
+import { stats } from '../config/stats';
+---
+<TradePage
+  path="/contractors/"
+  name="Contractors"
+  title="Contractor Websites and Online Estimate Booking, Twin Cities | Accelera"
+  description="Websites, online estimate booking and after-hours call answering for general contractors and remodelers in the Twin Cities metro."
+  h1="Websites, booking and after-hours answering for Twin Cities contractors"
+  lead="Show the work you want more of, let homeowners book an estimate online, and stop losing the calls that come after hours."
+  problemsTitle="Where projects slip away"
+  problems={[
+    'Estimate requests come in at night and on weekends.',
+    'A form that gets an answer days later loses the homeowner to someone faster.',
+    'Homeowners compare a few contractors before they call. Your site has to make that call easy.',
+    'You are on a job site all day, not at a desk.',
+  ]}
+  proof={[stats.unanswered, stats.voicemail, stats.bookOnCall]}
+  call={{
+    quote: 'We want a quote for a kitchen remodel. Can someone come out?',
+    job: 'Estimate visit, Thu 4:00 p.m.',
+    sms: 'New estimate booked: kitchen remodel, Woodbury, Thu 4:00 p.m. Address confirmed.',
+  }}
+  trade="contracting"
+  jobs={['Estimate for a remodel', 'Repair job', 'Addition or new build', 'Something else']}
+  faq={[
+    {
+      q: 'Can homeowners book an estimate online?',
+      a: 'Yes. They pick the kind of project and a time. You get a text with the details.',
+    },
+    {
+      q: 'Will the site show my past projects?',
+      a: 'Yes, if you have photos you can share. We do not use stock photos of other people’s work.',
+    },
+    {
+      q: 'Do you work outside the Twin Cities?',
+      a: 'No. We only work in the seven-county Twin Cities metro.',
+    },
+  ]}
+/>

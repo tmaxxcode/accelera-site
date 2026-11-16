@@ -1,0 +1,84 @@
+---
+/* Contact details are placeholders (offer.ts contact.*) until Tyler sets up phone, email and Cal.com (MASTER P3). */
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import Icon from '../components/ui/Icon.astro';
+import { contact } from '../config/offer';
+import { serviceArea } from '../config/site';
+import { breadcrumbSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact/' }];
+---
+<SiteLayout
+  title="Contact Accelera | Free Missed-Call and Booking Audit"
+  description="Call Tyler or ask for a free missed-call and booking audit. Accelera works with trades in the Twin Cities metro only."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero title="Talk to Tyler" lead="Call, send an email, or ask for the free audit below. Tyler reads and answers every one himself." crumbs={crumbs} />
+
+  <Section id="reach" title="Ways to reach us" layout="split">
+    <ul class="reach" role="list">
+      <li>
+        <Icon name="phone" size={20} />
+        <a href={contact.phoneHref.value} data-track="call_click" data-track-label="contact"><Term term={contact.phoneDisplay} nowrap /></a>
+      </li>
+      <li>
+        <Icon name="message" size={20} />
+        <a href={`mailto:${contact.email.value}`}><Term term={contact.email} nowrap /></a>
+      </li>
+      <li>
+        <Icon name="calendar" size={20} />
+        <a href={contact.calLink.value} data-track="book_call" data-track-label="cal">Book a 15-minute call</a>
+        {!contact.calLink.approved && <span class="ph">Placeholder link</span>}
+      </li>
+      <li>
+        <Icon name="pin" size={20} />
+        <span>{serviceArea.slice(0, -1).join(', ')} and {serviceArea.at(-1)} counties, Minnesota</span>
+      </li>
+    </ul>
+  </Section>
+
+  <AuditForm showStory={false} />
+</SiteLayout>
+
+<style>
+  .reach {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 1.125rem;
+  }
+  .reach li {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: var(--s-3);
+    align-items: center;
+    min-height: var(--tap);
+  }
+  .ph {
+    margin-left: 0.5rem;
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    background: var(--c-flag-tint);
+    color: var(--c-flag);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .reach :global(svg) {
+    color: var(--c-accent-ink);
+  }
+  .reach a {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    min-height: var(--tap);
+    font-weight: 600;
+  }
+</style>

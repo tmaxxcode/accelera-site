@@ -9,12 +9,14 @@ interface Props {
   items: Stat[];
   title?: string;
   embedded?: boolean;
+  /* Landing pages size every section to one screen; website pages pass screen={false}. */
+  screen?: boolean;
   class?: string;
 }
-const { items, title = 'What happens to calls nobody answers', embedded = false, class: cls } = Astro.props;
+const { items, title = 'What happens to calls nobody answers', embedded = false, screen = true, class: cls } = Astro.props;
 const Tag = embedded ? 'div' : 'section';
 ---
-<Tag class:list={['proof', { 'proof--embedded': embedded, screen: !embedded }, cls]} aria-label={embedded ? title : undefined}>
+<Tag class:list={['proof', { 'proof--embedded': embedded, screen: !embedded && screen, 'proof--flow': !embedded && !screen }, cls]} aria-label={embedded ? title : undefined}>
   <div class:list={{ container: !embedded }}>
     {!embedded && <h2 class="proof__h">{title}</h2>}
     {!embedded && <div class="proof__visual"><slot /></div>}
@@ -45,6 +47,9 @@ const Tag = embedded ? 'div' : 'section';
 <style>
   .proof:not(.proof--embedded) {
     border-top: 1px solid var(--c-line);
+  }
+  .proof--flow {
+    padding-block: var(--s-section);
   }
   .proof--embedded {
     padding-top: var(--s-5);

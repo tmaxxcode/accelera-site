@@ -1,0 +1,86 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import Checklist from '../components/site/Checklist.astro';
+import FaqList from '../components/site/FaqList.astro';
+import LinkCards from '../components/site/LinkCards.astro';
+import BookingDemo from '../components/lp/BookingDemo.astro';
+import ProofBar from '../components/lp/ProofBar.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import { pages } from '../config/site';
+import { prices, terms } from '../config/offer';
+import { stats } from '../config/stats';
+import { breadcrumbSchema, faqSchema, serviceSchema } from '../config/schema';
+
+const path = '/online-booking-minnesota/';
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Online booking', path }];
+const faq = [
+  {
+    q: 'Do customers need to make an account?',
+    a: 'No. They pick a job, a time and an address. There is no account and no password.',
+  },
+  {
+    q: 'Do I have to learn new software?',
+    a: 'No. Every booked job comes to you as a text.',
+  },
+  {
+    q: 'Can I see it before I decide?',
+    a: 'Yes. Try the demo on this page. It works like the real thing, but it sends nothing.',
+  },
+];
+const site = Astro.site!;
+---
+<SiteLayout
+  title="Online Booking for Minnesota Home-Service Businesses | Accelera"
+  description="Let customers book a job on your website with no account. Online booking for Twin Cities plumbers, roofers, auto shops and contractors."
+  schema={[
+    serviceSchema(site, 'Online booking for trades', 'No-account online booking on the business website, with a text for every booked job.', path),
+    breadcrumbSchema(site, crumbs),
+    faqSchema(faq),
+  ]}
+>
+  <PageHero
+    title="Online booking for Minnesota home-service businesses"
+    lead="Customers pick a job, a time and an address on your site. No account, no password. You get a text for every booked job."
+    crumbs={crumbs}
+  />
+
+  <ProofBar items={[stats.bookingGap, stats.bookOnCall]} title="The gap we keep finding" screen={false} />
+
+  <BookingDemo jobs={['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project']} screen={false} />
+
+  <Section id="includes" title="What you get" tone="card">
+    <Checklist
+      items={[
+        'Booking that sits on your own website',
+        'Customers pick a job, a time and an address',
+        'No account or password for them',
+        'A text to you for every booked job',
+        'Works on any phone',
+      ]}
+    />
+    <p class="note">
+      Price: <Term term={prices.booking} />. <Term term={terms.guarantee} suffix="." /> <a href="/pricing/">See pricing</a>
+    </p>
+  </Section>
+
+  <Section id="questions" title="Questions owners ask" layout="split">
+    <FaqList items={faq} name="booking" />
+  </Section>
+
+  <Section id="more" title="Pairs well with" tone="card">
+    <LinkCards items={pages.filter((p) => p.group === 'service' && p.path !== path)} cols={2} />
+  </Section>
+
+  <AuditForm />
+</SiteLayout>
+
+<style>
+  .note {
+    margin-top: var(--s-5);
+    line-height: 2;
+    color: var(--c-ink-2);
+  }
+</style>
