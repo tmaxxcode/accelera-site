@@ -27,8 +27,10 @@ interface Props {
   call?: CallExample;
   trade?: 'plumbing' | 'roofing' | 'auto' | 'contracting';
   jobs?: string[];
+  /* Booking-angle pages show the booking demo before the calculator. */
+  demoFirst?: boolean;
 }
-const { title, description, variant, headline, sub, proof, call, trade, jobs } = Astro.props;
+const { title, description, variant, headline, sub, proof, call, trade, jobs, demoFirst = false } = Astro.props;
 // The calculator always cites the 27% and 46% figures; the FAQ cites the voicemail figure.
 const sources = [...proof, stats.unanswered, stats.bookOnCall, stats.voicemail];
 ---
@@ -37,9 +39,10 @@ const sources = [...proof, stats.unanswered, stats.bookOnCall, stats.voicemail];
     <ProofBar slot="foot" items={proof} embedded />
   </Hero>
   <ProofBar items={proof} class="hide-wide"><CallCard call={call} /></ProofBar>
+  {demoFirst && <BookingDemo jobs={jobs} />}
   <Calculator trade={trade} />
   <OfferStack />
-  <BookingDemo jobs={jobs} />
+  {!demoFirst && <BookingDemo jobs={jobs} />}
   <HowAndFaq />
   <AuditForm />
   <LpFooter sources={sources} />

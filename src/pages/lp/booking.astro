@@ -1,0 +1,15 @@
+---
+/* /lp/booking — booking-gap angle ad set (all trades). LONG layout, demo first. noindex.
+   Proof leads with our own 8-site check (labeled as ours), then Invoca. */
+import LongLanding from '../../components/lp/LongLanding.astro';
+import { stats } from '../../config/stats';
+---
+<LongLanding
+  title="Let customers book online | Accelera, Twin Cities"
+  description="Online booking with no account, plus a website and after-hours call answering, for Twin Cities trades."
+  variant="booking"
+  headline="Customers want to book online. A contact form sends them to the next shop."
+  sub="We add booking to your website. Customers pick a job and a time with no account, and you get a text. For Twin Cities trades."
+  proof={[stats.bookingGap, stats.unanswered, stats.bookOnCall]}
+  demoFirst
+/>

@@ -75,8 +75,10 @@ export const stats = {
   bookingGap: {
     id: 'bookingGap',
     value: '7 of 8',
-    label: 'Twin Cities businesses we checked offer booking but have no online scheduler.',
-    source: 'Accelera audit',
+    // accelera-sync.md 2026-11-11: "7 of 8 have no working scheduler" (8 trade businesses' own sites).
+    // Doran-King's booking CTA is still being confirmed (CRM task ae21d556); recheck before ads run.
+    label: 'Twin Cities trade businesses we checked had no working online booking.',
+    source: 'Accelera check of their own websites',
     sample: '8 businesses, 2026-11-11',
     url: '',
     retrieved: '2026-11-11',
