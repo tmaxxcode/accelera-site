@@ -24,7 +24,7 @@ const { headline, sub, cta = 'Get my free audit', call } = Astro.props;
       <p class="hero__sub">{sub}</p>
       <div class="hero__ctas">
         <Button href="#audit" track="book_call" trackLabel="hero">{cta} <Icon name="arrow" size={18} /></Button>
-        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="hero">
+        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="hero" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
           <Icon name="phone" size={18} /> Call Tyler
         </Button>
       </div>

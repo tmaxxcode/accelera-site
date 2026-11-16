@@ -31,8 +31,10 @@ const crumbs = [{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact/
       </li>
       <li>
         <Icon name="calendar" size={20} />
-        <a href={contact.calLink.value} data-track="book_call" data-track-label="cal">Book a 15-minute call</a>
-        {!contact.calLink.approved && <span class="ph">Placeholder link</span>}
+        <span>
+          <a href={contact.calLink.value} data-track="book_call" data-track-label="cal">Book a 15-minute call</a>
+          {!contact.calLink.approved && <span class="ph">Placeholder link</span>}
+        </span>
       </li>
       <li>
         <Icon name="pin" size={20} />

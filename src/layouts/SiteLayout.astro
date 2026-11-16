@@ -17,9 +17,11 @@ interface Props {
   description: string;
   /* Extra JSON-LD objects for this page (Service, FAQPage, BreadcrumbList). */
   schema?: object[];
+  /* For the 404 page: no canonical, kept out of search. */
+  noindex?: boolean;
 }
-const { title, description, schema = [] } = Astro.props;
-assertReleasable();
+const { title, description, schema = [], noindex = false } = Astro.props;
+assertReleasable(Astro.site);
 const site = Astro.site ?? new URL('https://accelera.example.com');
 const canonical = new URL(Astro.url.pathname, site).href;
 const here = Astro.url.pathname;
@@ -39,7 +41,7 @@ const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta name="theme-color" content="#0a1929" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" href="/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
@@ -94,7 +96,7 @@ const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(
         </nav>
 
         <div class="site-header__actions">
-          <a class="site-header__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="header" aria-label="Call Tyler">
+          <a class="site-header__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="header" aria-label="Call Tyler" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
             <Icon name="phone" size={18} />
           </a>
           <a class="site-header__cta" href="#audit" data-track="book_call" data-track-label="header">Free audit</a>
@@ -154,7 +156,7 @@ const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(
         }
       </div>
       <div class="container site-foot__base">
-        <p>© {new Date().getFullYear()} Accelera. Every number on this site links to its source.</p>
+        <p>© {new Date().getFullYear()} Accelera. Every number on this site names its source.</p>
       </div>
     </footer>
 

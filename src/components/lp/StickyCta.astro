@@ -4,7 +4,7 @@ import Icon from '../ui/Icon.astro';
 import { contact } from '../../config/offer';
 ---
 <div class="sticky" data-sticky aria-hidden="true">
-  <a class="sticky__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="sticky" tabindex="-1" aria-label="Call Tyler">
+  <a class="sticky__call" href={contact.phoneHref.value} data-track="call_click" data-track-label="sticky" tabindex="-1" aria-label="Call Tyler" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
     <Icon name="phone" size={20} />
   </a>
   <a class="sticky__cta" href="#audit" data-track="book_call" data-track-label="sticky" tabindex="-1">Get my free audit</a>

@@ -1,0 +1,89 @@
+---
+/* Example of what an owner receives when a customer books online. Invented data, labeled Example. */
+import Icon from '../ui/Icon.astro';
+---
+<figure class="bk" aria-label="Example: a job booked online with no account">
+  <div class="bk__top"><span>Booked online, 9:42 p.m.</span><span class="bk__label">Example</span></div>
+  <dl class="bk__rows">
+    <div><dt><Icon name="check" size={16} /> Job</dt><dd>Water heater not heating</dd></div>
+    <div><dt><Icon name="calendar" size={16} /> When</dt><dd class="num">Wed 9:00 a.m.</dd></div>
+    <div><dt><Icon name="pin" size={16} /> Where</dt><dd>Roseville</dd></div>
+    <div><dt><Icon name="phone" size={16} /> Account</dt><dd>None needed</dd></div>
+  </dl>
+  <div class="bk__sms">
+    <p class="bk__from">Text to you</p>
+    <p>New job booked online: water heater, Roseville, Wed 9:00 a.m.</p>
+  </div>
+</figure>
+
+<style>
+  .bk {
+    margin: 0;
+    width: 100%;
+    max-width: 400px;
+    padding: var(--s-5);
+    border: 1px solid var(--c-line);
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: var(--shadow-3);
+  }
+  .bk__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--c-ink-2);
+  }
+  .bk__label {
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--r-pill);
+    background: var(--c-flag-tint);
+    color: var(--c-flag);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .bk__rows {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-5) 0;
+  }
+  .bk__rows div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--s-3);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .bk__rows dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--c-ink-2);
+    font-size: var(--fs-small);
+    font-weight: 600;
+  }
+  .bk__rows dt :global(svg) {
+    color: var(--c-accent-ink);
+  }
+  .bk__rows dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .bk__sms {
+    padding: var(--s-4);
+    border-radius: 16px;
+    background: var(--c-night);
+    color: #e8edf6;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+  .bk__from {
+    margin-bottom: 0.2rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #b9c3d6;
+  }
+</style>

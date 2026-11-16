@@ -36,7 +36,7 @@ const hasVisual = Astro.slots.has('default');
       <p class="page-hero__lead">{lead}</p>
       <div class="page-hero__ctas">
         <Button href="#audit" track="book_call" trackLabel="page-hero">{cta} <Icon name="arrow" size={18} /></Button>
-        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="page-hero">
+        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="page-hero" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
           <Icon name="phone" size={18} /> Call Tyler
         </Button>
       </div>
@@ -49,7 +49,6 @@ const hasVisual = Astro.slots.has('default');
   .page-hero {
     padding-block: clamp(2.5rem, 1.5rem + 4vw, 5rem);
     background:
-      radial-gradient(55% 60% at 90% 10%, rgba(255, 107, 0, 0.07), transparent 70%),
       radial-gradient(70% 70% at 100% 0%, var(--c-primary-tint), transparent 70%),
       var(--c-bg);
     border-bottom: 1px solid var(--c-line);

@@ -7,8 +7,10 @@ interface Props {
   /* The job choices a customer sees; match them to the page's trade. */
   jobs?: string[];
   screen?: boolean;
+  /* The third question. Defaults to the job address; a shop asks about the car instead. */
+  ask?: { label: string; placeholder: string; error: string };
 }
-const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'], screen = true } = Astro.props;
+const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light', 'Estimate for a project'], screen = true, ask = { label: 'Where is the job?', placeholder: 'Street address and city', error: 'Add a street address so the crew can find you.' } } = Astro.props;
 ---
 <section class:list={['demo-sec', screen ? 'screen' : 'flow']} id="demo" aria-labelledby="demo-h">
   <div class="container split">
@@ -50,12 +52,12 @@ const { jobs = ['Leak or burst pipe', 'Roof leak', 'Brakes or check-engine light
         </fieldset>
 
         <div class="pane" data-pane="2" hidden>
-          <label class="pane__q" for="demo-addr">Where is the job?</label>
+          <label class="pane__q" for="demo-addr">{ask.label}</label>
           <div class="addr">
             <Icon name="pin" size={20} />
-            <input id="demo-addr" type="text" autocomplete="off" placeholder="Street address and city" />
+            <input id="demo-addr" type="text" autocomplete="off" placeholder={ask.placeholder} />
           </div>
-          <p class="pane__err" data-err hidden>Add a street address so the crew can find you.</p>
+          <p class="pane__err" data-err hidden>{ask.error}</p>
           <div class="pane__row">
             <button type="button" class="pane__back" data-back>Back</button>
             <Button type="button" data-confirm>Book this job</Button>

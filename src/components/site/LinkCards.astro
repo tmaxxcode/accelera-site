@@ -1,8 +1,15 @@
 ---
 /* Linked cards to other pages (services, trades). The whole card is the link. */
 import Icon from '../ui/Icon.astro';
+interface Item {
+  path: string;
+  title: string;
+  summary: string;
+  /* Optional sourced figure for this card. */
+  fact?: { value: string; label: string; source: string };
+}
 interface Props {
-  items: { path: string; title: string; summary: string }[];
+  items: Item[];
   cols?: 2 | 3 | 4;
 }
 const { items, cols = 3 } = Astro.props;
@@ -13,6 +20,11 @@ const { items, cols = 3 } = Astro.props;
       <li>
         <a class="card" href={i.path}>
           <strong>{i.title}</strong>
+          {i.fact && (
+            <span class="card__fact">
+              <b class="num">{i.fact.value}</b> {i.fact.label} <small>{i.fact.source}</small>
+            </span>
+          )}
           <span>{i.summary}</span>
           <span class="card__go">
             Learn more <Icon name="arrow" size={16} />
@@ -32,7 +44,8 @@ const { items, cols = 3 } = Astro.props;
     list-style: none;
   }
   .card {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--s-2);
     height: 100%;
     padding: var(--s-5);
@@ -60,11 +73,32 @@ const { items, cols = 3 } = Astro.props;
     color: var(--c-ink-2);
     line-height: 1.5;
   }
+  .card .card__fact {
+    display: block;
+    padding: var(--s-3) 0;
+    border-block: 1px solid var(--c-line);
+    color: var(--c-ink);
+    font-size: 0.9375rem;
+  }
+  .card__fact b {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1.1;
+    letter-spacing: var(--track-display);
+    color: var(--c-primary);
+  }
+  .card__fact small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--c-muted);
+    font-size: 0.8125rem;
+  }
   .card .card__go {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin-top: var(--s-2);
+    margin-top: auto;
+    padding-top: var(--s-2);
     color: var(--c-accent-ink);
     font-weight: 600;
   }

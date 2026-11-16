@@ -46,12 +46,13 @@ async (page) => {
         const title = await page.title();
         ok(title.length > 10 && title.length <= 75, `${tag}: title length ${title.length}`);
         const desc = await page.locator('meta[name=description]').getAttribute('content');
-        ok(desc && desc.length >= 70 && desc.length <= 170, `${tag}: description length ${desc && desc.length}`);
+        ok(desc && desc.length >= 70 && desc.length <= 160, `${tag}: description length ${desc && desc.length}`);
         const ld = await page.$$eval('script[type="application/ld+json"]', (s) => s.map((x) => { try { JSON.parse(x.textContent); return true; } catch { return false; } }));
         ok(ld.length > 0 && ld.every(Boolean), `${tag}: JSON-LD missing or invalid`);
         const ldText = await page.$$eval('script[type="application/ld+json"]', (s) => s.map((x) => x.textContent).join(' '));
         ok(!/555-01|example\.com"|\$1,497|\$597|\$997/.test(ldText.replace(/accelera\.example\.com/g, '')), `${tag}: placeholder data leaked into JSON-LD`);
         ok(await page.locator('#audit').count() === 1, `${tag}: audit form missing`);
+        ok(await page.$$eval('a[href^="tel:"]', (as) => as.every((a) => a.closest('[data-pending]') || a.hasAttribute('data-pending') || a.querySelector('[data-pending]'))), `${tag}: tel link without placeholder marker`);
       }
 
       // Small tap targets (inline text links in sentences are exempt)
@@ -60,7 +61,7 @@ async (page) => {
           .filter((el) => {
             const b = el.getBoundingClientRect(); const s = getComputedStyle(el);
             return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && b.height < 43.5 &&
-              !el.closest('.skip-link, .proof__src, .calc__note, .form__fine, .form-card__or, .prose, .note, .crumbs, .site-nav__menu, .terms, .foot__src');
+              !el.closest('.skip-link, .proof__src, .calc__note, .form__fine, .form-card__or, .prose, .note li:not(:last-child), .crumbs, .site-nav__menu, .terms, .foot__src, .reach .ph, .row__fact');
           })
           .map((el) => `${el.tagName.toLowerCase()}.${el.className}`.slice(0, 50)));
       ok(small.length === 0, `${tag}: tap targets under 44px: ${small.join(', ')}`);
@@ -84,8 +85,17 @@ async (page) => {
       const box = await page.locator('#audit').boundingBox();
       ok(box && Math.abs(box.y - 64) < 8, `${tag}: audit form should sit under the header after the CTA (top ${box && Math.round(box.y)})`);
 
-      // Form on 1440 only (same component everywhere)
+      // Demo + form on 1440 only (same components everywhere)
       if (w === 1440) {
+        if (await page.locator('#demo').count()) {
+          await page.locator('#demo').scrollIntoViewIfNeeded();
+          await page.locator('#demo .opt').first().click();
+          await page.locator('#demo .slot:not(.slot--taken)').first().click();
+          await page.fill('#demo-addr', '2014 Honda Civic');
+          await page.locator('[data-confirm]').click();
+          ok(await page.locator('.pane--done').isVisible(), `${tag}: booking demo did not finish`);
+        }
+        await page.locator('#audit').scrollIntoViewIfNeeded();
         await page.locator('[data-audit-form] button[type=submit]').click();
         ok((await page.locator('[data-audit-form] .f__err:visible').count()) === 3, `${tag}: empty form should show 3 errors`);
         await page.fill('[data-audit-form] input[name=name]', 'Test Owner');
@@ -101,5 +111,8 @@ async (page) => {
       page.off('console', oc); page.off('pageerror', oe);
     }
   }
+  // 404: one h1, noindex, no canonical
+  await page.goto(BASE + '/no-such-page/');
+  ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');
   return { passed, fails };
 };

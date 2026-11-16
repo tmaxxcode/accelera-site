@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHero from '../components/site/PageHero.astro';
+import SiteCard from '../components/site/SiteCard.astro';
 import Section from '../components/site/Section.astro';
 import Checklist from '../components/site/Checklist.astro';
 import FaqList from '../components/site/FaqList.astro';
@@ -35,7 +36,7 @@ const site = Astro.site!;
 ---
 <SiteLayout
   title="Website Design for Minnesota Trades | Accelera"
-  description="Website design for Twin Cities plumbers, roofers, auto shops and contractors. Built to be found for your trade and your towns, with your phone number one tap away."
+  description="Website design for Twin Cities plumbers, roofers, auto shops and contractors. Built to be found for your trade and towns, with your number one tap away."
   schema={[
     serviceSchema(site, 'Website design for trades', 'Websites for plumbers, roofers, auto repair shops and contractors in the Twin Cities metro.', path),
     breadcrumbSchema(site, crumbs),
@@ -46,7 +47,9 @@ const site = Astro.site!;
     title="Website design for Minnesota plumbers, roofers and auto shops"
     lead="We build a site that shows up when people search your trade and your town, and makes calling or booking you easy. Twin Cities only."
     crumbs={crumbs}
-  />
+  >
+    <SiteCard />
+  </PageHero>
 
   <Section id="why" title="What a trade website has to do" layout="split">
     <div class="prose">
@@ -70,10 +73,11 @@ const site = Astro.site!;
         'You check the live site and approve it before launch',
       ]}
     />
-    <p class="note">
-      Price: <Term term={prices.site} />. <Term term={terms.noRetainer} suffix="." />
-      <a href="/pricing/">See pricing</a>
-    </p>
+    <ul class="note" role="list">
+      <li>Price: <Term term={prices.site} /></li>
+      <li><Term term={terms.noRetainer} /></li>
+      <li><a href="/pricing/">See pricing and payment terms</a></li>
+    </ul>
   </Section>
 
   <Section id="questions" title="Questions owners ask" layout="split">
@@ -89,8 +93,18 @@ const site = Astro.site!;
 
 <style>
   .note {
-    margin-top: var(--s-5);
-    line-height: 2;
+    display: grid;
+    gap: var(--s-2);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
     color: var(--c-ink-2);
+    line-height: 1.6;
+  }
+  .note a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 600;
   }
 </style>

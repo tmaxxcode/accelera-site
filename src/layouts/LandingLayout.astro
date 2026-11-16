@@ -15,7 +15,7 @@ interface Props {
   variant: string;
 }
 const { title, description, variant } = Astro.props;
-assertReleasable();
+assertReleasable(Astro.site);
 ---
 <!doctype html>
 <html lang="en">

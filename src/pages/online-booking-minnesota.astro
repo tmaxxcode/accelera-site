@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHero from '../components/site/PageHero.astro';
+import BookingCard from '../components/site/BookingCard.astro';
 import Section from '../components/site/Section.astro';
 import Checklist from '../components/site/Checklist.astro';
 import FaqList from '../components/site/FaqList.astro';
@@ -45,7 +46,9 @@ const site = Astro.site!;
     title="Online booking for Minnesota home-service businesses"
     lead="Customers pick a job, a time and an address on your site. No account, no password. You get a text for every booked job."
     crumbs={crumbs}
-  />
+  >
+    <BookingCard />
+  </PageHero>
 
   <ProofBar items={[stats.bookingGap, stats.bookOnCall]} title="The gap we keep finding" screen={false} />
 
@@ -61,9 +64,11 @@ const site = Astro.site!;
         'Works on any phone',
       ]}
     />
-    <p class="note">
-      Price: <Term term={prices.booking} />. <Term term={terms.guarantee} suffix="." /> <a href="/pricing/">See pricing</a>
-    </p>
+    <ul class="note" role="list">
+      <li>Price: <Term term={prices.booking} /></li>
+      <li><Term term={terms.guarantee} /></li>
+      <li><a href="/pricing/">See pricing and payment terms</a></li>
+    </ul>
   </Section>
 
   <Section id="questions" title="Questions owners ask" layout="split">
@@ -79,8 +84,18 @@ const site = Astro.site!;
 
 <style>
   .note {
-    margin-top: var(--s-5);
-    line-height: 2;
+    display: grid;
+    gap: var(--s-2);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
     color: var(--c-ink-2);
+    line-height: 1.6;
+  }
+  .note a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    font-weight: 600;
   }
 </style>

@@ -48,10 +48,12 @@ export function unapproved(): string[] {
   return out;
 }
 
-export function assertReleasable(): void {
+export function assertReleasable(site?: URL): void {
   if (import.meta.env.PUBLIC_RELEASE !== 'true') return;
   const open = unapproved();
+  // astro.config.mjs `site` feeds canonicals, the sitemap, robots, llms.txt and schema: it must be the real domain.
+  if (!site || /(^|\.)example\.(com|org|net)$|\.(test|invalid|localhost|example)$|^localhost$/.test(site.hostname)) open.push('astro.config.mjs site (placeholder domain)');
   if (open.length) {
-    throw new Error(`PUBLIC_RELEASE build blocked. Unapproved items in src/config/offer.ts: ${open.join(', ')}`);
+    throw new Error(`PUBLIC_RELEASE build blocked. Unapproved items (src/config/offer.ts, astro.config.mjs): ${open.join(', ')}`);
   }
 }

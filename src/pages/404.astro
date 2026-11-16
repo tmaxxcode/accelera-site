@@ -1,19 +1,28 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import Section from '../components/site/Section.astro';
 import LinkCards from '../components/site/LinkCards.astro';
 import { pages } from '../config/site';
 ---
-<SiteLayout title="Page not found | Accelera" description="This page does not exist. Here is where to go instead.">
-  <Section id="hero" title="That page is not here">
-    <p class="lead">The link may be old or mistyped. These pages are a good place to start.</p>
-    <LinkCards items={pages.filter((p) => p.group === 'service' || p.path === '/')} cols={4} />
-  </Section>
+<SiteLayout title="Page not found | Accelera" description="This page does not exist. Here is where to go instead." noindex>
+  <section id="hero" class="nf" aria-labelledby="nf-h">
+    <div class="container">
+      <h1 id="nf-h">That page is not here</h1>
+      <p class="lead">The link may be old or mistyped. These pages are a good place to start.</p>
+      <LinkCards items={pages.filter((p) => p.group === 'service' || p.path === '/')} cols={4} />
+    </div>
+  </section>
 </SiteLayout>
 
 <style>
+  .nf {
+    padding-block: var(--s-section);
+  }
+  h1 {
+    font-size: var(--fs-h2);
+    line-height: 1.15;
+  }
   .lead {
-    margin-bottom: var(--s-5);
+    margin: var(--s-3) 0 var(--s-6);
     font-size: 1.125rem;
     color: var(--c-ink-2);
   }

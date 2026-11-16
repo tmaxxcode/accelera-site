@@ -1,0 +1,91 @@
+---
+/* Example of a trade website on a phone: what the owner gets. Invented business, labeled Example. */
+import Icon from '../ui/Icon.astro';
+---
+<figure class="sc" aria-label="Example: a plumber's website on a phone">
+  <div class="sc__bar"><span class="sc__brand">Example Plumbing</span><span class="sc__label">Example</span></div>
+  <div class="sc__body">
+    <p class="sc__h">Emergency plumber in Roseville and St. Paul</p>
+    <p class="sc__p">Burst pipe, clogged drain or no hot water? We come out the same day when we can.</p>
+    <span class="sc__btn sc__btn--call"><Icon name="phone" size={16} /> Call now</span>
+    <span class="sc__btn"><Icon name="calendar" size={16} /> Book online</span>
+    <ul class="sc__list" role="list">
+      <li>Drain cleaning</li>
+      <li>Water heaters</li>
+      <li>Leaks and burst pipes</li>
+    </ul>
+  </div>
+</figure>
+
+<style>
+  .sc {
+    margin: 0;
+    width: 100%;
+    max-width: 320px;
+    border: 8px solid var(--c-night);
+    border-radius: 36px;
+    background: #fff;
+    box-shadow: var(--shadow-3);
+    overflow: hidden;
+  }
+  .sc__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--s-3) var(--s-4);
+    background: #1f3b2c;
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .sc__label {
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--r-pill);
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .sc__body {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5) var(--s-4);
+  }
+  .sc__h {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .sc__p {
+    font-size: 0.875rem;
+    color: var(--c-ink-2);
+    line-height: 1.5;
+  }
+  .sc__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    border: 1.5px solid #1f3b2c;
+    border-radius: 10px;
+    color: #1f3b2c;
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .sc__btn--call {
+    background: #1f3b2c;
+    color: #fff;
+  }
+  .sc__list {
+    display: grid;
+    gap: 0.35rem;
+    margin: var(--s-2) 0 0;
+    padding: var(--s-3) 0 0;
+    border-top: 1px solid var(--c-line);
+    list-style: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+</style>

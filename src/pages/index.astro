@@ -8,10 +8,17 @@ import HowAndFaq from '../components/lp/HowAndFaq.astro';
 import AuditForm from '../components/lp/AuditForm.astro';
 import Section from '../components/site/Section.astro';
 import LinkCards from '../components/site/LinkCards.astro';
+import TradeRows from '../components/site/TradeRows.astro';
 import { pages } from '../config/site';
 import { stats } from '../config/stats';
 
 const proof = [stats.unanswered, stats.voicemail, stats.bookOnCall];
+// Trade cards carry a sourced figure where one exists (99 Calls covers plumbers and roofers only).
+const facts: Record<string, { value: string; label: string; source: string; url: string }> = {
+  '/plumbers/': { value: stats.plumbersMissed.value, label: stats.plumbersMissed.label, source: '99 Calls, 1,794 calls', url: stats.plumbersMissed.url },
+  '/roofers/': { value: stats.roofers.value, label: stats.roofers.label, source: '99 Calls, 3,604 calls', url: stats.roofers.url },
+};
+const trades = pages.filter((p) => p.group === 'trade').map((p) => ({ ...p, fact: facts[p.path] }));
 ---
 <SiteLayout
   title="Trade Websites, Booking and After-Hours Answering | Accelera"
@@ -30,11 +37,11 @@ const proof = [stats.unanswered, stats.voicemail, stats.bookOnCall];
     <LinkCards items={pages.filter((p) => p.group === 'service')} />
   </Section>
 
-  <Section id="trades" title="Built for the trades that get calls at night">
-    <LinkCards items={pages.filter((p) => p.group === 'trade')} cols={4} />
-  </Section>
 
   <Calculator />
+  <Section id="trades" title="Built for the trades that get calls at night" layout="split" intro="The trades where a missed call is a lost job.">
+    <TradeRows rows={trades} />
+  </Section>
   <HowAndFaq />
   <AuditForm />
 </SiteLayout>

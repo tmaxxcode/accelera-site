@@ -1,0 +1,113 @@
+---
+/*
+  Trades as rows, not equal cards: name, the night-call problem, and a sourced figure only where one exists.
+  Every figure links to its source.
+*/
+import Icon from '../ui/Icon.astro';
+interface Row {
+  path: string;
+  title: string;
+  summary: string;
+  fact?: { value: string; label: string; source: string; url: string };
+}
+interface Props {
+  rows: Row[];
+}
+const { rows } = Astro.props;
+---
+<ul class="rows" role="list">
+  {
+    rows.map((r) => (
+      <li class="row">
+        <a class="row__name" href={r.path}>
+          {r.title} <Icon name="arrow" size={18} />
+        </a>
+        <p class="row__line">{r.summary}</p>
+        {r.fact ? (
+          <p class="row__fact">
+            <b class="num">{r.fact.value}</b> {r.fact.label}{' '}
+            <a href={r.fact.url} rel="noopener" target="_blank">
+              {r.fact.source}
+            </a>
+          </p>
+        ) : (
+          <p class="row__fact row__fact--none">No sourced figure for this trade yet.</p>
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--c-line);
+  }
+  .row {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--c-line);
+  }
+  .row__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: var(--tap);
+    color: var(--c-ink);
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .row__name :global(svg) {
+    color: var(--c-accent-ink);
+    transition: translate var(--t-fast) var(--ease-out);
+  }
+  .row__name:hover {
+    color: var(--c-primary);
+  }
+  .row__name:hover :global(svg) {
+    translate: 3px 0;
+  }
+  .row__line {
+    font-size: 1.0625rem;
+    color: var(--c-ink-2);
+  }
+  .row__fact {
+    font-size: 0.9375rem;
+    color: var(--c-ink-2);
+  }
+  .row__fact b {
+    margin-right: 0.25rem;
+    font-size: 1.5rem;
+    letter-spacing: var(--track-display);
+    color: var(--c-primary);
+  }
+  .row__fact a {
+    color: var(--c-muted);
+    text-decoration: underline;
+  }
+  .row__fact--none {
+    color: var(--c-muted);
+    font-size: var(--fs-small);
+  }
+  @media (min-width: 1024px) {
+    .row {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      align-items: center;
+    }
+    .row__name {
+      grid-column: 1 / span 3;
+    }
+    .row__line {
+      grid-column: 4 / span 4;
+    }
+    .row__fact {
+      grid-column: 8 / span 5;
+    }
+  }
+</style>

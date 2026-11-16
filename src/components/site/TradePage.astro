@@ -28,6 +28,7 @@ interface Props {
   call?: CallExample;
   trade: 'plumbing' | 'roofing' | 'auto' | 'contracting';
   jobs: string[];
+  ask?: { label: string; placeholder: string; error: string };
   faq: { q: string; a: string }[];
 }
 const p = Astro.props;
@@ -50,7 +51,7 @@ const site = Astro.site!;
   </Section>
 
   <Calculator trade={p.trade} screen={false} />
-  <BookingDemo jobs={p.jobs} screen={false} />
+  <BookingDemo jobs={p.jobs} ask={p.ask} screen={false} />
 
   <Section id="questions" title="Questions owners ask" layout="split">
     <FaqList items={p.faq} name={p.trade} />
