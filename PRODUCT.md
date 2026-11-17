@@ -32,6 +32,7 @@ Site, booking and after-hours answering from one local team, Twin Cities only. F
 - Name: Accelera. Logo: `public/brand/accelera-logo.png` (black wordmark with triangle mark, "Business Solutions"), shown inverted to white on the navy header and footer.
 - Palette (Tyler 2026-11-15, "use the blue orange Accelera colors"): navy #0A1929 / #1A2A47, white, orange #FF6B00 for the main buttons and a few highlights (60-30-10). Orange buttons carry navy text. Violet marks anything not real yet (placeholders, demo, example) and is not a brand color. Inter, self-hosted. Values live in `src/styles/tokens.css` and `landing/brand-kit.json`.
 - Hero concept approved by Tyler (L-5, 2026-11-16): "The phone rings at 2 a.m. The job still gets booked." + the example after-hours call card.
+- Home page hero (Tyler, 2026-11-16, "3D as the hero"): a 3D winter-night lot (`src/scripts/night-scene.ts`, `src/components/site/SceneHero.astro`) that plays the same story in three beats (2:14 a.m. the phone rings, 2:19 a.m. job booked, 7:30 a.m. the van is at the house). The example call card moved to the section below it. Landing pages keep the L-5 hero and load no 3D.
 - Voice: plain, concrete, owner words ("book a job", "missed calls", "average ticket"), grade 5-7 on landing pages, active voice, no em-dashes, no emoji, no hype words, no jargon (SEO, funnel, dashboard, platform).
 
 ## Evidence on Hand

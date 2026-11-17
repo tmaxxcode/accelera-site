@@ -115,6 +115,15 @@ async (page) => {
       page.off('console', oc); page.off('pageerror', oe);
     }
   }
+  // Home hero: the three story buttons work with or without the 3D scene, and the still picture is served
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  ok((await fetch(BASE + '/hero/night-call.webp')).ok, 'hero still picture served');
+  ok((await page.locator('[data-beat-btn]').count()) === 3, 'hero: three story buttons');
+  await page.locator('[data-beat-btn="2"]').click();
+  ok((await page.locator('[data-night-hero]').getAttribute('data-beat')) === '2' && (await page.locator('[data-beat-btn="2"]').getAttribute('aria-pressed')) === 'true', 'hero: story button did not select the morning');
+  ok((await page.locator('#hero canvas').getAttribute('aria-hidden')) === 'true', 'hero: canvas must be hidden from screen readers');
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

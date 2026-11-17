@@ -1,0 +1,562 @@
+---
+/*
+  Home page hero (Tyler, 2026-11-16: "3D as the hero"). The whole hero is a winter night: a 3D lot
+  (src/scripts/night-scene.ts) sits beside the copy and plays the product's story in three beats.
+  - The headline and buttons are plain HTML and render first. three.js loads after the page is idle.
+  - Until then, and whenever WebGL, data-saver or the load fails, a still picture of the scene shows.
+  - The three beats are real buttons with the story as visible text, so nothing depends on the canvas.
+  - All scene data is an example and is labeled as one. Neutral on who answers (AL-1 open).
+  Landing pages keep lp/Hero.astro (approved L-5) and load no 3D.
+*/
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import Term from '../ui/Term.astro';
+import { contact, terms } from '../../config/offer';
+
+interface Props {
+  headline: string;
+  sub: string;
+  cta?: string;
+}
+const { headline, sub, cta = 'Get a free audit' } = Astro.props;
+const beats = [
+  { time: 'Tue 2:14 a.m.', line: 'A pipe bursts in St. Paul. The phone rings.' },
+  { time: '2:19 a.m.', line: 'The call gets answered. The job gets booked.' },
+  { time: '7:30 a.m.', line: 'The job is on your calendar. You pull up.' },
+];
+---
+<section class="nh" id="hero" data-night-hero data-beat="0" aria-labelledby="hero-h">
+  <div class="nh__dawn" aria-hidden="true"></div>
+  <canvas class="nh__canvas" data-canvas aria-hidden="true"></canvas>
+
+  <div class="container nh__in">
+    <div class="nh__copy">
+      <h1 id="hero-h" class="nh__h">{headline}</h1>
+      <p class="nh__sub">{sub}</p>
+      <div class="nh__ctas">
+        <Button href="#audit" track="book_call" trackLabel="hero">{cta} <Icon name="arrow" size={18} /></Button>
+        <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="hero" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
+          <Icon name="phone" size={18} /> Call Tyler
+        </Button>
+      </div>
+      <ul class="nh__trust" role="list">
+        <li><Icon name="check" size={16} /> {terms.approveFirst.value}</li>
+        <li><Icon name="check" size={16} /> <Term term={terms.noRetainer} /></li>
+        <li><Icon name="check" size={16} /> Twin Cities only</li>
+      </ul>
+    </div>
+
+    <div class="nh__stage">
+      <div class="nh__fit" data-fit>
+        <img class="nh__still" src="/hero/night-call.webp" alt="" width="690" height="560" decoding="async" fetchpriority="high" />
+      </div>
+      <div class="nh__story">
+        <ol class="nh__beats" role="list">
+          {
+            beats.map((b, i) => (
+              <li>
+                <button type="button" class="beat" data-beat-btn={i} aria-pressed={i === 0 ? 'true' : 'false'}>
+                  <span class="beat__time num">{b.time}</span>
+                  <span class="beat__line">{b.line}</span>
+                </button>
+              </li>
+            ))
+          }
+        </ol>
+        <div class="nh__meta">
+          <span class="nh__example">Example night, not a real customer</span>
+          <span class="nh__hint" aria-hidden="true">Drag the scene to turn it</span>
+          <button type="button" class="nh__pause" data-pause aria-pressed="false" hidden>
+            <span class="nh__pause-on"><Icon name="pause" size={18} /> Pause</span>
+            <span class="nh__pause-off"><Icon name="play" size={18} /> Play</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Labels that ride on points in the scene. Decorative: the beat buttons carry the same story as text. -->
+  <div class="nh__labels" aria-hidden="true">
+    <p class="chip chip--phone" data-anchor="phone">
+      <span class="chip__in"><span data-when="0">Incoming call</span><span data-when="1">Job booked</span></span>
+    </p>
+    <p class="chip chip--van" data-anchor="van"><span class="chip__in">On the job</span></p>
+  </div>
+</section>
+
+<script>
+  import type { NightScene } from '../../scripts/night-scene';
+
+  const root = document.querySelector<HTMLElement>('[data-night-hero]');
+  if (root) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-beat-btn]')];
+    const pause = root.querySelector<HTMLButtonElement>('[data-pause]')!;
+    let scene: NightScene | null = null;
+    let timer = 0;
+    let auto = !reduce;
+
+    const setBeat = (beat: number) => {
+      root.dataset.beat = String(beat);
+      buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === beat)));
+      scene?.setBeat(beat);
+    };
+    // Plays through once, then rests on the morning. Any click hands control to the visitor.
+    const schedule = () => {
+      clearTimeout(timer);
+      const beat = Number(root.dataset.beat);
+      if (!auto || beat >= buttons.length - 1) return;
+      timer = window.setTimeout(() => {
+        setBeat(beat + 1);
+        schedule();
+      }, 4600);
+    };
+    buttons.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        auto = false;
+        clearTimeout(timer);
+        setBeat(i);
+      }),
+    );
+    pause.addEventListener('click', () => {
+      const paused = pause.getAttribute('aria-pressed') !== 'true';
+      pause.setAttribute('aria-pressed', String(paused));
+      scene?.setPaused(paused);
+      if (paused) clearTimeout(timer);
+      else schedule();
+    });
+
+    const start = async () => {
+      try {
+        const { mountNightScene } = await import('../../scripts/night-scene');
+        // Give the browser a turn between loading three.js and building the scene: two short tasks, not one long one.
+        await new Promise((r) => setTimeout(r, 0));
+        scene = await mountNightScene({
+          canvas: root.querySelector<HTMLCanvasElement>('[data-canvas]')!,
+          stage: root,
+          fit: root.querySelector<HTMLElement>('[data-fit]')!,
+          reduceMotion: reduce,
+          onReady: () => {
+            root.dataset.live = 'true';
+            pause.hidden = reduce;
+            schedule();
+          },
+        });
+        scene?.setBeat(Number(root.dataset.beat));
+      } catch {
+        /* The still picture stays. */
+      }
+    };
+    // A machine with no graphics chip would draw this at a crawl: it keeps the still picture.
+    const noGpu = () => {
+      try {
+        const gl = document.createElement('canvas').getContext('webgl2');
+        if (!gl) return true;
+        const info = gl.getExtension('WEBGL_debug_renderer_info');
+        const name = info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : '';
+        gl.getExtension('WEBGL_lose_context')?.loseContext();
+        return /swiftshader|llvmpipe|software|basic render/i.test(name);
+      } catch {
+        return true;
+      }
+    };
+    // Only while the hero is on screen, and never in the way of the first paint:
+    // - phones and tablets start it on the first touch, scroll or key press, so a visit that bounces pays nothing;
+    // - desktops start it once the page has loaded and gone quiet.
+    if (!saveData) {
+      const whenSeen = () => {
+        const io = new IntersectionObserver(([e]) => {
+          if (!e.isIntersecting) return;
+          io.disconnect();
+          if (!noGpu()) start();
+        });
+        io.observe(root);
+      };
+      const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(whenSeen, { timeout: 2500 }) : setTimeout(whenSeen, 600));
+      if (matchMedia('(max-width: 1023px), (pointer: coarse)').matches) {
+        const events = ['pointerdown', 'touchstart', 'scroll', 'keydown'];
+        const go = () => {
+          events.forEach((e) => removeEventListener(e, go));
+          whenSeen();
+        };
+        events.forEach((e) => addEventListener(e, go, { passive: true }));
+      } else if (document.readyState === 'complete') idle();
+      else addEventListener('load', idle, { once: true });
+    }
+  }
+</script>
+
+<style>
+  .nh {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100svh - var(--nav-h));
+    padding-block: var(--s-6);
+    background: linear-gradient(180deg, #050d19 0%, var(--c-night) 42%, #13274a 100%);
+    color: #fff;
+  }
+  /* Sunrise: a warm wash low on the lot's side. Opacity only, so it stays on the compositor. */
+  .nh__dawn {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(70% 60% at 70% 100%, rgba(255, 140, 64, 0.6), rgba(255, 107, 0, 0.16) 52%, transparent 74%),
+      linear-gradient(0deg, rgba(120, 150, 215, 0.34), transparent 70%);
+    opacity: 0;
+    transition: opacity 2400ms var(--ease-in-out);
+  }
+  .nh[data-live='true'][data-beat='2'] .nh__dawn {
+    opacity: 1;
+  }
+  /* Night sky: a moon and a scatter of stars. Both fade as the sun comes up. */
+  .nh::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background:
+      radial-gradient(circle at var(--moon-x, 86%) var(--moon-y, 13%), #eef3ff 0 1.6rem, rgba(190, 208, 255, 0.28) 1.7rem, transparent 6rem),
+      radial-gradient(1.5px 1.5px at 12% 18%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 24% 9%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 37% 22%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 46% 7%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1px 1px at 55% 16%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 63% 5%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1px 1px at 71% 24%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 78% 31%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 94% 28%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 6% 34%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1px 1px at 31% 36%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 52% 31%, #dfe8ff 50%, transparent 51%),
+      radial-gradient(1px 1px at 18% 4%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 98% 9%, #dfe8ff 50%, transparent 51%);
+    transition: opacity 2400ms var(--ease-in-out);
+  }
+  .nh[data-live='true'][data-beat='2']::before {
+    opacity: 0;
+  }
+  .nh__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+    touch-action: pan-y;
+    cursor: grab;
+  }
+  .nh__canvas:active {
+    cursor: grabbing;
+  }
+  .nh[data-live='true'] .nh__canvas {
+    opacity: 1;
+  }
+
+  .nh__in {
+    display: grid;
+    gap: var(--s-5);
+    /* Let drags reach the canvas between the pieces of content. */
+    pointer-events: none;
+  }
+  .nh__copy > *,
+  .nh__story {
+    pointer-events: auto;
+  }
+  .nh__h {
+    max-width: 15ch;
+    font-size: var(--fs-display);
+    line-height: var(--lh-tight);
+    text-wrap: balance;
+  }
+  .nh__sub {
+    max-width: 34rem;
+    margin-top: var(--s-4);
+    font-size: var(--fs-sub);
+    line-height: 1.5;
+    color: #cbd6ea;
+  }
+  .nh__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+  }
+  .nh__ctas :global(.btn--outline) {
+    background: rgba(10, 25, 41, 0.55);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
+  }
+  .nh__ctas :global(.btn--outline:hover) {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #fff;
+    color: #fff;
+  }
+  .nh__trust {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    margin: var(--s-5) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--fs-small);
+    color: #b9c7de;
+  }
+  .nh__trust li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .nh__trust :global(svg) {
+    color: var(--c-accent);
+  }
+  .nh :global(.term--pending) {
+    outline-color: #b9a2f5;
+  }
+  .nh :global(:focus-visible) {
+    outline-color: var(--c-accent);
+  }
+  .nh ::selection {
+    background: var(--c-accent);
+    color: var(--c-ink);
+  }
+
+  /* The box the lot is drawn in. Empty on purpose: the canvas behind the whole hero paints into it. */
+  .nh__stage {
+    display: grid;
+    gap: var(--s-4);
+    min-width: 0;
+  }
+  .nh__fit {
+    position: relative;
+    height: clamp(260px, 72vw, 380px);
+  }
+  .nh__still {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 700ms var(--ease-out);
+  }
+  .nh[data-live='true'] .nh__still {
+    opacity: 0;
+  }
+
+  /* The story: three stops in time. */
+  .nh__beats {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .beat {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    align-items: center;
+    gap: var(--s-3);
+    width: 100%;
+    min-height: 48px;
+    padding: 0.5rem 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--r-md);
+    background: rgba(10, 25, 41, 0.62);
+    color: #c2cee2;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color var(--t-med) var(--ease-out),
+      border-color var(--t-med) var(--ease-out),
+      color var(--t-med) var(--ease-out);
+  }
+  .beat__time {
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .beat__line {
+    font-size: var(--fs-small);
+    line-height: 1.4;
+  }
+  @media (hover: hover) {
+    .beat:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+      color: #fff;
+    }
+  }
+  .beat[aria-pressed='true'] {
+    border-color: var(--c-accent);
+    background: rgba(255, 107, 0, 0.14);
+    color: #fff;
+  }
+  .beat[aria-pressed='true'] .beat__time {
+    color: #ffb27a;
+  }
+  .nh__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2) var(--s-4);
+    min-height: var(--tap);
+    margin-top: var(--s-2);
+    font-size: 0.8125rem;
+    color: #a9b8d2;
+  }
+  .nh__example {
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    background: var(--c-flag-tint);
+    color: var(--c-flag);
+    font-weight: 600;
+  }
+  .nh__hint {
+    display: none;
+  }
+  .nh[data-live='true']:not([data-turned]) .nh__hint {
+    display: inline;
+  }
+  .nh__pause {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap);
+    margin-left: auto;
+    padding: 0 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: var(--r-pill);
+    background: rgba(10, 25, 41, 0.62);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .nh__pause[hidden] {
+    display: none;
+  }
+  .nh__pause span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .nh__pause[aria-pressed='false'] .nh__pause-off,
+  .nh__pause[aria-pressed='true'] .nh__pause-on {
+    display: none;
+  }
+
+  /* Chips pinned to points in the scene (positions come from the scene each frame). */
+  .nh__labels {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0;
+    will-change: transform;
+  }
+  .chip__in {
+    display: block;
+    padding: 0.3rem 0.65rem;
+    border-radius: var(--r-pill);
+    background: #fff;
+    color: var(--c-ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -6px rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    transition: opacity var(--t-slow) var(--ease-out);
+  }
+  .chip--phone .chip__in {
+    transform: translate(1.9rem, -50%);
+  }
+  .chip--van .chip__in {
+    transform: translate(-50%, -100%);
+  }
+  .chip [data-when] {
+    display: none;
+  }
+  .nh[data-beat='0'] .chip [data-when='0'],
+  .nh[data-beat='1'] .chip [data-when='1'] {
+    display: inline;
+  }
+  .nh[data-live='true'][data-beat='0'] .chip--phone .chip__in,
+  .nh[data-live='true'][data-beat='1'] .chip--phone .chip__in,
+  .nh[data-live='true'][data-beat='2'] .chip--van .chip__in {
+    opacity: 1;
+  }
+  .nh[data-live='true'][data-beat='2'] .chip--van .chip__in {
+    transition-delay: 1600ms;
+  }
+
+  @media (max-width: 599px) {
+    .nh__ctas :global(.btn) {
+      flex: 1 1 100%;
+    }
+  }
+  @media (max-width: 1023px) {
+    .nh {
+      justify-content: flex-start;
+      /* Keep the moon clear of the copy: it hangs over the lot instead. */
+      --moon-x: 13%;
+      --moon-y: 47%;
+    }
+    /* Phones and tablets: copy, then the lot, then the story, then the trust lines. */
+    .nh__in {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .nh__copy {
+      display: contents;
+    }
+    .nh__h,
+    .nh__sub,
+    .nh__ctas {
+      margin-top: 0;
+    }
+    .nh__stage {
+      order: 1;
+    }
+    .nh__trust {
+      order: 2;
+      margin-top: 0;
+    }
+  }
+  @media (min-width: 1024px) {
+    .nh__in {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      align-items: center;
+    }
+    .nh__copy {
+      grid-column: 1 / span 5;
+    }
+    .nh__stage {
+      grid-column: 6 / span 7;
+    }
+    .nh__fit {
+      height: clamp(360px, calc(100svh - var(--nav-h) - 15rem), 560px);
+    }
+    .nh__beats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .beat {
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      gap: 0.15rem;
+      height: 100%;
+      padding: 0.7rem 0.875rem;
+    }
+  }
+</style>

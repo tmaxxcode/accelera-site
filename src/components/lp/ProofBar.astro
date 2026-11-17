@@ -15,8 +15,10 @@ interface Props {
 }
 const { items, title = 'What happens to calls nobody answers', embedded = false, screen = true, class: cls } = Astro.props;
 const Tag = embedded ? 'div' : 'section';
+/* Wide screens with a visual (home page): stats on the left, the example call on the right. */
+const withVisual = !embedded && Astro.slots.has('default');
 ---
-<Tag class:list={['proof', { 'proof--embedded': embedded, screen: !embedded && screen, 'proof--flow': !embedded && !screen }, cls]} aria-label={embedded ? title : undefined}>
+<Tag class:list={['proof', { 'proof--embedded': embedded, screen: !embedded && screen, 'proof--flow': !embedded && !screen, 'proof--visual': withVisual }, cls]} aria-label={embedded ? title : undefined}>
   <div class:list={{ container: !embedded }}>
     {!embedded && <h2 class="proof__h">{title}</h2>}
     {!embedded && <div class="proof__visual"><slot /></div>}
@@ -107,6 +109,39 @@ const Tag = embedded ? 'div' : 'section';
     }
     .proof__item {
       grid-column: span 4;
+    }
+  }
+  @media (min-width: 1024px) {
+    .proof--visual > .container {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gutter);
+      align-items: center;
+    }
+    .proof--visual .proof__h {
+      grid-column: 1 / span 6;
+      align-self: end;
+      margin-bottom: var(--s-6);
+    }
+    .proof--visual .proof__list {
+      grid-column: 1 / span 6;
+      align-self: start;
+      row-gap: var(--s-6);
+    }
+    .proof--visual .proof__item {
+      grid-column: 1 / -1;
+    }
+    .proof--visual .proof__label {
+      max-width: none;
+    }
+    .proof--visual .proof__visual {
+      grid-column: 8 / span 5;
+      grid-row: 1 / span 2;
+      margin-bottom: 0;
+    }
+    .proof--visual .proof__visual :global(.call) {
+      width: 100%;
+      max-width: none;
     }
   }
 </style>
