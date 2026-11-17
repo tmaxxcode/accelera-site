@@ -41,6 +41,7 @@ export const pages: PageEntry[] = [
   { path: '/about/', title: 'About', summary: 'Who runs Accelera and why it is Twin Cities only.', group: 'company' },
   { path: '/faq/', title: 'FAQ', summary: 'Straight answers to the questions owners ask most.', group: 'company' },
   { path: '/contact/', title: 'Contact', summary: 'Ask for a free missed-call and booking audit.', group: 'company' },
+  { path: '/privacy/', title: 'Privacy', summary: 'What we collect, why, and how to have it deleted.', group: 'company' },
   {
     path: '/tools/missed-call-calculator/',
     title: 'Missed-call calculator',

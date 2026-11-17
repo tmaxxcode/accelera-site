@@ -76,7 +76,7 @@ const bookRate = 0.46;
       </p>
 
       <div class="calc__result" aria-live="polite">
-        <p class="calc__result-label">Jobs you may be missing each month</p>
+        <p class="calc__result-label">Money you may be missing each month</p>
         <p class="calc__result-num num" data-out>$0</p>
         <p class="calc__result-math num" data-math></p>
       </div>
@@ -138,9 +138,12 @@ const bookRate = 0.46;
       const lost = missedCalls * bookRate * t;
       animateTo(lost);
       math.textContent = `${Math.round(missedCalls)} missed calls × 46% that would book × ${fmt.format(t)}`;
-      try {
-        sessionStorage.setItem('acc_calc', String(Math.round(lost)));
-      } catch {}
+      // Only a number the visitor set goes with the audit form (the privacy page promises this).
+      if (used) {
+        try {
+          sessionStorage.setItem('acc_calc', String(Math.round(lost)));
+        } catch {}
+      }
     }
 
     function markUsed() {

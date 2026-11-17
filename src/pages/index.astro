@@ -15,8 +15,8 @@ import { stats } from '../config/stats';
 const proof = [stats.unanswered, stats.voicemail, stats.bookOnCall];
 // Trade cards carry a sourced figure where one exists (99 Calls covers plumbers and roofers only).
 const facts: Record<string, { value: string; label: string; source: string; url: string }> = {
-  '/plumbers/': { value: stats.plumbersMissed.value, label: stats.plumbersMissed.label, source: '99 Calls, 1,794 calls', url: stats.plumbersMissed.url },
-  '/roofers/': { value: stats.roofers.value, label: stats.roofers.label, source: '99 Calls, 3,604 calls', url: stats.roofers.url },
+  '/plumbers/': { value: stats.plumbersMissed.value, label: stats.plumbersMissed.label, source: '99 Calls study of 1,794 plumbing calls', url: stats.plumbersMissed.url },
+  '/roofers/': { value: stats.roofers.value, label: stats.roofers.label, source: '99 Calls study of 3,604 roofing calls', url: stats.roofers.url },
 };
 const trades = pages.filter((p) => p.group === 'trade').map((p) => ({ ...p, fact: facts[p.path] }));
 ---
@@ -26,7 +26,7 @@ const trades = pages.filter((p) => p.group === 'trade').map((p) => ({ ...p, fact
 >
   <Hero
     headline="Websites that book jobs for Twin Cities trades."
-    sub="A website people find, online booking with no account, and after-hours call answering. One local team sets it up, and you approve it before it goes live."
+    sub="A website people find, online booking customers use without signing up, and after-hours call answering. One local team sets it up, and you approve it before it goes live."
     cta="Get a free audit"
   >
     <ProofBar slot="foot" items={proof} embedded />

@@ -21,7 +21,7 @@ export const contact = {
   calLink: { value: 'https://cal.example.com/accelera/15min', approved: false, note: 'No Cal.com account yet.' },
   // Where the audit form posts. Empty = not connected; the form shows a placeholder notice instead of sending.
   formEndpoint: { value: '', approved: false, note: 'No form backend yet.' },
-  privacyUrl: { value: '#privacy-placeholder', approved: false, note: 'Privacy page needed before ads run.' },
+  privacyUrl: { value: '/privacy/', approved: false, note: 'Draft at /privacy/ (L-3). Tyler approves the wording.' },
 } satisfies Record<string, Term>;
 
 export const prices = {

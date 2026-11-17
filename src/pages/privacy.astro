@@ -1,0 +1,73 @@
+---
+/*
+  Privacy page DRAFT (MASTER L-3). Describes only what the site does today (checked 2026-11-16):
+  no cookies, no third-party scripts or fonts, sessionStorage for ad tags + the calculator number,
+  and the audit form (name, mobile, business + ad tags). Tyler approves the wording; set
+  contact.privacyUrl.approved in src/config/offer.ts when he does. Not legal advice.
+  Update this page before turning on GA4/Clarity (L-2) or connecting the form (L-1).
+*/
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHero from '../components/site/PageHero.astro';
+import Section from '../components/site/Section.astro';
+import AuditForm from '../components/lp/AuditForm.astro';
+import Term from '../components/ui/Term.astro';
+import { contact } from '../config/offer';
+import { breadcrumbSchema } from '../config/schema';
+
+const crumbs = [{ name: 'Home', path: '/' }, { name: 'Privacy', path: '/privacy/' }];
+const draft = { value: 'Draft. Not yet approved by Tyler', approved: contact.privacyUrl.approved };
+---
+<SiteLayout
+  title="Privacy | Accelera, Twin Cities"
+  description="What Accelera collects when you use this site or ask for an audit, why, and how to have it deleted."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <PageHero
+    title="Privacy, in plain words"
+    lead="What we collect, why we collect it, and how to have it deleted."
+    crumbs={crumbs}
+  />
+
+  <Section id="collect" title="What we collect" layout="split">
+    <div class="prose">
+      {!draft.approved && <p><Term term={draft} suffix="." /></p>}
+      <p>
+        <strong>If you send the audit form,</strong> we get your name, your mobile number and your business name or website. We
+        also get the page you came in on and any ad tags in the link you clicked, like utm_source. If you used the missed-call
+        calculator, we get its result too.
+      </p>
+      <p>
+        <strong>If you just read the site,</strong> we collect nothing about you. The site sets no cookies and loads no ad or
+        analytics trackers.
+      </p>
+      <p>
+        Your browser keeps the ad tags and the calculator number for that one tab, so they can go with your form. They are gone when
+        you close the tab.
+      </p>
+    </div>
+  </Section>
+
+  <Section id="use" title="How we use it" layout="split" tone="card">
+    <div class="prose">
+      <p>Tyler uses your details to do your audit and to contact you about it. That is all.</p>
+      <p>We do not sell your information, and we do not share it for anyone else's marketing.</p>
+      <p>
+        The company that hosts this site may keep standard server logs, like IP addresses and browser types, to keep the site
+        running and safe.
+      </p>
+    </div>
+  </Section>
+
+  <Section id="choices" title="Your choices" layout="split">
+    <div class="prose">
+      <p>
+        Want your details deleted or want to see what we have? Email <a href={`mailto:${contact.email.value}`}><Term term={contact.email} nowrap /></a>
+        and Tyler will take care of it.
+      </p>
+      <p>This site is for business owners. It is not meant for children under 13.</p>
+      <p>If we add analytics or change how we use your details, we will update this page first.</p>
+    </div>
+  </Section>
+
+  <AuditForm showStory={false} />
+</SiteLayout>

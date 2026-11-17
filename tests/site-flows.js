@@ -5,7 +5,7 @@ async (page) => {
   const BASE = 'http://127.0.0.1:4321';
   const paths = ['/', '/website-design-minnesota/', '/online-booking-minnesota/', '/after-hours-answering-service-minnesota/',
     '/plumbers/', '/roofers/', '/auto-repair/', '/contractors/', '/pricing/', '/how-it-works/', '/about/', '/faq/', '/contact/',
-    '/tools/missed-call-calculator/'];
+    '/privacy/', '/tools/missed-call-calculator/'];
   const widths = [[390, 844], [768, 1024], [1024, 768], [1440, 900]];
   const fails = []; let passed = 0;
   const ok = (c, m) => (c ? passed++ : fails.push(m));
@@ -17,6 +17,8 @@ async (page) => {
   const robots = await (await fetch(BASE + '/robots.txt')).text();
   ok(robots.includes('Disallow: /lp/') && robots.includes('Sitemap:'), 'robots.txt');
   ok((await fetch(BASE + '/llms.txt')).ok, 'llms.txt');
+  const ogImg = await fetch(BASE + '/og/accelera-1200x630.png');
+  ok(ogImg.ok && ogImg.headers.get('content-type') === 'image/png', 'og image served');
 
   // Every internal link on every page resolves
   const seen = new Set();
@@ -43,6 +45,8 @@ async (page) => {
         ok(!(await page.locator('meta[name=robots]').count()), `${tag}: site page must be indexable`);
         const canon = await page.locator('link[rel=canonical]').getAttribute('href');
         ok(canon && canon.endsWith(path), `${tag}: canonical ${canon}`);
+        const og = await page.locator('meta[property="og:image"]').getAttribute('content');
+        ok(og && og.endsWith('/og/accelera-1200x630.png') && (await page.locator('meta[name="twitter:card"][content="summary_large_image"]').count()) === 1, `${tag}: og image ${og}`);
         const title = await page.title();
         ok(title.length > 10 && title.length <= 75, `${tag}: title length ${title.length}`);
         const desc = await page.locator('meta[name=description]').getAttribute('content');

@@ -1,6 +1,7 @@
 ---
 import Term from '../ui/Term.astro';
 import Icon from '../ui/Icon.astro';
+import Button from '../ui/Button.astro';
 import { prices, terms } from '../../config/offer';
 
 const parts = [
@@ -10,7 +11,7 @@ const parts = [
     points: [
       'Built to show up when people search your trade and your city',
       'Your phone number one tap away on every page',
-      'You see the live site and approve it before launch',
+      'You see the finished site and approve it before launch',
     ],
     extra: prices.payment,
   },
@@ -70,10 +71,17 @@ const parts = [
     <p class="offer__foot">
       <Term term={terms.delivery} suffix="." /> <Term term={terms.ownership} suffix="." /> {terms.approveFirst.value}.
     </p>
+    <p class="offer__cta">
+      <Button href="#audit" track="book_call" trackLabel="offer">Not sure what you need? Get a free audit <Icon name="arrow" size={18} /></Button>
+    </p>
   </div>
 </section>
 
 <style>
+  .offer__cta {
+    margin-top: var(--s-5);
+    text-align: center;
+  }
   .offer {
     background: var(--c-card);
     border-block: 1px solid var(--c-line);

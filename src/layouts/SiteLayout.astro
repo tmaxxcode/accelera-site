@@ -50,8 +50,11 @@ const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL('/brand/accelera-logo.png', site).href} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={new URL('/og/accelera-1200x630.png', site).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Accelera: websites, online booking and after-hours answering for Twin Cities trades." />
+    <meta name="twitter:card" content="summary_large_image" />
     {jsonld.map((j) => <script type="application/ld+json" set:html={JSON.stringify(j)} />)}
     <!-- GA4 / Clarity: not loaded. No IDs yet (MASTER L-2). Events already go to dataLayer via src/scripts/track.ts. -->
   </head>
