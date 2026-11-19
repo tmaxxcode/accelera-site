@@ -37,6 +37,7 @@ import {
   WebGLRenderer,
   type Material,
 } from 'three';
+import { BEATS, type State } from './film-timeline';
 
 export interface NightScene {
   setBeat(beat: number): void;
@@ -59,13 +60,6 @@ const NAVY_2 = 0x1a2a47;
 const ORANGE = 0xff6b00;
 const SNOW = 0xeaf1ff;
 
-/* What each beat asks the scene to be. Values ease toward these, so beats can be interrupted. */
-const BEATS = [
-  { dawn: 0, lit: 1, ring: 1, booked: 0, phone: 1, van: 0 },
-  { dawn: 0, lit: 1, ring: 0, booked: 1, phone: 1, van: 0 },
-  { dawn: 1, lit: 0.12, ring: 0, booked: 0, phone: 0, van: 1 },
-];
-type State = (typeof BEATS)[number];
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
