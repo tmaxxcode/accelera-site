@@ -189,14 +189,12 @@ const hasVisual = hasSlot || !!object;
     opacity: 0;
     visibility: hidden;
   }
-  /* The example card overlaps the object a little, like a card laid on a desk. */
+  /* The example card sits under the object, clear of it, so the object reads whole. */
   .page-hero__visual--obj .page-hero__card {
-    position: relative;
-    z-index: 1;
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: -2.5rem;
+    margin-top: var(--s-3);
   }
   @media (max-width: 599px) {
     .page-hero__ctas :global(.btn) {

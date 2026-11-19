@@ -335,6 +335,41 @@ async (page) => {
     ok(Math.abs(m.f + 2) < 0.6 && Math.abs(m.b) < 0.001 && Math.abs(m.c) < 0.001 && m.is2D, `bento: hover should lift 2px with no tilt (ty ${m.f.toFixed(2)})`);
   }
 
+  // Finish-review fixes (2026-11-19)
+  // a. Phone: the pinned frame is the scene and story only, never a slice of the copy column
+  {
+    const [pw, ph] = [390, 844];
+    await page.setViewportSize({ width: pw, height: ph });
+    await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await page.evaluate(() => window.scrollTo(0, 5));
+    await page.waitForTimeout(500);
+    const r = await page.evaluate(() => window.__heroPin);
+    if (r) {
+      await page.evaluate((y) => window.scrollTo(0, y), Math.round(r.start + 0.5 * (r.end - r.start)));
+      await page.waitForTimeout(500);
+      const b = await page.evaluate(() => {
+        const g = (s) => document.querySelector(s).getBoundingClientRect();
+        return { copyBottom: Math.round(g('.nh__trust').bottom), stageTop: Math.round(g('.nh__stage').top), stageBottom: Math.round(g('.nh__stage').bottom) };
+      });
+      ok(b.copyBottom <= 66 && b.stageTop >= 56 && b.stageTop <= 120 && b.stageBottom <= ph + 1, `phone pin frame: copy ends at ${b.copyBottom}, stage ${b.stageTop}-${b.stageBottom} (want copy out of view, stage filling the screen)`);
+    } else ok(false, 'phone pin frame: hero not pinned');
+  }
+  // b. Services bento: the lead cell spans the row (no hollow two-row cell); the other two share the next row
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  {
+    const cells = await page.$$eval('[data-premium="bento"] > li', (ls) => ls.map((l) => { const r = l.getBoundingClientRect(); return { x: r.x, y: Math.round(r.y), w: Math.round(r.width) }; }));
+    const ul = await page.$eval('[data-premium="bento"]', (u) => Math.round(u.getBoundingClientRect().width));
+    ok(cells.length === 3 && Math.abs(cells[0].w - ul) <= 2 && cells[1].y === cells[2].y && cells[1].y > cells[0].y, `bento: lead cell should span the row (${JSON.stringify(cells)}, list ${ul})`);
+  }
+  // c. Service hero: the example card never covers the 3D object
+  for (const path of ['/after-hours-answering-service-minnesota/', '/online-booking-minnesota/', '/website-design-minnesota/']) {
+    await page.goto(BASE + path, { waitUntil: 'networkidle' });
+    const o = await page.$eval('[data-object-hero]', (e) => e.getBoundingClientRect().bottom);
+    const c = await page.$eval('.page-hero__card', (e) => e.getBoundingClientRect().top);
+    ok(c >= o - 1, `${path}: example card overlaps the 3D object by ${Math.round(o - c)}px`);
+  }
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

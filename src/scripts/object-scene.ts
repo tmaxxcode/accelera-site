@@ -93,7 +93,7 @@ export async function mountObjectScene(opts: { canvas: HTMLCanvasElement; kind: 
     add(new CylinderGeometry(0.32, 0.32, 0.08, 32), orange, -0.55, -1.25, 0.22).rotation.x = Math.PI / 2; // answer
     add(new CylinderGeometry(0.32, 0.32, 0.08, 32), mat(0x2e7d5b), 0.55, -1.25, 0.22).rotation.x = Math.PI / 2;
     for (let i = 0; i < 3; i++) {
-      const r = add(new TorusGeometry(1.7 + i * 0.55, 0.035, 8, 64), glow, 0, 0.3, -0.2);
+      const r = add(new TorusGeometry(1.3 + i * 0.45, 0.035, 8, 64), glow, 0, 0.3, -0.2); // stays inside the frame at full swell
       rings.push(r);
     }
   } else if (kind === 'calendar') {
@@ -107,16 +107,21 @@ export async function mountObjectScene(opts: { canvas: HTMLCanvasElement; kind: 
         if (booked) rings.push(cell);
       }
   } else {
-    box(5.4, 3.7, 0.24, white);
+    // A night-mode site in a browser window, in the home scene's colours: navy shell, white headline, orange button.
+    const shell = mat(0x13233e, { roughness: 0.35 });
+    const slate = mat(0x2b4470, { roughness: 0.4 });
+    const dim = mat(0x4a5f84);
+    box(5.4, 3.7, 0.24, shell);
     box(5.4, 0.5, 0.28, navy, 0, 1.6, 0.02);
-    for (let i = 0; i < 3; i++) add(new CylinderGeometry(0.08, 0.08, 0.05, 16), i === 0 ? orange : line, -2.4 + i * 0.3, 1.6, 0.18).rotation.x = Math.PI / 2;
-    box(2.6, 0.32, 0.08, night, -1.1, 0.85, 0.15);
-    box(2.2, 0.16, 0.06, line, -1.3, 0.35, 0.14);
-    box(2.2, 0.16, 0.06, line, -1.3, 0.05, 0.14);
+    for (let i = 0; i < 3; i++) add(new CylinderGeometry(0.08, 0.08, 0.05, 16), i === 0 ? orange : dim, -2.4 + i * 0.3, 1.6, 0.18).rotation.x = Math.PI / 2;
+    box(2.6, 0.32, 0.08, white, -1.1, 0.85, 0.15);
+    box(2.2, 0.16, 0.06, dim, -1.3, 0.35, 0.14);
+    box(2.2, 0.16, 0.06, dim, -1.3, 0.05, 0.14);
     const cta = box(1.4, 0.42, 0.16, orange, -1.7, -0.6, 0.2);
     rings.push(cta);
-    box(1.9, 2.0, 0.1, line, 1.45, -0.05, 0.15); // hero picture block
-    box(1.5, 0.14, 0.06, line, 1.45, -1.35, 0.14);
+    box(1.9, 2.0, 0.1, slate, 1.45, -0.05, 0.15); // hero picture block
+    box(0.9, 0.9, 0.12, glow, 1.45, -0.05, 0.2); // the picture's warm light
+    box(1.5, 0.14, 0.06, dim, 1.45, -1.35, 0.14);
   }
   obj.rotation.set(-0.08, -0.35, 0);
 
@@ -129,7 +134,8 @@ export async function mountObjectScene(opts: { canvas: HTMLCanvasElement; kind: 
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     // Keep the object inside the box whatever its shape.
-    camera.position.z = width / height < 1 ? 11 / Math.max(0.55, width / height) : 11;
+    const z = kind === 'browser' ? 9.6 : 11; // the wide browser window fills its frame a little more
+    camera.position.z = width / height < 1 ? z / Math.max(0.55, width / height) : z;
     camera.updateProjectionMatrix();
   };
   const ro = new ResizeObserver(resize);
@@ -166,7 +172,7 @@ export async function mountObjectScene(opts: { canvas: HTMLCanvasElement; kind: 
     obj.position.y = Math.sin(t * 1.1) * 0.12;
     rings.forEach((r, i) => {
       if (kind === 'phone') {
-        const s = 1 + ((t * 0.6 + i / 3) % 1) * 0.35;
+        const s = 1 + ((t * 0.6 + i / 3) % 1) * 0.25;
         r.scale.setScalar(s);
         ((r.material as MeshStandardMaterial).opacity = 0.8 * (1 - ((t * 0.6 + i / 3) % 1)));
       } else r.position.z = (kind === 'calendar' ? 0.3 : 0.2) + Math.max(0, Math.sin(t * 2)) * 0.12;

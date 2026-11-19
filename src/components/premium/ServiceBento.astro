@@ -1,7 +1,7 @@
 ---
 /*
-  Home services as a bento grid (cinematic upgrade): the website, which most owners start with, is the big
-  navy cell; booking and answering sit beside it. Each card lifts 2px under the mouse (Lift island).
+  Home services as a bento grid (cinematic upgrade): the website, which most owners start with, is the wide
+  navy cell across the top; booking and answering sit below it. Each card lifts 2px under the mouse (Lift island).
   The whole card is the link, as in LinkCards.
 */
 import Icon from '../ui/Icon.astro';
@@ -78,11 +78,11 @@ const ordered = [...items].sort((a, b) => Number(b.path === lead) - Number(a.pat
   }
   @media (min-width: 768px) {
     .bento {
-      grid-template-columns: 1.25fr 1fr;
-      grid-template-rows: auto auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+    /* The website, where most owners start, takes the whole first row; booking and answering share the second. */
     .bento__cell--lead {
-      grid-row: span 2;
+      grid-column: 1 / -1;
     }
   }
 </style>

@@ -261,7 +261,9 @@ const beats = [
     z-index: -2;
     background:
       radial-gradient(70% 60% at 70% 100%, rgba(255, 140, 64, 0.6), rgba(255, 107, 0, 0.16) 52%, transparent 74%),
-      linear-gradient(0deg, rgba(120, 150, 215, 0.34), transparent 70%);
+      linear-gradient(0deg, rgba(120, 150, 215, 0.34), transparent 70%),
+      /* Sunrise reaches the top of the sky too: steel blue overhead to warm sand at the horizon. */
+      linear-gradient(180deg, rgba(52, 84, 134, 0.92) 0%, rgba(96, 116, 150, 0.6) 45%, rgba(214, 150, 110, 0.35) 100%);
     opacity: 0;
     transition: opacity 2400ms var(--ease-in-out);
   }
@@ -537,7 +539,7 @@ const beats = [
     transform: translate(1.9rem, -50%);
   }
   .chip--van .chip__in {
-    transform: translate(-50%, -100%);
+    transform: translate(-50%, -170%); /* above the van's roof, not over it */
   }
   .chip [data-when] {
     display: none;
@@ -572,7 +574,8 @@ const beats = [
       --moon-x: 13%;
       --moon-y: 47%;
     }
-    /* Phones and tablets: copy, then the lot, then the story, then the trust lines. */
+    /* Phones and tablets: the copy (with its trust lines), then the lot and the story. The stage is one screen
+       tall, so when the film pins on its bottom edge the frame is exactly the scene and the story. */
     .nh__in {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -586,10 +589,10 @@ const beats = [
     }
     .nh__stage {
       order: 1;
-    }
-    .nh__trust {
-      order: 2;
-      margin-top: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100svh - var(--nav-h) - var(--s-6));
     }
   }
   @media (min-width: 1024px) {

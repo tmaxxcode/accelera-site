@@ -441,8 +441,9 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
 
     // Camera: fit the lot in whatever shape the box is
     const az = 0.5 - (yaw + sway + px * 0.1);
-    const el = 0.4 - py * 0.03 + 0.15 * pull;
-    const d = dist * (1 + 0.6 * pull);
+    // A gentle pull-back: the lot stays big enough to read the van at the end of the film.
+    const el = 0.4 - py * 0.03 + 0.08 * pull;
+    const d = dist * (1 + 0.3 * pull);
     camera.position.set(
       target.x + Math.sin(az) * Math.cos(el) * d,
       target.y + Math.sin(el) * d,
@@ -541,7 +542,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
     const hFit = Math.atan(tanV * (Math.max(1, fr.width) / height));
     dist = 7.7 / Math.sin(Math.min(vFit, hFit));
     camera.near = Math.max(0.1, dist - 22);
-    camera.far = dist * 1.6 + 22; // room for the pull-back
+    camera.far = dist * 1.3 + 22; // room for the pull-back
     // Draw the lot centred on the fit box, not on the middle of the hero.
     const cx = fr.left - sr.left + fr.width / 2;
     const cy = fr.top - sr.top + fr.height / 2;
