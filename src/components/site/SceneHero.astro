@@ -88,7 +88,7 @@ const beats = [
 <script>
   import type { NightScene } from '../../scripts/night-scene';
   import { beatAt, progressForBeat } from '../../scripts/film-timeline';
-  import { ScrollTrigger, scrollToY } from '../../scripts/smooth-scroll';
+  import { gsap, ScrollTrigger, scrollToY } from '../../scripts/smooth-scroll';
 
   const root = document.querySelector<HTMLElement>('[data-night-hero]');
   if (root) {
@@ -127,16 +127,6 @@ const beats = [
       }),
     );
 
-    // The pinned film (cinematic upgrade, 2026-11-18): scrolling through the hero plays the story.
-    // Needs WebGL and full motion; otherwise the hero stays a normal section with the still and the buttons.
-    const hasWebGL = () => {
-      try {
-        const c = document.createElement('canvas');
-        return !!(c.getContext('webgl2') || c.getContext('webgl'));
-      } catch {
-        return false;
-      }
-    };
     const apply = (p: number) => {
       progress = p;
       const beat = beatAt(p);
@@ -146,27 +136,6 @@ const beats = [
       }
       scene?.setProgress(p);
     };
-    if (!reduce && hasWebGL()) {
-      auto = false;
-      const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
-      pin = ScrollTrigger.create({
-        trigger: root,
-        pin: true,
-        // A hero taller than the screen (phones) pins once its bottom (scene + story) is in view.
-        start: () => (root.offsetHeight > innerHeight - navH() ? 'bottom bottom' : `top top+=${navH()}`),
-        end: () => `+=${innerWidth >= 768 ? 300 : 200}%`,
-        scrub: true,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => apply(self.progress),
-        onRefresh: (self) => {
-          (window as Window & { __heroPin?: object }).__heroPin = { start: self.start, end: self.end };
-          apply(self.progress);
-        },
-      });
-      root.dataset.pinned = 'true';
-      (window as Window & { __heroPin?: object }).__heroPin = { start: pin.start, end: pin.end };
-      apply(pin.progress);
-    }
     pause.addEventListener('click', () => {
       const paused = pause.getAttribute('aria-pressed') !== 'true';
       pause.setAttribute('aria-pressed', String(paused));
@@ -210,6 +179,42 @@ const beats = [
         return true;
       }
     };
+    const gpuOk = !noGpu();
+
+    // The pinned film (cinematic upgrade, 2026-11-18): scrolling through the hero plays the story.
+    // Only where the 3D scene will run (no data saver, a real GPU with WebGL2), with full motion, on a screen
+    // tall enough to show the scene while pinned (not landscape phones). gsap.matchMedia adds and removes the
+    // pin as the screen rotates; otherwise the hero stays a normal section with the still and the buttons.
+    if (!saveData && gpuOk) {
+      gsap.matchMedia().add('(prefers-reduced-motion: no-preference) and (min-height: 560px)', () => {
+        auto = false;
+        clearTimeout(timer);
+        const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
+        const st = ScrollTrigger.create({
+          trigger: root,
+          pin: true,
+          // A hero taller than the screen (phones) pins once its bottom (scene + story) is in view.
+          start: () => (root.offsetHeight > innerHeight - navH() ? 'bottom bottom' : `top top+=${navH()}`),
+          end: () => `+=${innerWidth >= 768 ? 300 : 200}%`,
+          scrub: true,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => apply(self.progress),
+          onRefresh: (self) => {
+            (window as Window & { __heroPin?: object }).__heroPin = { start: self.start, end: self.end };
+            apply(self.progress);
+          },
+        });
+        pin = st;
+        root.dataset.pinned = 'true';
+        (window as Window & { __heroPin?: object }).__heroPin = { start: st.start, end: st.end };
+        apply(st.progress);
+        return () => {
+          pin = null;
+          delete root.dataset.pinned;
+          delete (window as Window & { __heroPin?: object }).__heroPin;
+        };
+      });
+    }
     // Only while the hero is on screen, and never in the way of the first paint:
     // - phones and tablets start it on the first touch, scroll or key press, so a visit that bounces pays nothing;
     // - desktops start it once the page has loaded and gone quiet.
@@ -218,7 +223,7 @@ const beats = [
         const io = new IntersectionObserver(([e]) => {
           if (!e.isIntersecting) return;
           io.disconnect();
-          if (!noGpu()) start();
+          if (gpuOk) start();
         });
         io.observe(root);
       };
@@ -551,8 +556,13 @@ const beats = [
   }
 
   @media (max-width: 599px) {
-    .nh__ctas :global(.btn) {
+    .nh__ctas :global(.btn),
+    .nh__ctas :global(.magnetic) {
       flex: 1 1 100%;
+    }
+    /* The magnetic wrapper is the row item now; the button fills it. */
+    .nh__ctas :global(.magnetic .btn) {
+      width: 100%;
     }
   }
   @media (max-width: 1023px) {

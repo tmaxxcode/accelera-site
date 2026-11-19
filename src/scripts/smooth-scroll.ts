@@ -29,26 +29,47 @@ const targetY = (el: HTMLElement) => {
 
 export function startSmoothScroll(): void {
   // The pinned film adds page height after the browser would restore the scroll, so the site restores it
-  // itself: a reload or back/forward returns to the same spot; a deep link (/#audit) lands under the header.
-  history.scrollRestoration = 'manual';
-  const key = `scroll:${location.pathname}`;
-  addEventListener('pagehide', () => sessionStorage.setItem(key, String(Math.round(window.scrollY))));
-  const land = () => {
-    ScrollTrigger.refresh();
-    const el = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-    const saved = Number(sessionStorage.getItem(key));
-    const y = nav && nav.type !== 'navigate' && saved ? saved : el ? targetY(el) : null;
-    if (y === null) return;
+  // itself, per history entry: a reload or back/forward returns to that entry's spot; a deep link (/#audit)
+  // lands under the header. ScrollTrigger keeps its own copy of this setting and writes it back on every
+  // refresh, so it is set through ScrollTrigger.
+  ScrollTrigger.clearScrollMemory('manual');
+  const save = () => {
+    try {
+      history.replaceState({ ...(history.state ?? {}), scrollY: Math.round(window.scrollY) }, '');
+    } catch {
+      /* Safari rate-limits replaceState; the next save catches up. */
+    }
+  };
+  let saveTimer = 0;
+  addEventListener('scroll', () => {
+    clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(save, 150);
+  }, { passive: true });
+  addEventListener('pagehide', save);
+  const jump = (y: number) => {
     window.scrollTo(0, y);
     lenis?.scrollTo(y, { immediate: true });
   };
-  // Same-page hash changes (typed URL, back to #section) land under the header too, not under a reveal offset.
+  const hashTarget = () => (location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null);
+  const savedY = (): number | null => (typeof history.state?.scrollY === 'number' ? history.state.scrollY : null);
+  const land = () => {
+    ScrollTrigger.refresh();
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    const el = hashTarget();
+    const restored = nav && nav.type !== 'navigate' ? savedY() : null;
+    const y = restored ?? (el ? targetY(el) : null);
+    if (y !== null) jump(y);
+  };
+  // Back/forward between entries of this page (after an in-page jump) returns to each entry's spot.
+  addEventListener('popstate', () => {
+    const y = savedY();
+    if (y !== null) jump(y);
+  });
+  // A new same-page hash (typed URL) lands under the header, not under a section's reveal offset.
   addEventListener('hashchange', () => {
-    const el = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (!el) return;
-    window.scrollTo(0, targetY(el));
-    lenis?.scrollTo(targetY(el), { immediate: true });
+    if (savedY() !== null) return; // popstate already restored this entry
+    const el = hashTarget();
+    if (el) jump(targetY(el));
   });
   if (document.readyState === 'complete') requestAnimationFrame(land);
   else addEventListener('load', () => requestAnimationFrame(land), { once: true });
@@ -66,6 +87,7 @@ export function startSmoothScroll(): void {
     const el = id && document.getElementById(id);
     if (!el || e.defaultPrevented || e.metaKey || e.ctrlKey) return;
     e.preventDefault();
+    save(); // this entry keeps the spot the visitor jumped from, for Back
     lenis!.scrollTo(targetY(el));
     history.pushState(null, '', `#${id}`);
     if (!el.hasAttribute('tabindex') && !el.matches('a, button, input, select, textarea, summary')) el.setAttribute('tabindex', '-1');

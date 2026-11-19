@@ -261,6 +261,62 @@ async (page) => {
   await page.goto(BASE + '/lp/trades/', { waitUntil: 'domcontentloaded' });
   ok(!(await hasVT(page)), 'view transitions: /lp/ must not opt in');
 
+  // Final-review fixes (2026-11-18)
+  // 1. Scroll restoration is really manual, and each history entry returns to its own spot
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  ok((await page.evaluate(() => history.scrollRestoration)) === 'manual', `restore: scrollRestoration is ${await page.evaluate(() => history.scrollRestoration)}`);
+  const at = (y) => page.evaluate((y) => window.scrollTo(0, y), y).then(() => page.waitForTimeout(400));
+  const sy = () => page.evaluate(() => Math.round(window.scrollY));
+  await at(500);
+  await page.goto(BASE + '/pricing/', { waitUntil: 'networkidle' });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await at(3000);
+  await page.goto(BASE + '/pricing/', { waitUntil: 'networkidle' });
+  await page.goBack({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  ok(Math.abs((await sy()) - 3000) < 6, `restore: back to the second home visit at ${await sy()}, expected 3000`);
+  await page.goBack({ waitUntil: 'networkidle' });
+  await page.goBack({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  ok(Math.abs((await sy()) - 500) < 6, `restore: back to the first home visit at ${await sy()}, expected 500`);
+  await page.goto(BASE + '/pricing/', { waitUntil: 'networkidle' });
+  await at(0);
+  await page.locator('.site-header__cta').click();
+  await page.waitForTimeout(1500);
+  await page.goBack();
+  await page.waitForTimeout(800);
+  ok((await sy()) < 6, `restore: back after the header CTA jump at ${await sy()}, expected the top`);
+  // 2. Short screens (landscape phones) get no pin; rotating to portrait pins, back to landscape unpins
+  await page.setViewportSize({ width: 844, height: 390 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  ok((await page.locator('.pin-spacer').count()) === 0 && !(await page.locator('[data-night-hero][data-pinned]').count()), 'landscape phone: hero must not pin');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForTimeout(600);
+  ok((await page.locator('[data-night-hero][data-pinned="true"]').count()) === 1, 'rotate to portrait: hero should pin');
+  await page.setViewportSize({ width: 844, height: 390 });
+  await page.waitForTimeout(600);
+  ok((await page.locator('.pin-spacer').count()) === 0 && !(await page.locator('[data-night-hero][data-pinned]').count()), 'rotate to landscape: hero must unpin');
+  // 3. The hero's primary CTA stays full width on phones
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  const ctaW = (await page.locator('[data-night-hero] a[href="#audit"]').boundingBox()).width;
+  const callW = (await page.locator('[data-night-hero] a[href^="tel:"]').boundingBox()).width;
+  ok(ctaW >= callW - 2, `phone: hero CTA ${Math.round(ctaW)}px narrower than Call (${Math.round(callW)}px)`);
+  // 4. No pin where the 3D will not run: data saver, WebGL1 only
+  for (const [mode, init] of [
+    ['data saver', () => Object.defineProperty(navigator, 'connection', { value: { saveData: true } })],
+    ['webgl1 only', () => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (t, ...a) { return t === 'webgl2' ? null : g.call(this, t, ...a); }; }],
+  ]) {
+    const p5 = await ctx.newPage();
+    await p5.addInitScript(init);
+    await p5.setViewportSize({ width: 1440, height: 900 });
+    await p5.goto(BASE + '/', { waitUntil: 'networkidle' });
+    ok((await p5.locator('.pin-spacer').count()) === 0, `${mode}: hero must not pin when the 3D stays off`);
+    await p5.close();
+  }
+  await page.setViewportSize({ width: 1440, height: 900 });
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');
