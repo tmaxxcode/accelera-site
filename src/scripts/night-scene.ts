@@ -37,10 +37,12 @@ import {
   WebGLRenderer,
   type Material,
 } from 'three';
-import { BEATS, type State } from './film-timeline';
+import { BEATS, filmFrame, type State } from './film-timeline';
 
 export interface NightScene {
   setBeat(beat: number): void;
+  /* Scroll progress through the pinned home film, 0..1 (see film-timeline.ts). */
+  setProgress(p: number): void;
   setPaused(paused: boolean): void;
   dispose(): void;
 }
@@ -92,7 +94,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small ? 1.5 : 2));
   renderer.toneMapping = ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.15;
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !small; // phones: no shadows
   renderer.shadowMap.type = PCFSoftShadowMap;
   await breathe();
 
@@ -308,7 +310,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
   /* ---------- Snowfall (the stars, moon and sunrise are CSS in SceneHero.astro) ---------- */
   const dot = glowTexture('rgba(255,255,255,1)', 'rgba(255,255,255,0.35)', 0.3);
   disposables.push(dot);
-  const flakeCount = small ? 190 : 340;
+  const flakeCount = small ? 170 : 340; // phones: half the snow
   const flakePos = new Float32Array(flakeCount * 3);
   const flakeSeed = new Float32Array(flakeCount);
   for (let i = 0; i < flakeCount; i++) {
@@ -356,6 +358,8 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
   /* ---------- State ---------- */
   const s: State = { dawn: 0, lit: 0, ring: 0, booked: 0, phone: 0, van: 0 };
   let goal: State = BEATS[0];
+  let pull = 0; // camera pull-back at the end of the film, 0..1
+  let pullGoal = 0;
   let yaw = 0; // visitor's turn
   let yawVel = 0;
   let px = 0; // pointer parallax, -1..1
@@ -414,6 +418,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
     const k = reduceMotion ? 1 : 1 - Math.exp(-dt * 2.6);
     const kSlow = reduceMotion ? 1 : 1 - Math.exp(-dt * 1.35);
     s.dawn += (goal.dawn - s.dawn) * kSlow;
+    pull += (pullGoal - pull) * kSlow;
     s.van += (goal.van - s.van) * kSlow;
     s.lit += (goal.lit - s.lit) * k;
     s.ring += (goal.ring - s.ring) * k;
@@ -436,11 +441,12 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
 
     // Camera: fit the lot in whatever shape the box is
     const az = 0.5 - (yaw + sway + px * 0.1);
-    const el = 0.4 - py * 0.03;
+    const el = 0.4 - py * 0.03 + 0.15 * pull;
+    const d = dist * (1 + 0.6 * pull);
     camera.position.set(
-      target.x + Math.sin(az) * Math.cos(el) * dist,
-      target.y + Math.sin(el) * dist,
-      target.z + Math.cos(az) * Math.cos(el) * dist,
+      target.x + Math.sin(az) * Math.cos(el) * d,
+      target.y + Math.sin(el) * d,
+      target.z + Math.cos(az) * Math.cos(el) * d,
     );
     camera.lookAt(target);
 
@@ -516,6 +522,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
     } else if (paused && visible) {
       // Paused: a beat picked now still has to show, so jump straight to it and draw once.
       Object.assign(s, goal);
+      pull = pullGoal;
       frame(0);
     }
   }
@@ -534,7 +541,7 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
     const hFit = Math.atan(tanV * (Math.max(1, fr.width) / height));
     dist = 7.7 / Math.sin(Math.min(vFit, hFit));
     camera.near = Math.max(0.1, dist - 22);
-    camera.far = dist + 22;
+    camera.far = dist * 1.6 + 22; // room for the pull-back
     // Draw the lot centred on the fit box, not on the middle of the hero.
     const cx = fr.left - sr.left + fr.width / 2;
     const cy = fr.top - sr.top + fr.height / 2;
@@ -591,13 +598,26 @@ export async function mountNightScene({ canvas, stage, fit, reduceMotion, onRead
     .catch(() => {})
     .then(() => {
       started = true;
-      if (reduceMotion) Object.assign(s, goal);
+      if (reduceMotion) {
+        Object.assign(s, goal);
+        pull = pullGoal;
+      }
       kick();
     });
 
   return {
     setBeat(beat) {
       goal = BEATS[clamp(beat, 0, BEATS.length - 1)];
+      kick();
+    },
+    setProgress(p) {
+      const { pullBack, ...state } = filmFrame(p);
+      goal = state;
+      pullGoal = pullBack;
+      if (reduceMotion) {
+        Object.assign(s, goal);
+        pull = pullGoal;
+      }
       kick();
     },
     setPaused(p) {
