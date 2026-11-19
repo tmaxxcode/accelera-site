@@ -41,6 +41,7 @@ async (page) => {
 
       ok((await page.evaluate(() => document.documentElement.scrollWidth)) <= w, `${tag}: horizontal overflow`);
       if (w === 1440) {
+        ok((await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--premium').trim())) === '1', `${tag}: premium tokens missing`);
         ok((await page.locator('h1').count()) === 1, `${tag}: expected one h1`);
         ok(!(await page.locator('meta[name=robots]').count()), `${tag}: site page must be indexable`);
         const canon = await page.locator('link[rel=canonical]').getAttribute('href');

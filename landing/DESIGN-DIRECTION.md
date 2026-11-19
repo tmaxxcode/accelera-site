@@ -8,7 +8,7 @@ Extends and supersedes Section 6 of `product-page-brief.md`. This is the single 
 
 | Attribute | Direction |
 |-----------|-----------|
-| **Core aesthetic** | High-trust, professional, conversion-first. Not "agency cool" — owner-operator credible |
+| **Core aesthetic** | Main site (2026-11-18): premium and cinematic, in owner language. The design shows craft; the words stay plain. `/lp/` keeps the previous rule: high-trust, professional, conversion-first, not "agency cool", owner-operator credible |
 | **Mood** | Competent, local, transparent. Twin Cities authority |
 | **Reference benchmarks** | Unbounce services LP median 6.1% (target >6.1%); grade 5–7 copy converts 11.1% vs 5.3% |
 | **Visual language** | Plain, concrete, no hype. No em-dashes, no emoji. Owner language ("book a job" not "schedule appointment") |
@@ -19,7 +19,9 @@ Extends and supersedes Section 6 of `product-page-brief.md`. This is the single 
 
 ## 2. Color Application
 
-Brand palette from `brand-kit.json` + logo extraction:
+Current palette (main site and `/lp/`, per the 2026-11-15 decision log): navy `#0A1929` (text) / `#1A2A47` (primary), white, orange `#FF6B00` (CTA, navy text on it), muted `#5B6270`, card `#F7F8FA`, border `#E3E6EC`, error `#DC2626`; source of truth `src/styles/tokens.css`. Main-site depth, glow, glass and easing tokens live in `src/styles/site-premium.css`. The blue/green table below is the original 2026-11-13 spec, kept for history only.
+
+Original palette (superseded):
 
 | Token | Hex | Usage |
 |-------|-----|-------|
@@ -211,9 +213,9 @@ Brand palette from `brand-kit.json` + logo extraction:
 **Global motion principles:**
 - Content and CTA **always render first** — no animation blocks interaction
 - `prefers-reduced-motion` respected everywhere (instant state changes)
-- No parallax, no scroll-jacking, no background video
-- Three.js hero: subtle atmospheric glow only, ≤20fps budget, pauses when tab hidden
-- GSAP/ScrollTrigger only for entrance reveals — no scrub animations
+- Main site (2026-11-18): parallax and scroll-scrubbed 3D allowed; pinned scroll scenes allowed with native scroll speed (pinning, never hijacking); Lenis smooth scroll on fine pointers; GSAP scrub allowed. `/lp/` keeps the previous rule: no parallax, no scroll-jacking, entrance reveals only
+- No background video (everywhere)
+- Three.js, main site: full scenes allowed, 60fps target, reduced quality on phones, pauses when hidden or off-screen. `/lp/`: no Three.js
 
 ---
 
@@ -315,3 +317,4 @@ Brand palette from `brand-kit.json` + logo extraction:
 | 2026-11-16 | Tyler approved the hero concept as built: "The phone rings at 2 a.m. The job still gets booked." + the example after-hours call card. The first surface is now pinned by the owner | MASTER L-5 decided |
 | 2026-11-16 | Website (P4) direction: seed: none (pinned). Tyler approved the 2 a.m. call-card hero (MASTER L-5) and asked for the website to be built in this project reusing the landing page's tokens and components ("Do this task here", P4 brief). No concept roll was run for the website | Recorded per impeccable finish review |
 | 2026-11-16 | HOME page hero is a 3D winter-night scene (vanilla three.js, no React runtime): a low-poly Twin Cities lot the visitor can drag to turn, playing three beats (2:14 a.m. phone rings, 2:19 a.m. job booked, 7:30 a.m. van at the house at sunrise). Chosen by Tyler ("3D as the hero") over a 3D band under the approved hero and over CSS-only depth. Reopens L-5 for the home page only; the example call card moves to the stats section below. Landing pages keep the L-5 hero with no 3D | Tyler's call. Guard rails: headline and buttons are plain HTML and paint first; the scene chunk (144 KB gzip) is fetched only after load on desktop and on first touch/scroll on phones; a 28 KB still picture covers no-WebGL, software rendering, data-saver and load failure; reduced motion gets a still scene with no autoplay; story is also plain text in three buttons |
+| 2026-11-18 | Tyler approved the cinematic 3D direction for the main site (spec docs/superpowers/specs/2026-11-18-cinematic-3d-design.md): pinned scroll film on home, 3D object heroes, premium motion blocks. Sections 1, 2 and 7 updated; `/lp/` keeps its previous rules | Tyler: a more interactive, 3D site is more impressive; 3D wins on home down to mobile performance 80 |

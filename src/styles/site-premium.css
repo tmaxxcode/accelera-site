@@ -1,0 +1,15 @@
+/*
+  Main-site premium tokens (cinematic 3D upgrade, 2026-11-18). Imported by SiteLayout only:
+  /lp/ pages never load this file, so their look and scores cannot shift.
+  Values per ui-ux-pro-max: ease-out for entrances, UI motion at or under 500 ms, layered navy shadows.
+*/
+:root {
+  --premium: 1;
+  --depth-1: 0 1px 2px rgba(10, 25, 41, 0.08), 0 2px 8px rgba(10, 25, 41, 0.06);
+  --depth-2: 0 4px 12px rgba(10, 25, 41, 0.1), 0 12px 32px rgba(10, 25, 41, 0.1);
+  --depth-3: 0 12px 24px rgba(10, 25, 41, 0.14), 0 32px 64px rgba(10, 25, 41, 0.18);
+  --glow-cta: 0 0 0 1px rgba(255, 107, 0, 0.35), 0 8px 28px rgba(255, 107, 0, 0.35);
+  --surface-glass: rgba(26, 42, 71, 0.72);
+  --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-reveal: 500ms;
+}

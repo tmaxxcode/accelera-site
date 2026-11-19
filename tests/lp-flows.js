@@ -27,6 +27,8 @@ async (page) => {
       const ok = (cond, msg) => (cond ? r.passed++ : fail(r, msg));
       const events = () => page.evaluate(() => (window.dataLayer || []).map((e) => e.event));
 
+      ok((await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--premium').trim())) === '', 'premium tokens leaked into /lp/');
+
       // Layout
       const sw = await page.evaluate(() => document.documentElement.scrollWidth);
       ok(sw <= w, `horizontal overflow: scrollWidth ${sw}`);
