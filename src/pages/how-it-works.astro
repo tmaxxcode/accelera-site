@@ -14,7 +14,7 @@ const crumbs = [{ name: 'Home', path: '/' }, { name: 'How it works', path: '/how
   description="One 15-minute call, we build it, you approve it. How Accelera sets up your website, booking and after-hours answering."
   schema={[breadcrumbSchema(Astro.site!, crumbs)]}
 >
-  <PageHero title="Your part takes about 15 minutes" lead="You tell us about your business. We do the building. Nothing goes live until you say yes." crumbs={crumbs} />
+  <PageHero object="calendar" title="Your part takes about 15 minutes" lead="You tell us about your business. We do the building. Nothing goes live until you say yes." crumbs={crumbs} />
 
   <Steps />
 

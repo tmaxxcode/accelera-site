@@ -2,19 +2,25 @@
 /*
   Hero for inner website pages: breadcrumb, h1, lead, the audit CTA and a call link.
   An optional visual goes in the default slot (right column on wide screens).
+  `object` adds a small interactive 3D object (src/scripts/object-scene.ts) above that visual. It loads after the
+  page is idle on wide screens and on the first touch or scroll on phones; a still picture shows until then and
+  under reduced motion or without WebGL.
 */
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import { contact } from '../../config/offer';
+import type { ObjectKind } from '../../scripts/object-scene';
 
 interface Props {
   title: string;
   lead: string;
   crumbs?: { name: string; path: string }[];
   cta?: string;
+  object?: ObjectKind;
 }
-const { title, lead, crumbs = [], cta = 'Get a free audit' } = Astro.props;
-const hasVisual = Astro.slots.has('default');
+const { title, lead, crumbs = [], cta = 'Get a free audit', object } = Astro.props;
+const hasSlot = Astro.slots.has('default');
+const hasVisual = hasSlot || !!object;
 ---
 <section id="hero" class:list={['page-hero', { 'page-hero--visual': hasVisual }]} aria-labelledby="page-h">
   <div class="container page-hero__in">
@@ -41,9 +47,64 @@ const hasVisual = Astro.slots.has('default');
         </Button>
       </div>
     </div>
-    {hasVisual && <div class="page-hero__visual"><slot /></div>}
+    {
+      hasVisual && (
+        <div class:list={['page-hero__visual', { 'page-hero__visual--obj': object }]}>
+          {object && (
+            <div class="obj" data-object-hero={object}>
+              <img class="obj__still" src={`/hero/object-${object}.webp`} alt="" width="640" height="480" decoding="async" />
+              <canvas class="obj__canvas" aria-hidden="true" />
+            </div>
+          )}
+          {hasSlot && <div class="page-hero__card"><slot /></div>}
+        </div>
+      )
+    }
   </div>
 </section>
+
+<script>
+  import type { ObjectKind } from '../../scripts/object-scene';
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLElement>('[data-object-hero]').forEach((el) => {
+    if (reduce) return; // the still picture is the reduced-motion version
+    const start = async () => {
+      try {
+        const { mountObjectScene } = await import('../../scripts/object-scene');
+        const scene = await mountObjectScene({
+          canvas: el.querySelector('canvas')!,
+          kind: el.dataset.objectHero as ObjectKind,
+          reduceMotion: false,
+        });
+        if (scene) el.dataset.objectReady = 'true';
+      } catch {
+        /* The still picture stays. */
+      }
+    };
+    const whenSeen = () => {
+      const io = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        start();
+      });
+      io.observe(el);
+    };
+    // Phones pay for 3D only after the visitor touches or scrolls; wide screens once the page is quiet.
+    if (matchMedia('(max-width: 767px)').matches) {
+      const events = ['pointerdown', 'touchstart', 'scroll', 'keydown'];
+      const go = () => {
+        events.forEach((e) => removeEventListener(e, go));
+        whenSeen();
+      };
+      events.forEach((e) => addEventListener(e, go, { passive: true }));
+    } else {
+      const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(whenSeen, { timeout: 2000 }) : setTimeout(whenSeen, 400));
+      if (document.readyState === 'complete') idle();
+      else addEventListener('load', idle, { once: true });
+    }
+  });
+</script>
 
 <style>
   .page-hero {
@@ -98,6 +159,44 @@ const hasVisual = Astro.slots.has('default');
   .page-hero__visual {
     display: flex;
     justify-content: center;
+  }
+  .page-hero__visual--obj {
+    flex-direction: column;
+    align-items: center;
+  }
+  .obj {
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
+    aspect-ratio: 4 / 3;
+  }
+  .obj__still,
+  .obj__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity var(--dur-reveal, 500ms) var(--ease-cinema, ease-out);
+  }
+  .obj__canvas {
+    opacity: 0;
+  }
+  .obj[data-object-ready] .obj__canvas {
+    opacity: 1;
+  }
+  .obj[data-object-ready] .obj__still {
+    opacity: 0;
+    visibility: hidden;
+  }
+  /* The example card overlaps the object a little, like a card laid on a desk. */
+  .page-hero__visual--obj .page-hero__card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: -2.5rem;
   }
   @media (max-width: 599px) {
     .page-hero__ctas :global(.btn) {

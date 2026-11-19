@@ -182,6 +182,40 @@ async (page) => {
     await p2.close();
   }
 
+  // 3D object heroes (cinematic upgrade): which pages get which object, and when it starts
+  const objects = {
+    '/after-hours-answering-service-minnesota/': 'phone', '/plumbers/': 'phone', '/roofers/': 'phone', '/about/': 'phone',
+    '/online-booking-minnesota/': 'calendar', '/auto-repair/': 'calendar', '/how-it-works/': 'calendar',
+    '/website-design-minnesota/': 'browser', '/contractors/': 'browser', '/pricing/': 'browser',
+  };
+  await page.setViewportSize({ width: 1440, height: 900 });
+  for (const [path, kind] of Object.entries(objects)) {
+    await page.goto(BASE + path, { waitUntil: 'networkidle' });
+    const hero = page.locator(`[data-object-hero="${kind}"]`);
+    ok((await hero.count()) === 1, `${path}: ${kind} object hero missing`);
+    if (!(await hero.count())) continue;
+    ok((await hero.locator('canvas').getAttribute('aria-hidden')) === 'true', `${path}: object canvas must be hidden from screen readers`);
+    await page.waitForSelector(`[data-object-hero][data-object-ready]`, { timeout: 3000 }).catch(() => {});
+    const size = await hero.locator('canvas').boundingBox();
+    ok((await hero.getAttribute('data-object-ready')) !== null && size && size.width > 0 && !(await hero.locator('img').isVisible()), `${path}: 3D object did not start`);
+  }
+  for (const path of ['/faq/', '/contact/', '/privacy/', '/tools/missed-call-calculator/']) {
+    await page.goto(BASE + path, { waitUntil: 'domcontentloaded' });
+    ok((await page.locator('[data-object-hero]').count()) === 0, `${path}: should have no object hero`);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(BASE + '/plumbers/', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  ok((await page.locator('[data-object-hero]').count()) === 1 && (await page.locator('[data-object-hero]').getAttribute('data-object-ready')) === null && (await page.locator('[data-object-hero] img').isVisible()), 'phone: 3D object must wait for the first touch or scroll');
+  const p3 = await ctx.newPage();
+  await p3.emulateMedia({ reducedMotion: 'reduce' });
+  await p3.setViewportSize({ width: 1440, height: 900 });
+  await p3.goto(BASE + '/plumbers/', { waitUntil: 'networkidle' });
+  await p3.waitForTimeout(1500);
+  ok((await p3.locator('[data-object-hero]').count()) === 1 && (await p3.locator('[data-object-hero]').getAttribute('data-object-ready')) === null && (await p3.locator('[data-object-hero] img').isVisible()), 'reduced motion: object hero must stay a still picture');
+  await p3.close();
+  await page.setViewportSize({ width: 1440, height: 900 });
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

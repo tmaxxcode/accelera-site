@@ -34,10 +34,12 @@ interface Props {
 const p = Astro.props;
 const crumbs = [{ name: 'Home', path: '/' }, { name: p.name, path: p.path }];
 const site = Astro.site!;
+// 3D hero object per trade (cinematic upgrade): the missed-call trades get the phone.
+const objectFor: Record<string, 'phone' | 'calendar' | 'browser'> = { '/plumbers/': 'phone', '/roofers/': 'phone', '/auto-repair/': 'calendar', '/contractors/': 'browser' };
 const faq = [...p.faq, { q: 'What does it cost?', a: 'Each part has one flat price, and you can start with the website alone. The pricing page lists every price.' }];
 ---
 <SiteLayout title={p.title} description={p.description} schema={[breadcrumbSchema(site, crumbs), faqSchema(faq)]}>
-  <PageHero title={p.h1} lead={p.lead} crumbs={crumbs}>
+  <PageHero title={p.h1} lead={p.lead} crumbs={crumbs} object={objectFor[p.path]}>
     <CallCard call={p.call} />
   </PageHero>
 
