@@ -1,11 +1,11 @@
 ---
 /*
   Home services as a bento grid (cinematic upgrade): the website, which most owners start with, is the big
-  navy cell; booking and answering sit beside it. Each card tilts toward the mouse (Tilt island).
+  navy cell; booking and answering sit beside it. Each card lifts 2px under the mouse (Lift island).
   The whole card is the link, as in LinkCards.
 */
 import Icon from '../ui/Icon.astro';
-import Tilt from './Tilt.tsx';
+import Lift from './Lift.tsx';
 interface Item {
   path: string;
   title: string;
@@ -19,16 +19,15 @@ const ordered = [...items].sort((a, b) => Number(b.path === lead) - Number(a.pat
   {
     ordered.map((i, n) => (
       <li class:list={['bento__cell', { 'bento__cell--lead': n === 0 }]}>
-        <Tilt client:media="(pointer: fine)" className="tilt-card bento__tilt">
+        <Lift client:media="(pointer: fine)" className="lift-card">
           <a class="bento__card" href={i.path}>
-            <span class="bento__num">0{n + 1}</span>
             <strong class="bento__title">{i.title}</strong>
             <span class="bento__sum">{i.summary}</span>
             <span class="bento__go">
               Learn more <Icon name="arrow" size={16} />
             </span>
           </a>
-        </Tilt>
+        </Lift>
       </li>
     ))
   }
@@ -42,9 +41,6 @@ const ordered = [...items].sort((a, b) => Number(b.path === lead) - Number(a.pat
     padding: 0;
     list-style: none;
   }
-  .bento__cell {
-    perspective: 1000px;
-  }
   .bento__card {
     display: flex;
     flex-direction: column;
@@ -53,12 +49,6 @@ const ordered = [...items].sort((a, b) => Number(b.path === lead) - Number(a.pat
     min-height: 44px;
     color: inherit;
     text-decoration: none;
-  }
-  .bento__num {
-    font-size: var(--fs-small);
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--c-accent-ink);
   }
   .bento__title {
     font-size: var(--fs-h3);
@@ -75,13 +65,10 @@ const ordered = [...items].sort((a, b) => Number(b.path === lead) - Number(a.pat
     margin-top: auto;
     font-weight: 600;
   }
-  .bento__cell--lead :global(.tilt-card) {
+  .bento__cell--lead :global(.lift-card) {
     background: linear-gradient(160deg, var(--c-primary), var(--c-night));
     border-color: transparent;
     color: #fff;
-  }
-  .bento__cell--lead .bento__num {
-    color: var(--c-accent);
   }
   .bento__cell--lead .bento__sum {
     color: rgba(255, 255, 255, 0.82);

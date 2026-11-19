@@ -317,6 +317,24 @@ async (page) => {
   }
   await page.setViewportSize({ width: 1440, height: 900 });
 
+  // Taste/impeccable refinement: cards lift (no tilt), no per-section fade-in, no section numbers
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.getElementById('how').scrollIntoView());
+  await page.waitForTimeout(60);
+  const howOpacity = await page.evaluate(() => getComputedStyle(document.getElementById('how')).opacity);
+  ok(howOpacity === '1', `no reveal: #how opacity ${howOpacity} right after scrolling to it`);
+  ok((await page.locator('.bento__num').count()) === 0, 'bento: no 01/02/03 section numbers');
+  const card = page.locator('[data-premium="bento"] .lift-card').first();
+  ok((await card.count()) === 1, 'bento: lift card missing');
+  if (await card.count()) {
+    await card.scrollIntoViewIfNeeded();
+    await card.hover({ position: { x: 20, y: 20 } });
+    await page.waitForTimeout(500);
+    const m = await card.evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform));
+    ok(Math.abs(m.f + 2) < 0.6 && Math.abs(m.b) < 0.001 && Math.abs(m.c) < 0.001 && m.is2D, `bento: hover should lift 2px with no tilt (ty ${m.f.toFixed(2)})`);
+  }
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

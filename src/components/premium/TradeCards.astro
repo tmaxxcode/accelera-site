@@ -1,10 +1,10 @@
 ---
 /*
-  Home trades as tilting cards (cinematic upgrade). Same content as TradeRows: name (link), the night-call
+  Home trades as cards that lift under the mouse (cinematic upgrade). Same content as TradeRows: name (link), the night-call
   problem, and a sourced figure only where one exists, linked to its source.
 */
 import Icon from '../ui/Icon.astro';
-import Tilt from './Tilt.tsx';
+import Lift from './Lift.tsx';
 interface Row {
   path: string;
   title: string;
@@ -17,7 +17,7 @@ const { rows } = Astro.props as { rows: Row[] };
   {
     rows.map((r) => (
       <li class="tcards__cell">
-        <Tilt client:media="(pointer: fine)" className="tilt-card">
+        <Lift client:media="(pointer: fine)" className="lift-card">
           <a class="row__name" href={r.path}>
             {r.title} <Icon name="arrow" size={18} />
           </a>
@@ -32,7 +32,7 @@ const { rows } = Astro.props as { rows: Row[] };
           ) : (
             <p class="row__fact row__fact--none">No sourced figure for this trade yet.</p>
           )}
-        </Tilt>
+        </Lift>
       </li>
     ))
   }
@@ -45,9 +45,6 @@ const { rows } = Astro.props as { rows: Row[] };
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-  .tcards__cell {
-    perspective: 1000px;
   }
   .row__name {
     display: inline-flex;

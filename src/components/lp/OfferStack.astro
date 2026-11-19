@@ -3,7 +3,7 @@ import Term from '../ui/Term.astro';
 import Icon from '../ui/Icon.astro';
 import Button from '../ui/Button.astro';
 import { prices, terms } from '../../config/offer';
-import Tilt from '../premium/Tilt.tsx';
+import Lift from '../premium/Lift.tsx';
 
 /* premium: main-site pricing page only (cinematic upgrade). /lp/ pages leave it off and render exactly as before. */
 const { premium = false } = Astro.props as { premium?: boolean };
@@ -70,8 +70,8 @@ const parts = [
             </p>
             </Fragment>
           );
-          // Main-site pricing page: the card tilts toward the mouse (Tilt island). /lp/ pages render it plain.
-          return <li class:list={['part', { 'part--bare': premium }]}>{premium ? <Tilt client:media="(pointer: fine)" className="tilt-card">{body}</Tilt> : body}</li>;
+          // Main-site pricing page: the card lifts 2px under the mouse (Lift island). /lp/ pages render it plain.
+          return <li class:list={['part', { 'part--bare': premium }]}>{premium ? <Lift client:media="(pointer: fine)" className="lift-card">{body}</Lift> : body}</li>;
         })
       }
     </ul>
@@ -134,7 +134,6 @@ const parts = [
     border: 0;
     background: none;
     box-shadow: none;
-    perspective: 1000px;
   }
   .part__name {
     font-size: var(--fs-h3);

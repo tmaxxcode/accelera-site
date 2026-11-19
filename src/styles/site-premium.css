@@ -26,8 +26,8 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Premium card surface, shared by the Tilt islands (bento, trade cards, pricing). */
-.tilt-card {
+/* Premium card surface, shared by the Lift islands (bento, trade cards, pricing). */
+.lift-card {
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
@@ -42,8 +42,8 @@ html.lenis body {
     border-color 250ms var(--ease-cinema);
   will-change: transform;
 }
-.tilt-card:hover,
-.tilt-card:focus-within {
+.lift-card:hover,
+.lift-card:focus-within {
   border-color: var(--c-primary);
   box-shadow: var(--depth-3);
 }
@@ -66,4 +66,9 @@ html.lenis body {
     animation-duration: 320ms;
     animation-timing-function: var(--ease-cinema);
   }
+}
+
+/* Browser surfaces in the palette: the page scrollbar (main site only). */
+html {
+  scrollbar-color: var(--c-primary) var(--c-card);
 }
