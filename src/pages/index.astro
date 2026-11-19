@@ -7,8 +7,8 @@ import Calculator from '../components/lp/Calculator.astro';
 import HowAndFaq from '../components/lp/HowAndFaq.astro';
 import AuditForm from '../components/lp/AuditForm.astro';
 import Section from '../components/site/Section.astro';
-import LinkCards from '../components/site/LinkCards.astro';
-import TradeRows from '../components/site/TradeRows.astro';
+import ServiceBento from '../components/premium/ServiceBento.astro';
+import TradeCards from '../components/premium/TradeCards.astro';
 import { pages } from '../config/site';
 import { stats } from '../config/stats';
 
@@ -32,13 +32,13 @@ const trades = pages.filter((p) => p.group === 'trade').map((p) => ({ ...p, fact
   <ProofBar items={proof}><CallCard /></ProofBar>
 
   <Section id="services" title="Three parts. Start with one." intro="Most owners start with the website. Add booking or after-hours answering when you want them." tone="card">
-    <LinkCards items={pages.filter((p) => p.group === 'service')} />
+    <ServiceBento items={pages.filter((p) => p.group === 'service')} />
   </Section>
 
 
   <Calculator />
   <Section id="trades" title="Built for the trades that get calls at night" layout="split" intro="The trades where a missed call is a lost job.">
-    <TradeRows rows={trades} />
+    <TradeCards rows={trades} />
   </Section>
   <HowAndFaq />
   <AuditForm />

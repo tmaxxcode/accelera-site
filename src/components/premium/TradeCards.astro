@@ -1,0 +1,83 @@
+---
+/*
+  Home trades as tilting cards (cinematic upgrade). Same content as TradeRows: name (link), the night-call
+  problem, and a sourced figure only where one exists, linked to its source.
+*/
+import Icon from '../ui/Icon.astro';
+import Tilt from './Tilt.tsx';
+interface Row {
+  path: string;
+  title: string;
+  summary: string;
+  fact?: { value: string; label: string; source: string; url: string };
+}
+const { rows } = Astro.props as { rows: Row[] };
+---
+<ul class="tcards" data-premium="trades" role="list">
+  {
+    rows.map((r) => (
+      <li class="tcards__cell">
+        <Tilt client:media="(pointer: fine)" className="tilt-card">
+          <a class="row__name" href={r.path}>
+            {r.title} <Icon name="arrow" size={18} />
+          </a>
+          <p class="row__line">{r.summary}</p>
+          {r.fact ? (
+            <p class="row__fact">
+              <b class="num">{r.fact.value}</b> {r.fact.label}{' '}
+              <a href={r.fact.url} rel="noopener" target="_blank">
+                {r.fact.source}
+              </a>
+            </p>
+          ) : (
+            <p class="row__fact row__fact--none">No sourced figure for this trade yet.</p>
+          )}
+        </Tilt>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .tcards {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tcards__cell {
+    perspective: 1000px;
+  }
+  .row__name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    font-size: var(--fs-h3);
+    font-weight: 700;
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+  .row__line {
+    color: var(--c-ink-2);
+    line-height: 1.55;
+  }
+  .row__fact {
+    margin-top: auto;
+    font-size: var(--fs-small);
+    color: var(--c-ink-2);
+  }
+  .row__fact .num {
+    font-size: 1.25rem;
+    color: var(--c-ink);
+  }
+  .row__fact--none {
+    font-style: italic;
+  }
+  @media (min-width: 768px) {
+    .tcards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

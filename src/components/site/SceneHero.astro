@@ -11,6 +11,7 @@
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import Term from '../ui/Term.astro';
+import Magnetic from '../premium/Magnetic.tsx';
 import { contact, terms } from '../../config/offer';
 
 interface Props {
@@ -34,7 +35,7 @@ const beats = [
       <h1 id="hero-h" class="nh__h">{headline}</h1>
       <p class="nh__sub">{sub}</p>
       <div class="nh__ctas">
-        <Button href="#audit" track="book_call" trackLabel="hero">{cta} <Icon name="arrow" size={18} /></Button>
+        <Magnetic client:media="(pointer: fine)"><Button href="#audit" track="book_call" trackLabel="hero">{cta} <Icon name="arrow" size={18} /></Button></Magnetic>
         <Button href={contact.phoneHref.value} variant="outline" track="call_click" trackLabel="hero" data-pending={!contact.phoneHref.approved ? 'true' : undefined} title={!contact.phoneHref.approved ? 'Placeholder number' : undefined}>
           <Icon name="phone" size={18} /> Call Tyler
         </Button>

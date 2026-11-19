@@ -168,7 +168,9 @@ const active = (path: string) => (path === '/' ? here === '/' : here.startsWith(
     <script>
       import { bindTracking, fillUtmFields } from '../scripts/track';
       import { startSmoothScroll } from '../scripts/smooth-scroll';
+      import { startReveals } from '../scripts/reveals';
       startSmoothScroll();
+      startReveals();
       bindTracking();
       fillUtmFields();
       // Close the phone menu after a same-page jump.

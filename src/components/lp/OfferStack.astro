@@ -3,6 +3,10 @@ import Term from '../ui/Term.astro';
 import Icon from '../ui/Icon.astro';
 import Button from '../ui/Button.astro';
 import { prices, terms } from '../../config/offer';
+import Tilt from '../premium/Tilt.tsx';
+
+/* premium: main-site pricing page only (cinematic upgrade). /lp/ pages leave it off and render exactly as before. */
+const { premium = false } = Astro.props as { premium?: boolean };
 
 const parts = [
   {
@@ -44,10 +48,11 @@ const parts = [
       <p class="offer__lead">Start with the website. Add booking or after-hours answering when you want them.</p>
     </div>
 
-    <ul class="offer__grid" role="list">
+    <ul class="offer__grid" role="list" data-premium={premium ? 'pricing' : undefined}>
       {
-        parts.map((p) => (
-          <li class="part">
+        parts.map((p) => {
+          const body = (
+            <Fragment>
             <h3 class="part__name">{p.name}</h3>
             <p class="part__price">
               <Term term={p.price} as="strong" />
@@ -63,8 +68,11 @@ const parts = [
             <p class="part__extra">
               <Term term={p.extra} />
             </p>
-          </li>
-        ))
+            </Fragment>
+          );
+          // Main-site pricing page: the card tilts toward the mouse (Tilt island). /lp/ pages render it plain.
+          return <li class:list={['part', { 'part--bare': premium }]}>{premium ? <Tilt client:media="(pointer: fine)" className="tilt-card">{body}</Tilt> : body}</li>;
+        })
       }
     </ul>
 
@@ -119,6 +127,14 @@ const parts = [
   .part:hover {
     border-color: var(--c-primary);
     box-shadow: var(--shadow-2);
+  }
+  .part--bare,
+  .part--bare:hover {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+    perspective: 1000px;
   }
   .part__name {
     font-size: var(--fs-h3);

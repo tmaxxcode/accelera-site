@@ -216,6 +216,41 @@ async (page) => {
   await p3.close();
   await page.setViewportSize({ width: 1440, height: 900 });
 
+  // Premium blocks (Framer Motion + 21st.dev): same links and prices, with or without JS; no motion under reduced motion
+  const premiumChecks = async (pg, tag) => {
+    await pg.goto(BASE + '/', { waitUntil: 'networkidle' });
+    const bento = await pg.$$eval('[data-premium="bento"] a', (as) => as.map((a) => a.getAttribute('href')).sort());
+    ok(JSON.stringify(bento) === JSON.stringify(['/after-hours-answering-service-minnesota/', '/online-booking-minnesota/', '/website-design-minnesota/']), `${tag}: bento links ${bento}`);
+    const trades = await pg.$$eval('[data-premium="trades"] a[href^="/"]', (as) => as.map((a) => a.getAttribute('href')).sort());
+    ok(JSON.stringify(trades) === JSON.stringify(['/auto-repair/', '/contractors/', '/plumbers/', '/roofers/']), `${tag}: trade links ${trades}`);
+    ok((await pg.locator('[data-premium="trades"] a[href^="https://"]').count()) === 2, `${tag}: 99 Calls source links missing`);
+    ok(await pg.locator('[data-premium="bento"] a').first().isVisible(), `${tag}: bento not visible`);
+    await pg.goto(BASE + '/pricing/', { waitUntil: 'networkidle' });
+    const prices = pg.locator('[data-premium="pricing"] .part__price');
+    ok((await prices.count()) === 3, `${tag}: pricing cards missing`);
+    for (let i = 0; i < (await prices.count()); i++) {
+      ok((await prices.nth(i).locator('[data-pending]').count()) > 0 && (await prices.nth(i).isVisible()), `${tag}: price ${i} not marked pending or not visible`);
+    }
+  };
+  await premiumChecks(page, 'premium');
+  const noJs = await ctx.browser().newContext({ javaScriptEnabled: false, viewport: { width: 1440, height: 900 } });
+  const pj = await noJs.newPage();
+  await premiumChecks(pj, 'premium no-js');
+  await noJs.close();
+  const p4 = await ctx.newPage();
+  await p4.emulateMedia({ reducedMotion: 'reduce' });
+  await p4.setViewportSize({ width: 1440, height: 900 });
+  await p4.goto(BASE + '/', { waitUntil: 'networkidle' });
+  if (await p4.locator('[data-premium="bento"] a').count()) {
+    await p4.locator('[data-premium="bento"] a').first().scrollIntoViewIfNeeded();
+    await p4.waitForTimeout(800);
+    await p4.locator('[data-premium="bento"] a').first().hover({ position: { x: 10, y: 10 } });
+    await p4.waitForTimeout(400);
+  }
+  const moved = await p4.$$eval('[data-premium] *', (els) => els.filter((e) => getComputedStyle(e).transform !== 'none').length);
+  ok(moved === 0, `reduced motion: ${moved} premium elements still transformed`);
+  await p4.close();
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

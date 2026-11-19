@@ -25,3 +25,31 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: hidden;
 }
+
+/* Premium card surface, shared by the Tilt islands (bento, trade cards, pricing). */
+.tilt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  height: 100%;
+  padding: var(--s-5);
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  background: #fff;
+  box-shadow: var(--depth-1);
+  transition:
+    box-shadow 250ms var(--ease-cinema),
+    border-color 250ms var(--ease-cinema);
+  will-change: transform;
+}
+.tilt-card:hover,
+.tilt-card:focus-within {
+  border-color: var(--c-primary);
+  box-shadow: var(--depth-3);
+}
+.btn--primary:hover {
+  box-shadow: var(--glow-cta);
+}
+.magnetic {
+  display: inline-flex;
+}

@@ -20,7 +20,12 @@ export function scrollToY(y: number): void {
   else window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
 }
 
-const targetY = (el: Element) => el.getBoundingClientRect().top + window.scrollY - navH();
+// Layout position (offsetTop), so an element mid-reveal (still shifted by its entrance transform) is not missed.
+const targetY = (el: HTMLElement) => {
+  let y = 0;
+  for (let n: HTMLElement | null = el; n; n = n.offsetParent as HTMLElement | null) y += n.offsetTop;
+  return y - navH();
+};
 
 export function startSmoothScroll(): void {
   // The pinned film adds page height after the browser would restore the scroll, so the site restores it
@@ -38,6 +43,13 @@ export function startSmoothScroll(): void {
     window.scrollTo(0, y);
     lenis?.scrollTo(y, { immediate: true });
   };
+  // Same-page hash changes (typed URL, back to #section) land under the header too, not under a reveal offset.
+  addEventListener('hashchange', () => {
+    const el = location.hash.length > 1 && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (!el) return;
+    window.scrollTo(0, targetY(el));
+    lenis?.scrollTo(targetY(el), { immediate: true });
+  });
   if (document.readyState === 'complete') requestAnimationFrame(land);
   else addEventListener('load', () => requestAnimationFrame(land), { once: true });
 
