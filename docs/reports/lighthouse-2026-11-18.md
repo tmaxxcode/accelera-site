@@ -40,7 +40,7 @@ Budget (spec `docs/superpowers/specs/2026-11-18-cinematic-3d-design.md`): access
 | /lp/trades/ | desktop | 100 | 100 | 100 | 66 | 0.4 s | 0 ms | 0 |
 
 Notes:
-- `/lp/trades/` SEO 66 is expected: landing pages are `noindex` by design and Lighthouse scores a blocked page down. Its performance and accessibility match the 2026-11-16 run; the landing pages load none of the upgrade (no 3D, no premium CSS, no React).
+- `/lp/trades/` SEO 66 is expected: landing pages are `noindex` by design and Lighthouse scores a blocked page down. Performance 100 and accessibility 100. The 2026-11-16 report did not measure `/lp/`, so there is no earlier number to compare; the landing pages load none of the upgrade (no 3D, no premium CSS, no React) and lp-flows passes 381/381.
 - Home desktop CLS 0.091 is under the 0.1 "good" line but was 0 before the upgrade; the likely source is the mouse-only React islands (Magnetic, Lift) hydrating. Logged as a minor.
 - Earlier single runs during the build read 68-76 on a cold start (first run after the npx download, or a run overlapping another Lighthouse job); reruns of the same build read 98-99. The table above is one clean pass.
 - Not measured: real devices (iPhone, Android), Safari, Firefox, and the 3D scene's own frame rate on a phone (mobile scores exclude it: phones start the 3D on the first touch or scroll).
