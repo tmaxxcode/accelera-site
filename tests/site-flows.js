@@ -116,14 +116,71 @@ async (page) => {
       page.off('console', oc); page.off('pageerror', oe);
     }
   }
-  // Home hero: the three story buttons work with or without the 3D scene, and the still picture is served
+  // Home hero: pinned scroll film (cinematic upgrade, 2026-11-18). The story buttons work with or without 3D.
+  ok((await fetch(BASE + '/hero/night-call.webp')).ok, 'hero still picture served');
+  const beatOf = (p) => (p < 0.3 ? '0' : p < 0.6 ? '1' : '2'); // mirrors film-timeline.ts beatAt
+  const pin = () => page.evaluate(() => window.__heroPin);
+  const scrollToPin = async (f) => {
+    const r = await pin();
+    await page.evaluate((y) => window.scrollTo(0, y), Math.round(r.start + f * (r.end - r.start)));
+    await page.waitForTimeout(400);
+  };
+  const beat = () => page.locator('[data-night-hero]').getAttribute('data-beat');
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-  ok((await fetch(BASE + '/hero/night-call.webp')).ok, 'hero still picture served');
   ok((await page.locator('[data-beat-btn]').count()) === 3, 'hero: three story buttons');
-  await page.locator('[data-beat-btn="2"]').click();
-  ok((await page.locator('[data-night-hero]').getAttribute('data-beat')) === '2' && (await page.locator('[data-beat-btn="2"]').getAttribute('aria-pressed')) === 'true', 'hero: story button did not select the morning');
   ok((await page.locator('#hero canvas').getAttribute('aria-hidden')) === 'true', 'hero: canvas must be hidden from screen readers');
+  ok((await page.locator('[data-night-hero][data-pinned="true"]').count()) === 1 && !!(await pin()), 'pinned: hero is not pinned');
+  if (await pin()) {
+    await scrollToPin(0.45);
+    ok((await beat()) === '1', `scrub: beat ${await beat()} at 45%, expected 1`);
+    const cta = await page.locator('[data-night-hero] a[href="#audit"]').boundingBox();
+    ok(cta && cta.y >= 0 && cta.y + cta.height <= 900, 'scrub: hero CTA must stay on screen during the pin');
+    await page.locator('[data-beat-btn="2"]').focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(1500);
+    ok((await beat()) === '2' && (await page.locator('[data-beat-btn="2"]').getAttribute('aria-pressed')) === 'true', `keyboard beat: beat ${await beat()}, expected 2`);
+    await scrollToPin(0.7);
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForTimeout(500);
+    ok((await beat()) === '2', `reload mid-pin: beat ${await beat()}, expected 2`);
+    await scrollToPin(0.45);
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(600);
+    const r = await pin();
+    const y = await page.evaluate(() => window.scrollY);
+    const prog = Math.min(1, Math.max(0, (y - r.start) / (r.end - r.start)));
+    ok((await page.evaluate(() => document.documentElement.scrollWidth)) <= 390, 'resize mid-pin: horizontal overflow');
+    ok((await beat()) === beatOf(prog), `resize mid-pin: beat ${await beat()} does not match position ${prog.toFixed(2)}`);
+    ok(await page.locator('.site-header__cta').isVisible(), 'resize mid-pin: header CTA hidden');
+    await page.setViewportSize({ width: 1440, height: 900 });
+  }
+  // Deep link to the form with the pin and smooth scroll active
+  await page.goto(BASE + '/#audit', { waitUntil: 'networkidle' });
+  await page.waitForTimeout(800);
+  const deep = await page.locator('#audit').boundingBox();
+  ok(deep && Math.abs(deep.y - 64) < 8, `audit deep link: form top ${deep && Math.round(deep.y)}, expected 64`);
+  // No WebGL and reduced motion: still picture, no pin, buttons still tell the story
+  const ctx = page.context();
+  for (const mode of ['no webgl', 'reduced motion']) {
+    const p2 = await ctx.newPage();
+    await p2.setViewportSize({ width: 1440, height: 900 });
+    if (mode === 'no webgl') {
+      await p2.addInitScript(() => {
+        const orig = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function (type, ...a) {
+          return /webgl/.test(type) ? null : orig.call(this, type, ...a);
+        };
+      });
+    } else await p2.emulateMedia({ reducedMotion: 'reduce' });
+    await p2.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p2.waitForTimeout(500);
+    ok((await p2.locator('.pin-spacer').count()) === 0, `${mode}: hero must not pin`);
+    ok(await p2.locator('.nh__still').isVisible(), `${mode}: still picture hidden`);
+    await p2.locator('[data-beat-btn="1"]').click();
+    ok((await p2.locator('[data-night-hero]').getAttribute('data-beat')) === '1', `${mode}: story button did not switch the beat`);
+    await p2.close();
+  }
 
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');

@@ -86,6 +86,8 @@ const beats = [
 
 <script>
   import type { NightScene } from '../../scripts/night-scene';
+  import { beatAt, progressForBeat } from '../../scripts/film-timeline';
+  import { ScrollTrigger, scrollToY } from '../../scripts/smooth-scroll';
 
   const root = document.querySelector<HTMLElement>('[data-night-hero]');
   if (root) {
@@ -96,6 +98,8 @@ const beats = [
     let scene: NightScene | null = null;
     let timer = 0;
     let auto = !reduce;
+    let pin: ScrollTrigger | null = null;
+    let progress = 0;
 
     const setBeat = (beat: number) => {
       root.dataset.beat = String(beat);
@@ -116,9 +120,52 @@ const beats = [
       b.addEventListener('click', () => {
         auto = false;
         clearTimeout(timer);
-        setBeat(i);
+        // Pinned: the buttons jump to that moment of the film, and the scroll drives the scene.
+        if (pin) scrollToY(pin.start + progressForBeat(i) * (pin.end - pin.start));
+        else setBeat(i);
       }),
     );
+
+    // The pinned film (cinematic upgrade, 2026-11-18): scrolling through the hero plays the story.
+    // Needs WebGL and full motion; otherwise the hero stays a normal section with the still and the buttons.
+    const hasWebGL = () => {
+      try {
+        const c = document.createElement('canvas');
+        return !!(c.getContext('webgl2') || c.getContext('webgl'));
+      } catch {
+        return false;
+      }
+    };
+    const apply = (p: number) => {
+      progress = p;
+      const beat = beatAt(p);
+      if (root.dataset.beat !== String(beat)) {
+        root.dataset.beat = String(beat);
+        buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === beat)));
+      }
+      scene?.setProgress(p);
+    };
+    if (!reduce && hasWebGL()) {
+      auto = false;
+      const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
+      pin = ScrollTrigger.create({
+        trigger: root,
+        pin: true,
+        // A hero taller than the screen (phones) pins once its bottom (scene + story) is in view.
+        start: () => (root.offsetHeight > innerHeight - navH() ? 'bottom bottom' : `top top+=${navH()}`),
+        end: () => `+=${innerWidth >= 768 ? 300 : 200}%`,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => apply(self.progress),
+        onRefresh: (self) => {
+          (window as Window & { __heroPin?: object }).__heroPin = { start: self.start, end: self.end };
+          apply(self.progress);
+        },
+      });
+      root.dataset.pinned = 'true';
+      (window as Window & { __heroPin?: object }).__heroPin = { start: pin.start, end: pin.end };
+      apply(pin.progress);
+    }
     pause.addEventListener('click', () => {
       const paused = pause.getAttribute('aria-pressed') !== 'true';
       pause.setAttribute('aria-pressed', String(paused));
@@ -143,7 +190,8 @@ const beats = [
             schedule();
           },
         });
-        scene?.setBeat(Number(root.dataset.beat));
+        if (pin) scene?.setProgress(progress);
+        else scene?.setBeat(Number(root.dataset.beat));
       } catch {
         /* The still picture stays. */
       }
