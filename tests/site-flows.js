@@ -251,6 +251,16 @@ async (page) => {
   ok(moved === 0, `reduced motion: ${moved} premium elements still transformed`);
   await p4.close();
 
+  // Page transitions: native cross-document view transitions on the main site only (no script lifecycle to break)
+  const hasVT = (pg) => pg.evaluate(() => {
+    const walk = (rules) => [...rules].some((r) => r.cssText.startsWith('@view-transition') || (r.cssRules && walk(r.cssRules)));
+    return [...document.styleSheets].some((s) => { try { return walk(s.cssRules); } catch { return false; } });
+  });
+  await page.goto(BASE + '/pricing/', { waitUntil: 'domcontentloaded' });
+  ok(await hasVT(page), 'view transitions: main site should opt in');
+  await page.goto(BASE + '/lp/trades/', { waitUntil: 'domcontentloaded' });
+  ok(!(await hasVT(page)), 'view transitions: /lp/ must not opt in');
+
   // 404: one h1, noindex, no canonical
   await page.goto(BASE + '/no-such-page/');
   ok((await page.locator('h1').count()) === 1 && (await page.locator('meta[name=robots][content="noindex"]').count()) === 1 && !(await page.locator('link[rel=canonical]').count()), '404 page');

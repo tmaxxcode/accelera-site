@@ -53,3 +53,17 @@ html.lenis body {
 .magnetic {
   display: inline-flex;
 }
+
+/* Page transitions between main-site pages: the browser's own cross-document view transition (a soft
+   cross-fade). Pure CSS, so page scripts still run on every load; browsers without it navigate as usual.
+   /lp/ pages don't load this file, so they never opt in. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 320ms;
+    animation-timing-function: var(--ease-cinema);
+  }
+}
