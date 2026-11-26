@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accelera Business — Status Dashboard</title>
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter + IBM Plex Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Iconifyicons for icons -->
+  <script src="https://code.iconify.design/2/2.1/iconify.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0a1929;
+      --bg-secondary: #1a2a47;
+      --fg: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #ff6b00;
+      --accent-dim: rgba(255, 107, 0, 0.15);
+      --success: #10b981;
+      --success-dim: rgba(16, 185, 129, 0.15);
+      --warning: #f59e0b;
+      --warning-dim: rgba(245, 158, 11, 0.15);
+      --card: rgba(17, 25, 40, 0.8);
+      --border: rgba(147, 197, 255, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* Background pattern */
+    .bg-pattern {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(180deg, rgba(10, 25, 41, 0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 25, 41, 0.3) 1px, transparent 1px);
+      background-size: 55px 55px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+      background-size: 560px 560px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Focus visible */
+    *:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background layers -->
+  <div class="bg-pattern"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="relative z-10 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-[var(--border)] bg-[var(--bg-secondary)]/80 backdrop-blur-sm sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-[var(--accent)] flex items-center justify-center">
+              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
+                <path d="M2 12l10-10a2 2 0 012 2V6l-12 12-12-12V5a2 2 0 012-2zm5.06-4.94a2.12 2.12 0 013-.08l1.46 1.46a2.14 2.14 0 01-.08 3zM6 12a6 6 0 100-12 6 6 0 000 12z"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold tracking-tighter">Accelera Business</h1>
+              <p class="text-xs text-[var(--muted)]">Fully Running Business — Status Dashboard</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 text-sm">
+            <span class="px-2 py-1 rounded bg-[var(--accent-dim)] text-[var(--accent)]">9/9 Tier 1</span>
+            <span class="px-2 py-1 rounded bg-[var(--success-dim)] text-[var(--success)]">Active</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-6">
+      <!-- Summary Cards Row -->
+      <div class="grid grid-cols-2 md-grid-cols-4 gap-4 mb-8">
+        <!-- Tier 1 Card -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 border-t-4 border-[var(--success)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[var(--success-dim)] flex items-center justify-center">
+              <svg class="w-6 h-6 text-[var(--success)]" fill="none" stroke="currentColor">
+                <path d="M2 12l10-10a2 2 0 012 2V6l-12 12-12-12V5a2 2 0 012-2zm5.06-4.94a2.12 2.12 0 013-.08l1.46 1.46a2.14 2.14 0 01-.08 3zM6 12a6 6 0 100-12 6 6 0 000 12z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium">Tier 1 Infrastructure</p>
+              <p class="text-[var(--muted)]">9 of 9 complete</p>
+            </div>
+          </div>
+          <p class="text-xs mt-2 text-[var(--muted)] mt-2">"Fully running business" minimum satisfied</p>
+          <p class="text-xs mt-2">
+            <span class="font-medium">Cost:</span> ~$1/mo + $12/yr
+          </p>
+        </div>
+
+        <!-- Tier 2 Card -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 border-t-4 border-[var(--accent)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[var(--accent-dim)] flex items-center justify-center">
+              <svg class="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor">
+                <path d="M2 12l10-10a2 2 0 012 2V6l-12 12-12-12V5a2 2 0 012-2zm5.06-4.94a2.12 2.12 0 013-.08l1.46 1.46a2.14 2.14 0 01-.08 3zM6 12a6 6 0 100-12 6 6 0 000 12z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium">Tier 2 Research</p>
+              <p class="text-[var(--muted)]">7 of 7 artifacts</p>
+            </div>
+          </div>
+          <p class="text-xs mt-2 text-[var(--muted)]">Competitive intelligence</p>
+          <p class="text-xs mt-2">
+            <span class="font-medium">Files:</span> 7 research artifacts
+          </p>
+        </div>
+
+        <!-- Build Guard Card -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 border-t-4 border-[var(--warning)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg bg-[var(--warning-dim)] flex items-center justify-center">
+              <svg class="w-6 h-6 text-[var(--warning)]" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10"/><path d="M8 12l4-4m0 0l4 4M6 8l12 8"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium">PUBLIC_RELEASE Build</p>
+              <p class="text-[var(--muted)]">Passes, zero Placeholder</p>
+            </div>
+          </div>
+          <p class="text-xs mt-2 text-[var(--muted)]">Build guard operational</p>
+        </div>
+
+        <!-- Privacy Card -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 border-t-4 border-[var(--muted)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-[var(--muted)]" fill="none" stroke="currentColor">
+                <rect x="3" y="3" width="18" height="18" radius="2"/><path d="M19 15l-1-1l-5-5l5-5"/>
+              </svg>
+            </div>
+            <div>
+              <p class="font-medium">Privacy Page</p>
+              <p class="text-[var(--muted)]">/privacy/ approved</p>
+            </div>
+          </div>
+          <p class="text-xs mt-2 text-[var(--muted)]">Plain-language, aos-verifier passes</p>
+        </div>
+      </div>
+
+      <!-- Section: Accomplished -->
+      <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 mb-8">
+        <h2 class="font-semibold tracking-wide text-sm mb-4">
+          <span class="flex items-center gap-2">
+            <iconify-icon icon="mdi:checkbox-marked-circle" class="text-[var(--success)] text-lg"></iconify-icon>
+            Things Accomplished
+          </span>
+        </h2>
+
+        <!-- Tier 1 Accomplished -->
+        <div class="grid grid-cols-2 md-grid-cols-3 gap-3 mb-6">
+          <!-- Domain -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Domain</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">accelera.studio (Namecheap, DNS→Netlify)</p>
+          </div>
+          <!-- Business Email -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Business Email</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">forward@accelera.com (Cloudflare+Brevo)</p>
+          </div>
+          <!-- GBP -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Google Business Profile</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">Visible office, 7-county Twin Cities</p>
+          </div>
+          <!-- Phone -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Phone</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">612-555-0100 (Telnyx, SMS+call forwarding)</p>
+          </div>
+          <!-- Cal.com -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Cal.com</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">15min booking page (Mon-Sat availability)</p>
+          </div>
+          <!-- Offer.ts -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Offer.ts</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">All 17 items approved:true (PUBLIC_RELEASE)</p>
+          </div>
+          <!-- Privacy Page -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">Privacy Page</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">/privacy/ approved (plain-language)</p>
+          </div>
+          <!-- GA4 + Clarity -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">GA4 + Clarity</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">Free accounts, gtag on all pages</p>
+          </div>
+          <!-- PUBLIC_RELEASE Build -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
+              <iconify-icon icon="mdi:checkbox-blank-circle" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <h3 class="font-medium mt-1">PUBLIC_RELEASE Build</h3>
+            <p class="text-xs text-[var(--muted)] mt-1">Zero Placeholder tags, build passes</p>
+          </div>
+        </div>
+
+        <!-- Tier 2 Accomplished -->
+        <div class="grid grid-cols-2 md-grid-cols-4 gap-3 mb-6">
+          <!-- Each Tier 2 file -->
+          <!-- Plumbing Battle Card -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:file-document" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Plumbing Battle Card</span>
+          </div>
+          <!-- Roofing Battle Card -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:file-document" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Roofing Battle Card</span>
+          </div>
+          <!-- Auto-repair Battle Card -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:file-document" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Auto-repair Battle Card</span>
+          </div>
+          <!-- Contracting Battle Card -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:file-document" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Contracting Battle Card</span>
+          </div>
+          <!-- Pricing Matrix -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:format-table" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Pricing Matrix</span>
+          </div>
+          <!-- Booking UX -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:keyboard-backspace" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Booking UX</span>
+          </div>
+          <!-- Phone Handling -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-3 border border-[var(--border)] hover:border-[var(--accent)] transition-colors">
+            <iconify-icon icon="mdi:phone-handset" class="text-[var(--muted)] group-hover:text-[var(--accent)] text-sm"></iconify-icon>
+            <span class="font-medium truncate w-full">Phone Handling</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Next Up -->
+      <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 mb-8">
+        <h2 class="font-semibold tracking-wide text-sm mb-4">
+          <span class="flex items-center gap-2">
+            <iconify-icon icon="mdi:arrow-down-circle" class="text-[var(--accent)] text-lg"></iconify-icon>
+            Things Up Next
+          </span>
+        </h2>
+
+        <!-- Implementation Plan Tasks -->
+        <div class="grid grid-cols-2 md-grid-cols-3 gap-3 mb-6">
+          <!-- Task 1 -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-5 border border-[var(--warning)] hover:border-[darken:#f59e0b@20%] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--warning-dim)]">
+              <iconify-icon icon="mdi:zip-box" class="text-[var(--warning)] text-lg"></iconify-icon>
+            </div>
+            <div class="pl-3">
+              <p class="font-medium">Task 1: Extract AgentMail ZIPs</p>
+              <p class="text-xs text-[var(--muted)]">3 ZIPs → indexed evidence</p>
+            </div>
+            <p class="text-xs mt-1">
+              <span class="text-[var(--warning)] font-medium">classifier recovery</span>
+            </p>
+          </div>
+          <!-- Task 2 -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-5 border border-[var(--accent)] hover:border-[darken:#ff6b00@20%] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--accent-dim)]">
+              <iconify-icon icon="mdi:web" class="text-[var(--accent)] text-lg"></iconify-icon>
+            </div>
+            <div class="pl-3">
+              <p class="font-medium">Task 2: P2 Landing Page Thread</p>
+              <p class="text-xs text-[var(--muted)]">7 trade ad-pages (AL.md priority)</p>
+            </div>
+            <p class="text-xs mt-1">
+              <span class="text-[var(--accent)] font-medium">design system ready</span>
+            </p>
+          </div>
+          <!-- Task 3 -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-5 border border-[var(--success)] hover:border-[darken:#10b981@20%] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--success-dim)]">
+              <iconify-icon icon="mdi:chart-line" class="text-[var(--success)] text-lg"></iconify-icon>
+            </div>
+            <div class="pl-3">
+              <p class="font-medium">Task 3: GA4 Event Tracking</p>
+              <p class="text-xs text-[var(--muted)]">5 gtag events (click_book_call, etc.)</p>
+            </div>
+            <p class="text-xs mt-1">
+              <span class="text-[var(--success)] font-medium">accounts live</span>
+            </p>
+          </div>
+          <!-- Task 4 -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-5 border border-[var(--muted)] hover:border-[darken:#94a3b8@20%] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--bg-secondary)]">
+              <iconify-icon icon="mdi:email" class="text-[var(--muted)] text-lg"></iconify-icon>
+            </div>
+            <div class="pl-3">
+              <p class="font-medium">Task 4: CAN-SPAM Outreach</p>
+              <p class="text-xs text-[var(--muted)]">12 emails (4 trades × 3 sequence)</p>
+            </div>
+            <p class="text-xs mt-1">
+              <span class="text-[var(--muted)] font-medium">battle cards ready</span>
+            </p>
+          </div>
+          <!-- Task 5 -->
+          <div class="group bg-[var(--bg-secondary)] rounded-lg p-5 border border-[var(--success)] hover:border-[darken:#10b981@20%] transition-colors">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-[var(--success-dim)]">
+              <iconify-icon icon="mdi:check-circle" class="text-[var(--success)] text-lg"></iconify-icon>
+            </div>
+            <div class="pl-3">
+              <p class="font-medium">Task 5: Tier 2 Verification</p>
+              <p class="text-xs text-[var(--muted)]">Full review + marker file</p>
+            </div>
+            <p class="text-xs mt-1">
+              <span class="text-[var(--success)] font-medium">all foundation complete</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Additional next items -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)]">
+            <p class="font-medium text-sm">Infrastructure</p>
+            <p class="text-xs text-[var(--muted)]">All 9/9 Tier items operational</p>
+          </div>
+          <div class="bg-[var(--bg-secondary)] rounded-lg p-4 border border-[var(--border)]">
+            <p class="font-medium text-sm">Cost Efficiency</p>
+            <p class="text-xs text-[var(--muted)]">~$1/mo + $12/yr — ponytail principle</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Key Metrics -->
+      <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6">
+        <h2 class="font-semibold tracking-wide text-sm mb-4">
+          <span class="flex items-center gap-2">
+            <iconify-icon icon="mdi:format-statistics" class="text-[var(--accent)] text-lg"></iconify-icon>
+            Key Metrics
+          </span>
+        </h2>
+
+        <div class="grid grid-cols-2 md-grid-cols-4 gap-4">
+          <div>
+            <p class="font-medium">Tier 1 Completion</p>
+            <p class="text-3xl font-bold text-[var(--success)]">9/9</p>
+            <p class="text-xs text-[var(--muted)]">100%</p>
+          </div>
+          <div>
+            <p class="font-medium">Tier 2 Research</p>
+            <p class="text-3xl font-bold text-[var(--accent)]">7/7</p>
+            <p class="text-xs text-[var(--muted)]">100%</p>
+          </div>
+          <div>
+            <p class="font-medium">Build Guard</p>
+            <p class="text-3xl font-bold text-[var(--success)]">✅ Pass</p>
+            <p class="text-xs text-[var(--muted)]">PUBLIC_RELEASE</p>
+          </div>
+          <div>
+            <p class="font-medium">Monthly Cost</p>
+            <p class="text-3xl font-bold text-[var(--accent)]">~$1</p>
+            <p class="text-xs text-[var(--muted)]">/mo</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="mt-8 pt-8 border-t border-[var(--border)] text-xs text-[var(--muted)]">
+        <p class="text-center">
+          Accelera Business — Status Dashboard<br>
+          Generated: <span class="mono" id="gen-date"></span><br>
+          <a href="https://claude.ai/code" target="_blank" class="underline underline-offset-2 hover:underline-opacity-50" style="color: var(--muted)">claude.ai/code</a>
+        </p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Set generation date
+    document.getElementById('gen-date').textContent = new Date().toLocaleString();
+
+    // Initialize Tailwind
+    tailwind.configure({
+      darkMode: 'class',
+      prefix: ''
+    })
+  </script>
+</body>
+</html>

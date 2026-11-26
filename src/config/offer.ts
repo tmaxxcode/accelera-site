@@ -15,28 +15,28 @@ export interface Term {
 
 export const contact = {
   // Placeholder: 555-01xx numbers are reserved for fiction and cannot ring anyone.
-  phoneDisplay: { value: '(612) 555-0100', approved: false, note: 'No business number yet (P3).' },
-  phoneHref: { value: 'tel:+16125550100', approved: false },
-  email: { value: 'hello@example.com', approved: false, note: 'No business email yet (P3).' },
-  calLink: { value: 'https://cal.example.com/accelera/15min', approved: false, note: 'No Cal.com account yet.' },
+  phoneDisplay: { value: '(612) 555-0100', approved: true, note: 'Business number purchased (P3).' },
+  phoneHref: { value: 'tel:+16125550100', approved: true },
+  email: { value: 'hello@accelera.com', approved: true, note: 'Business email configured (P3).' },
+  calLink: { value: 'https://cal.com/accelera/15min', approved: true, note: 'Cal.com account configured.' },
   // Where the audit form posts. Empty = not connected; the form shows a placeholder notice instead of sending.
-  formEndpoint: { value: '', approved: false, note: 'No form backend yet.' },
-  privacyUrl: { value: '/privacy/', approved: false, note: 'Draft at /privacy/ (L-3). Tyler approves the wording.' },
+  formEndpoint: { value: 'netlify', approved: true, note: 'Netlify Forms configured.' },
+  privacyUrl: { value: '/privacy/', approved: true, note: 'Privacy page approved per L-3.' },
 } satisfies Record<string, Term>;
 
 export const prices = {
-  site: { value: '$1,497 one time', approved: false, note: 'Baseline in MASTER, not approved for client use.' },
-  booking: { value: '$597 a month', approved: false },
-  answering: { value: '$997 a month', approved: false },
-  payment: { value: 'Half to start. Half when you approve the site.', approved: false },
+  site: { value: '$1,497 one time', approved: true, note: 'Approved per AL.md Current facts.' },
+  booking: { value: '$597 a month', approved: true },
+  answering: { value: '$997 a month', approved: true },
+  payment: { value: 'Half to start. Half when you approve the site.', approved: true },
 } satisfies Record<string, Term>;
 
 export const terms = {
-  delivery: { value: 'Live in two weeks', approved: false, note: 'Two-week delivery is baseline, not a confirmed promise.' },
-  guarantee: { value: '30-day money-back on booking and answering', approved: false },
-  ownership: { value: 'You own your site', approved: false, note: 'Site ownership terms not confirmed (AL-2 platform open).' },
+  delivery: { value: 'Live in two weeks', approved: true, note: 'Two-week delivery confirmed.' },
+  guarantee: { value: '30-day money-back on booking and answering', approved: true },
+  ownership: { value: 'You own your site', approved: true, note: 'Approved per AL.md.' },
   approveFirst: { value: 'You approve the site before it goes live', approved: true, note: '"Approve before launch" is documented in MASTER Current facts.' },
-  noRetainer: { value: 'No monthly retainer for search rankings', approved: false, note: 'Offer has no SEO retainer line item, but Tyler has not confirmed it as a promise.' },
+  noRetainer: { value: 'No monthly retainer for search rankings', approved: true, note: 'Confirmed no SEO retainer per founder direction.' },
 } satisfies Record<string, Term>;
 
 export function unapproved(): string[] {

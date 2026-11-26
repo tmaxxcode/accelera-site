@@ -4,7 +4,7 @@
 
 1. **Nothing reaches a real human without Tyler's approval.** Tyler sends every message and takes every call. No agent emails, DMs, calls, or posts to prospects, clients, press, or any external party. Drafts only.
 
-2. **CRM writes only through the accelera MCP.** Use `add_research`, `add_prospect`, `add_task`, `add_sample`, `post_update`, `read_workspace`. Every contribution needs a stable `submission_id`, sources with URLs and dates. Never bypass the MCP.
+2. **There is no CRM** (Tyler deleted it 2026-11-18, with the accelera MCP). MASTER.md and `~/accelera-sync.md` are the record. Old prospects and research are a read-only export in `~/Desktop/accelera/01-COMPANY/6-sales-parked/`. Research still needs sources with URLs and dates.
 
 3. **Ask before spending money.** Tyler does all sign-ups and sign-ins. Never type or store passwords, API keys, or credentials. No paid tools, credits, domains, or services without explicit approval.
 
@@ -30,6 +30,6 @@
 
 5. **Before each new task:** Re-read `MASTER.md` to pick up other threads' changes. If you find a conflict, log it as `DECISION-NEEDED` instead of overwriting.
 
-6. **Milestones** (phase done, page live, decision made): also `post_update` to the Accelera CRM via the accelera MCP.
+6. **Milestones** (phase done, page live, decision made): also append an entry to `~/accelera-sync.md`.
 
 7. **Never** delete or rewrite another thread's lines. If an edit fails because the file changed, re-read it and retry.

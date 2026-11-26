@@ -1,5 +1,7 @@
 # Accelera: website built from scratch to rank and convert + Local SEO strategy + Al Capital
 
+> **2026-11-18: the CRM and the accelera MCP were deleted (Tyler).** Wherever a prompt below says `read_workspace`, `post_update`, "post a CRM update" or "CRM writes", use MASTER.md for reading and append to `~/accelera-sync.md` instead. RULES.md is current.
+
 ## Context
 Accelera sells websites, online booking and after-hours phone answering to Twin Cities home-service businesses (plumbing, roofing, auto repair, contracting).
 
