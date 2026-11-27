@@ -1,6 +1,6 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import SceneHero from '../components/site/SceneHero.astro';
+import ImmersiveHero from '../components/site/ImmersiveHero.astro';
 import ProofBar from '../components/lp/ProofBar.astro';
 import CallCard from '../components/lp/CallCard.astro';
 import Calculator from '../components/lp/Calculator.astro';
@@ -24,11 +24,7 @@ const trades = pages.filter((p) => p.group === 'trade').map((p) => ({ ...p, fact
   title="Trade Websites, Booking and After-Hours Answering | Accelera"
   description="Accelera builds websites, online booking and after-hours call answering for plumbers, roofers, auto repair shops and contractors in the Twin Cities metro."
 >
-  <SceneHero
-    headline="Websites that book jobs for Twin Cities trades."
-    sub="A website people find, online booking customers use without signing up, and after-hours call answering. One local team sets it up, and you approve it before it goes live."
-    cta="Get a free audit"
-  />
+  <ImmersiveHero />
   <ProofBar items={proof}><CallCard /></ProofBar>
 
   <Section id="services" title="Three parts. Start with one." intro="Most owners start with the website. Add booking or after-hours answering when you want them." tone="card">

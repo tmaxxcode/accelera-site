@@ -1,0 +1,15 @@
+---
+import HeroCopy from './HeroCopy';
+import ImmersiveScene from './ImmersiveScene';
+import '../../styles/immersive-hero.css';
+---
+<section class="ih" id="hero" aria-label="Accelera websites, booking and after-hours calls">
+  <div class="ih__in container">
+    <HeroCopy client:load />
+    <ImmersiveScene client:idle />
+  </div>
+  <div class="ih__foot container">
+    <span>Websites · booking · after-hours calls</span>
+    <span>Twin Cities, Minnesota</span>
+  </div>
+</section>
