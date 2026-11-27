@@ -21,7 +21,14 @@ No entrance reveals run on scroll. The hero does not pin sections or move the
 camera. `prefers-reduced-motion` disables the hero transform, 3D float, and
 scroll-driven scene rotation. The scene uses one WebGL canvas, hydrated when
 the browser is idle and paused when out of view. The HTML fallback artwork
-remains available until the canvas is ready.
+remains available until the canvas is ready. Desktop mouse/trackpad users get
+Lenis smooth scrolling; touch devices and reduced-motion users keep native
+scrolling.
+
+The homepage flows from the standalone hero into sourced proof, services,
+calculator, trade-specific details, process/FAQ, and the audit form. Main
+sections use the shared `screen` layout: at least one viewport tall on desktop,
+and they grow with content at narrow widths.
 
 ## Scene and asset notes
 
@@ -40,5 +47,6 @@ prefer a compressed GLB if an original model becomes available.
 ## Verification
 
 Run `npm run build` and `npm run test:unit` from the repository root. The
-production homepage layout has been checked at 1440, 1024, 768, and 390 CSS
-pixels; test reduced motion in browser emulation before changing the scene.
+production homepage has no horizontal overflow at 1440, 1024, 768, and 390 CSS
+pixels, with one WebGL canvas; the 390px primary controls meet the 44px touch
+target. Test reduced motion in browser emulation before changing the scene.

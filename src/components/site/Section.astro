@@ -10,11 +10,12 @@ interface Props {
   intro?: string;
   layout?: 'stack' | 'split';
   tone?: 'white' | 'card' | 'night';
+  screen?: boolean;
 }
-const { id, title, intro, layout = 'stack', tone = 'white' } = Astro.props;
+const { id, title, intro, layout = 'stack', tone = 'white', screen = false } = Astro.props;
 const hid = `${id ?? title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-h`;
 ---
-<section id={id} class:list={['sec', `sec--${tone}`]} aria-labelledby={hid}>
+<section id={id} class:list={['sec', `sec--${tone}`, { screen }]} aria-labelledby={hid}>
   <div class:list={['container', { split: layout === 'split' }]}>
     <div class:list={['sec__head', { split__a: layout === 'split' }]}>
       <h2 id={hid}>{title}</h2>
