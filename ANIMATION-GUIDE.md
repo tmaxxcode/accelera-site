@@ -19,11 +19,14 @@ keep their contrast accessible.
 
 No entrance reveals run on scroll. The hero does not pin sections or move the
 camera. `prefers-reduced-motion` disables the hero transform, 3D float, and
-scroll-driven scene rotation. The scene uses one WebGL canvas, hydrated when
-the browser is idle and paused when out of view. The HTML fallback artwork
-remains available until the canvas is ready. Desktop mouse/trackpad users get
-Lenis smooth scrolling; touch devices and reduced-motion users keep native
-scrolling.
+scroll-driven scene rotation and keeps the static poster instead of creating a
+WebGL context. Save-Data and 2G connections use the same poster fallback. WebGL
+availability is feature-detected before creating the scene; a lost context
+reveals the poster until the browser restores the renderer. The renderer is
+pixel-ratio capped at 1.5 on desktop and 1.25 on mobile. It uses one WebGL
+canvas, hydrated when the browser is idle and paused when out of view.
+Desktop mouse/trackpad users get Lenis smooth scrolling; touch devices and
+reduced-motion users keep native scrolling.
 
 The homepage flows from the standalone hero into sourced proof, services,
 calculator, trade-specific details, process/FAQ, and the audit form. Main
@@ -43,6 +46,14 @@ photographs, clients, or testimonials.
 The artwork is already rasterized WebP and there is no source GLB to Draco
 compress or texture pipeline to document. Keep new 3D assets under 5 MB and
 prefer a compressed GLB if an original model becomes available.
+
+## Open-source references
+
+The implementation was informed by the responsive scene and fallback principles
+in [Web Design Studio](https://github.com/MustBeSimo/web-design-studio) and
+[motion-site-kit](https://github.com/dimeloper/motion-site-kit). No third-party
+code, models, photos, or compositions were copied; only the repositories'
+documented engineering practices were applied to Accelera's existing assets.
 
 ## Verification
 
