@@ -67,14 +67,14 @@ This is an **Astro 7** site with React 18 and Tailwind CSS 3. The codebase is sp
 
 ## Important Externally Referenced Files
 
-- `~/AlCapital/AL.md` — Al's operating manual (duties, run procedure, routing, kits)
-- `~/AlCapital/MASTER.md` — Status board, current facts, Waiting on Tyler table
-- `~/AlCapital/PLAN.md` — Approved 30/60/90-day plan to first revenue
-- `~/AlCapital/briefs/YYYY-MM-DD.md` — Daily briefs
-- `~/Accelera/README.md` — Consolidated start-here overview
-- `~/AlCapital/skills/SKILLS-INDEX.md` — 583 skills from 8 sources
-- `~/AlCapital/web/accelera-site/docs/PLAN.md` — Consolidated plan
-- `~/AlCapital/web/accelera-site/docs/RULES.md` — Hard rules + update protocol
+- `~/Desktop/accelera/01-COMPANY/5-chief-of-staff-al-capital/AL.md` — Al's operating manual (duties, run procedure, routing, kits)
+- `~/Desktop/accelera/site/docs/MASTER.md` — Status board, current facts, Waiting on Tyler table
+- `~/Desktop/accelera/site/docs/PLAN.md` — Approved 30/60/90-day plan to first revenue
+- `~/Desktop/accelera/01-COMPANY/5-chief-of-staff-al-capital/briefs/YYYY-MM-DD.md` — Daily briefs
+- `~/Desktop/accelera/00-START-HERE/OVERVIEW.md` — Consolidated start-here overview
+- `~/Desktop/accelera/03-TOOLS/skills-library/SKILLS-INDEX.md` — 583 skills from 8 sources
+- `~/Desktop/accelera/site/docs/PLAN.md` — Consolidated plan
+- `~/Desktop/accelera/site/docs/RULES.md` — Hard rules + update protocol
 
 ## Quick References
 

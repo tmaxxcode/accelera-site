@@ -42,7 +42,7 @@ Last updated: 2026-11-13 13:40 CT by Agent ops
 
 ## Current facts (single source; update when anything changes)
 - **PRIORITY (founder direction, Tyler 2026-11-15 22:10 CT):** Main priority is getting the Accelera website built. Order (Tyler, 22:20 CT): finish the landing page first (thread L, P2), then the full website (B/C, P4). All calls are removed from every to-do list (founder task 5d3ba693 withdrawn; no call prep, scripts or call blocks). Sales prep stays parked until Tyler says otherwise.
-- **CRM deleted (Tyler 2026-11-18):** the accelera-crm app, its workspace at 127.0.0.1:8767 and the `accelera` MCP server no longer exist. Its company/website info (founder direction, website build log, 10 prospects, research, tasks, 2 HTML concepts) was exported to ~/Desktop/accelera; full backup ~/Accelera/archive/2026-11-18_crm-full-backup.zip. RULES.md, PLAN.md (note at top), AL.md and the al-capital agent were updated 2026-11-18 to work without it; the accelera-cloudcli jobs were retired (zip in ~/Accelera/archive).
+- **CRM deleted (Tyler 2026-11-18):** the accelera-crm app, its workspace at 127.0.0.1:8767 and the `accelera` MCP server no longer exist. Its company/website info (founder direction, website build log, 10 prospects, research, tasks, 2 HTML concepts) was exported to ~/Desktop/accelera; full backup ~/Desktop/accelera/04-HISTORY/archives/2026-11-18_crm-full-backup.zip. RULES.md, PLAN.md (note at top), AL.md and the al-capital agent were updated 2026-11-18 to work without it; the accelera-cloudcli jobs were retired (zip in ~/Desktop/accelera/04-HISTORY/archives).
 - **Brand colors (Tyler 2026-11-15 22:20 CT, in P2 session):** "use the blue orange Accelera colors". Applied as navy #0A1929 / #1A2A47 + white + vibrant orange #FF6B00 (values from reference/business-docs/systems-draft-guide.md). Replaces blue #2B67BD / green #00A859. Orange buttons carry navy text for contrast. Lives in accelera-site src/styles/tokens.css + landing/brand-kit.json.
 - **Offer/prices:** Site $1,497 (fixed, 50% deposit / 50% on approval, two-week delivery) → Booking $597/mo optional → Phone $997/mo optional. Both monthly have 30-day money-back. **Status: documented in master context, NOT yet approved by Tyler for client-facing use.**
 - **Video offer prices (Tyler approved 2026-11-16 19:57 CT, V-1):** Launch Kit $995 one-time (intro/outro, lower third, 3 promo ads, 9:16 + 1:1 + GBP cut); Monthly Starter $397/mo (4 shorts); Monthly Growth $797/mo (8 shorts + 2 owner-clip edits); Website + Launch Kit bundle $2,247. 3-month minimum on monthly tiers; 2 revision rounds per video. Not approved yet: delivery-only, ad spend excluded, 50% Launch Kit deposit, turnaround, file ownership wording. Standalone $1,497 site price still open (see Offer/prices).
@@ -88,56 +88,56 @@ Last updated: 2026-11-13 13:40 CT by Agent ops
 |---|---|---|
 | /Users/TylerMaxwell/accelera-sync.md | — | Shared sync log (all agents) |
 | /Users/TylerMaxwell/.claude/plans/i-want-you-to-temporal-thacker.md | — | Source plan (this file copied from it) |
-| /Users/TylerMaxwell/AlCapital/web/accelera-site/docs/PLAN.md | P0 | Working copy of the plan (consolidated) |
-| /Users/TylerMaxwell/AlCapital/web/accelera-site/docs/RULES.md | P0 | Hard rules + update protocol (consolidated) |
+| /Users/TylerMaxwell/Desktop/accelera/site/docs/PLAN.md | P0 | Working copy of the plan (consolidated) |
+| /Users/TylerMaxwell/Desktop/accelera/site/docs/RULES.md | P0 | Hard rules + update protocol (consolidated) |
 | /Users/TylerMaxwell/extracted/b2b-agents/b2b-agents-main/CLAUDE.md | — | Master context with offer, ICP, tech stack, win themes |
 | /Users/TylerMaxwell/extracted/b2b-agents/b2b-agents-main/accelera/*.md | — | 4 Accelera agent source files |
 | /Users/TylerMaxwell/extracted/gtm-skills-main/ | — | 87 GTM skills including SEO pipeline |
 | /Users/TylerMaxwell/extracted/google-maps-scraping-apis-main/ | — | 217 Apify actors, local lead playbook |
 | /Users/TylerMaxwell/extracted/FounderOS/FounderOS-main/ | — | Next.js personal OS (deferred) |
-| /Users/TylerMaxwell/AlCapital/web/accelera-site/research/ | P1 | Research outputs (19 files: STATS.md, PAIN-BANK.md, MESSAGE-MAP.md, KEYWORD-UNIVERSE.md, SERP-ANALYSIS.md, COMPETITOR-MINING.md, LOCAL-AUDIT-DATASET.md, ACCOUNT-INTELLIGENCE.md, OPPORTUNITY-INVENTORY.md, KEYWORD-VALIDATION.md, SERP-QUALIFICATION.md, BUSINESS-FIT-FILTER.md, TOPIC-SHAPING.md, SEO-STRATEGY.md, KEYWORD-RESEARCH-SOURCES.md, MN_TOP50_CITIES.md, MN_TOP50_CITIES.json, MN_SEASONAL_NICHES_NOVEMBER.md, GAP-ANALYSIS.md) |
-| /Users/TylerMaxwell/AlCapital/web/accelera-site/landing/ | P2 | Landing page artifacts (product-page-brief.md, DESIGN-DIRECTION.md, brand-kit.json, accelera-logo.png) |
-| /Users/TylerMaxwell/AlCapital/web/accelera-site/ | P2/P4 | Astro project (accelera-site) — consolidated root |
+| /Users/TylerMaxwell/Desktop/accelera/site/research/ | P1 | Research outputs (19 files: STATS.md, PAIN-BANK.md, MESSAGE-MAP.md, KEYWORD-UNIVERSE.md, SERP-ANALYSIS.md, COMPETITOR-MINING.md, LOCAL-AUDIT-DATASET.md, ACCOUNT-INTELLIGENCE.md, OPPORTUNITY-INVENTORY.md, KEYWORD-VALIDATION.md, SERP-QUALIFICATION.md, BUSINESS-FIT-FILTER.md, TOPIC-SHAPING.md, SEO-STRATEGY.md, KEYWORD-RESEARCH-SOURCES.md, MN_TOP50_CITIES.md, MN_TOP50_CITIES.json, MN_SEASONAL_NICHES_NOVEMBER.md, GAP-ANALYSIS.md) |
+| /Users/TylerMaxwell/Desktop/accelera/site/landing/ | P2 | Landing page artifacts (product-page-brief.md, DESIGN-DIRECTION.md, brand-kit.json, accelera-logo.png) |
+| /Users/TylerMaxwell/Desktop/accelera/site/ | P2/P4 | Astro project (accelera-site) — consolidated root |
 | ~/AlCapital/comms/ | P3 | Email templates, phone report |
-| ~/AlCapital/al/ | P6 | AL.md, daily briefs |
-| ~/AlCapital/skills/ | P7 | Catalog, kits, SKILLS-CATALOG.md, **SKILLS-INDEX.md (583 skills from 8 sources)** |
-| ~/AlCapital/briefs/ | P6 | Daily briefs from Al |
+| ~/Desktop/accelera/01-COMPANY/2-strategy-and-decisions/ | P6 | AL.md, daily briefs |
+| ~/Desktop/accelera/03-TOOLS/skills-library/ | P7 | Catalog, kits, SKILLS-CATALOG.md, **SKILLS-INDEX.md (583 skills from 8 sources)** |
+| ~/Desktop/accelera/01-COMPANY/5-chief-of-staff-al-capital/briefs/ | P6 | Daily briefs from Al |
 | /Users/TylerMaxwell/.t3/userdata/attachments/paperclip | Agent ops | Paperclip source checkout (runs via `pnpm dev:server`, dev mode) |
 | ~/.paperclip/instances/default | Agent ops | Paperclip instance: embedded postgres, agent configs, run logs, isolated workspaces |
-| ~/AlCapital/video/BUSINESS-PLAN.md | V Video | Video offer business plan (draft, prices ASSUMPTION) |
-| ~/AlCapital/video/PACKAGES.md, packages.html | V Video | Client-facing package sheet, prices shown as placeholders |
-| ~/AlCapital/video/samples/REEL.md | V Video | 4 sample videos (fictional business, labeled), checks, build times |
-| ~/AlCapital/video/SOP.md | V Video | Production SOP for client videos |
-| ~/AlCapital/video/research/PRICING-COMPS.md | V Video | Sourced price comps and demand evidence |
-| ~/AlCapital/video/outreach/DRAFTS.md | V Video | Outreach drafts (not sent) |
-| ~/AlCapital/video/tools/ | V Video | render_style.py (Chrome launcher), mix_sfx.py, finish.sh |
-| ~/AlCapital/video/specs/ | V Video | Private spec videos for TJK, Sabastian & Sons, Erik Nelson, Steinkraus (labeled concept, not posted) + per-shop template |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/BUSINESS-PLAN.md | V Video | Video offer business plan (draft, prices ASSUMPTION) |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/PACKAGES.md, packages.html | V Video | Client-facing package sheet, prices shown as placeholders |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/REEL.md | V Video | 4 sample videos (fictional business, labeled), checks, build times |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/SOP.md | V Video | Production SOP for client videos |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/PRICING-COMPS.md | V Video | Sourced price comps and demand evidence |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/OUTREACH-DRAFTS.md | V Video | Outreach drafts (not sent) |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/tools/ | V Video | render_style.py (Chrome launcher), mix_sfx.py, finish.sh |
+| ~/Desktop/accelera/01-COMPANY/4-video-offer/specs/ | V Video | Private spec videos for TJK, Sabastian & Sons, Erik Nelson, Steinkraus (labeled concept, not posted) + per-shop template |
 
-| ~/AlCapital/skills/ACCELERA-SKILL-KITS.md | Skills library | Picked skills/agents per Accelera area + 36-item core list |
-| ~/AlCapital/skills/kits/*.txt | Skills library | One path per line per area (15 areas + core) |
-| ~/AlCapital/skills/NOT-INSTALLED-PICKS.md | Skills library | 120 picks not yet in ~/.claude (11 flagged to read first); install only after Tyler approves |
-| ~/AlCapital/skills/catalog.json | Skills library | Full inventory: 4,027 unique skills/agents/commands incl. ~/Downloads and zips |
-| ~/AlCapital/AL.md | Al Capital | Al's operating manual (duties, run procedure, routing, kits) |
+| ~/Desktop/accelera/03-TOOLS/skills-library/ACCELERA-SKILL-KITS.md | Skills library | Picked skills/agents per Accelera area + 36-item core list |
+| ~/Desktop/accelera/03-TOOLS/skills-library/kits/*.txt | Skills library | One path per line per area (15 areas + core) |
+| ~/Desktop/accelera/03-TOOLS/skills-library/NOT-INSTALLED-PICKS.md | Skills library | 120 picks not yet in ~/.claude (11 flagged to read first); install only after Tyler approves |
+| ~/Desktop/accelera/03-TOOLS/skills-library/catalog.json | Skills library | Full inventory: 4,027 unique skills/agents/commands incl. ~/Downloads and zips |
+| ~/Desktop/accelera/01-COMPANY/5-chief-of-staff-al-capital/AL.md | Al Capital | Al's operating manual (duties, run procedure, routing, kits) |
 | ~/.claude/agents/al-capital.md | Al Capital | Agent definition; tools limited to files + accelera MCP |
-| ~/AlCapital/al/PLAN-30-60-90.md | Al Capital | Living 30/60/90-day plan to first revenue |
-| ~/AlCapital/al/APPROVALS.md | Al Capital | Approval desk: decisions and drafts waiting on Tyler (AL-n IDs) |
-| ~/AlCapital/briefs/ | Al Capital | Daily briefs (first: 2026-11-15.md) |
+| ~/Desktop/accelera/01-COMPANY/2-strategy-and-decisions/PLAN-30-60-90.md | Al Capital | Living 30/60/90-day plan to first revenue |
+| ~/Desktop/accelera/01-COMPANY/2-strategy-and-decisions/APPROVALS.md | Al Capital | Approval desk: decisions and drafts waiting on Tyler (AL-n IDs) |
+| ~/Desktop/accelera/01-COMPANY/5-chief-of-staff-al-capital/briefs/ | Al Capital | Daily briefs (first: 2026-11-15.md) |
 | ~/.claude/agents/accelera-rfp-powerhouse.md, accelera-client-presentation-builder.md | Al Capital | Remaining 2 of 4 Accelera sales agents, installed 2026-11-15 |
-| ~/Accelera/README.md | Consolidation | Single start-here overview for any LLM |
-| ~/AlCapital/web/accelera-site/src/pages/lp/trades.astro, trades-quick.astro | L Landing page | Long + short landing pages (noindex) |
-| ~/AlCapital/web/accelera-site/src/pages/lp/plumbers.astro, roofers.astro, auto-repair.astro; src/components/lp/LongLanding.astro | L Landing page | Trade ad-set pages (noindex) built from one shared long-page component |
-| ~/AlCapital/web/accelera-site/src/pages/lp/missed-calls.astro, booking.astro | L Landing page | Phone-angle and booking-gap angle pages (noindex) |
-| ~/AlCapital/web/accelera-site/src/pages/*.astro, src/pages/tools/ | B/C Website | Website v1: 14 indexable pages + 404, sitemap.xml/robots.txt/llms.txt endpoints |
-| ~/AlCapital/web/accelera-site/src/layouts/SiteLayout.astro, src/components/site/, src/config/{site,schema}.ts | B/C Website | Site layout (nav, phone menu, footer, JSON-LD), site components, page list, schema builders |
-| ~/AlCapital/web/accelera-site/tests/site-flows.js | B/C Website | Website Playwright check (run via Playwright MCP) |
-| ~/AlCapital/web/accelera-site/src/styles/tokens.css, base.css; src/components/ui/ | L Landing page | Shared design tokens + UI pieces for the full website (P4) |
-| ~/AlCapital/web/accelera-site/src/config/offer.ts | L Landing page | Every price/term/contact detail; approved:false shows a Placeholder tag; PUBLIC_RELEASE=true build fails while any is unapproved |
-| ~/AlCapital/web/accelera-site/tests/lp-flows.js, scripts/readability.py | L Landing page | Playwright flow check (run via Playwright MCP) + reading-grade check |
-| ~/AlCapital/web/accelera-site/PRODUCT.md | L Landing page | impeccable product record |
-| ~/AlCapital/web/accelera-site/src/pages/privacy.astro | B/C Website | Privacy page DRAFT (L-3) |
-| ~/AlCapital/web/accelera-site/src/scripts/night-scene.ts, src/components/site/SceneHero.astro, public/hero/night-call.webp | B/C Website | Home hero: 3D night-call scene (three.js), its hero component and loader, and the still fallback picture |
-| ~/AlCapital/web/accelera-site/public/og/accelera-1200x630.png | B/C Website | Share image used by every site page (og:image) |
-| ~/AlCapital/web/accelera-site/docs/reports/lighthouse-2026-11-16.md | B/C Website | Lighthouse mobile scores, all 15 site pages (local preview) |
+| ~/Desktop/accelera/00-START-HERE/OVERVIEW.md | Consolidation | Single start-here overview for any LLM |
+| ~/Desktop/accelera/site/src/pages/lp/trades.astro, trades-quick.astro | L Landing page | Long + short landing pages (noindex) |
+| ~/Desktop/accelera/site/src/pages/lp/plumbers.astro, roofers.astro, auto-repair.astro; src/components/lp/LongLanding.astro | L Landing page | Trade ad-set pages (noindex) built from one shared long-page component |
+| ~/Desktop/accelera/site/src/pages/lp/missed-calls.astro, booking.astro | L Landing page | Phone-angle and booking-gap angle pages (noindex) |
+| ~/Desktop/accelera/site/src/pages/*.astro, src/pages/tools/ | B/C Website | Website v1: 14 indexable pages + 404, sitemap.xml/robots.txt/llms.txt endpoints |
+| ~/Desktop/accelera/site/src/layouts/SiteLayout.astro, src/components/site/, src/config/{site,schema}.ts | B/C Website | Site layout (nav, phone menu, footer, JSON-LD), site components, page list, schema builders |
+| ~/Desktop/accelera/site/tests/site-flows.js | B/C Website | Website Playwright check (run via Playwright MCP) |
+| ~/Desktop/accelera/site/src/styles/tokens.css, base.css; src/components/ui/ | L Landing page | Shared design tokens + UI pieces for the full website (P4) |
+| ~/Desktop/accelera/site/src/config/offer.ts | L Landing page | Every price/term/contact detail; approved:false shows a Placeholder tag; PUBLIC_RELEASE=true build fails while any is unapproved |
+| ~/Desktop/accelera/site/tests/lp-flows.js, scripts/readability.py | L Landing page | Playwright flow check (run via Playwright MCP) + reading-grade check |
+| ~/Desktop/accelera/site/PRODUCT.md | L Landing page | impeccable product record |
+| ~/Desktop/accelera/site/src/pages/privacy.astro | B/C Website | Privacy page DRAFT (L-3) |
+| ~/Desktop/accelera/site/src/scripts/night-scene.ts, src/components/site/SceneHero.astro, public/hero/night-call.webp | B/C Website | Home hero: 3D night-call scene (three.js), its hero component and loader, and the still fallback picture |
+| ~/Desktop/accelera/site/public/og/accelera-1200x630.png | B/C Website | Share image used by every site page (og:image) |
+| ~/Desktop/accelera/site/docs/reports/lighthouse-2026-11-16.md | B/C Website | Lighthouse mobile scores, all 15 site pages (local preview) |
 
 ## Log (append-only, newest at bottom, never edit past lines)
 - 2026-11-12 11:45 CT | P0 Setup | claude | DONE | Created ~/AlCapital/ structure, PLAN.md, RULES.md, MASTER.md; appended pointer to accelera-sync.md; set row 0 Setup to DONE | PLAN.md, RULES.md, MASTER.md- 2026-11-12 12:30 CT | P1 Research | claude | STARTED | Claimed row A Research & SEO; starting STATS.md verification | —
